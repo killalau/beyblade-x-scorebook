@@ -21,8 +21,15 @@
 
       <section class="lookup-grid">
         <form id="lookupForm" class="panel">
-          <label for="query">Product or combo</label>
-          <textarea id="query" rows="3" spellcheck="false">Gill Shark 4-70O, Pearl Tiger 3-60U</textarea>
+          <div class="form-heading">
+            <label for="query">Products or combos</label>
+            <label class="cx-toggle">
+              <input id="cxMode" type="checkbox">
+              <span>CX</span>
+            </label>
+          </div>
+          <textarea id="query" rows="5" spellcheck="false">Gill Shark 4-70O, Pearl Tiger 3-60U
+Rage Ragna FE4-55Y</textarea>
           <div class="compact-row">
             <label>
               Price CAD
@@ -53,6 +60,14 @@
       </section>
 
       <section class="content-grid">
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Product Results</h2>
+            <span id="productCount">0 products</span>
+          </div>
+          <div id="productResults" class="product-results"></div>
+        </section>
+
         <section class="panel">
           <div class="section-heading">
             <h2>Breakdown</h2>

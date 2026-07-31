@@ -96,6 +96,30 @@ label {
   text-transform: uppercase;
 }
 
+.form-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cx-toggle {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  gap: 7px;
+  min-height: 36px;
+  padding: 0 12px;
+}
+
+.cx-toggle input {
+  accent-color: var(--accent);
+  height: 16px;
+  width: 16px;
+}
+
 textarea,
 input {
   width: 100%;
@@ -215,6 +239,11 @@ th {
   gap: 8px;
 }
 
+.product-results {
+  display: grid;
+  gap: 8px;
+}
+
 .sample-item {
   background: #fff;
   border: 1px solid var(--line);
@@ -225,6 +254,37 @@ th {
   min-height: 48px;
   padding: 9px 10px;
   text-align: left;
+}
+
+.product-row {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  min-height: 46px;
+  padding: 9px 10px;
+  text-align: left;
+}
+
+.product-row.selected {
+  border-color: var(--accent);
+  box-shadow: inset 4px 0 0 var(--accent);
+}
+
+.product-row:hover {
+  border-color: var(--blue);
+  background: #f3f8fc;
+}
+
+.product-row span {
+  overflow-wrap: anywhere;
+}
+
+.product-row strong {
+  color: var(--warn);
+  white-space: nowrap;
 }
 
 .sample-item:hover {

@@ -23,7 +23,26 @@ const rage = scoreProduct({
   name: "Rage Ragna FE4-55Y",
   configs: ["Rage Ragna FE4-55Y"],
   price: 19.99
+}, {
+  cxMode: true
 });
 assert.equal(rage.parts.find((part) => part.name === "Rage").partScore, 4.5);
+
+const normalRage = scoreProduct({
+  name: "Rage Ragna FE4-55Y",
+  configs: ["Rage Ragna FE4-55Y"],
+  price: 19.99
+});
+assert.equal(normalRage.parts.some((part) => part.type === "overBlade"), false);
+assert.equal(normalRage.parts.some((part) => part.type === "assistBlade"), false);
+
+const antlerCx = scoreProduct({
+  name: "Antler Stag B 2-60HN",
+  configs: ["Antler Stag B 2-60HN"],
+  price: 19.99
+}, {
+  cxMode: true
+});
+assert.equal(antlerCx.parts.some((part) => part.type === "assistBlade" && part.name === "B"), true);
 
 console.log("Smoke tests passed");

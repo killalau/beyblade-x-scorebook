@@ -3,12 +3,15 @@ import { scoreProduct, summarizeBreakdown } from "./scoring.js";
 
 const state = {
   ownedParts: [],
-  ownedBeys: []
+  ownedBeys: [],
+  selectedResultIndex: 0,
+  results: []
 };
 
 const elements = {
   form: document.querySelector("#lookupForm"),
   query: document.querySelector("#query"),
+  cxMode: document.querySelector("#cxMode"),
   price: document.querySelector("#price"),
   rareParts: document.querySelector("#rareParts"),
   score: document.querySelector("#scoreValue"),
@@ -16,6 +19,8 @@ const elements = {
   inventory: document.querySelector("#inventoryValue"),
   breakdownBody: document.querySelector("#breakdownBody"),
   partCount: document.querySelector("#partCount"),
+  productCount: document.querySelector("#productCount"),
+  productResults: document.querySelector("#productResults"),
   sampleList: document.querySelector("#sampleList"),
   inventoryFile: document.querySelector("#inventoryFile")
 };
@@ -49,6 +54,8 @@ function renderSamples() {
       button.addEventListener("click", () => {
         elements.query.value = product.configs.join(", ");
         elements.price.value = product.price ?? "";
+        elements.cxMode.checked = product.cx === true;
+        state.selectedResultIndex = 0;
         calculateCurrent();
       });
       return button;
@@ -61,19 +68,32 @@ function calculateCurrent() {
     .split(",")
     .map((part) => part.trim())
     .filter(Boolean);
-  const result = scoreProduct(
+  const products = parseInputProducts(elements.query.value);
+  state.results = products.map((line) => scoreProduct(
     {
-      name: elements.query.value,
-      configs: elements.query.value.split(",").map((config) => config.trim()).filter(Boolean),
+      name: line,
+      configs: line.split(",").map((config) => config.trim()).filter(Boolean),
       price: elements.price.value
     },
-    { ownedParts: state.ownedParts, rareParts }
-  );
-  renderResult(result);
+    { ownedParts: state.ownedParts, rareParts, cxMode: elements.cxMode.checked }
+  ));
+  if (state.selectedResultIndex >= state.results.length) {
+    state.selectedResultIndex = 0;
+  }
+  renderProductResults();
+  renderResult(state.results[state.selectedResultIndex]);
   renderSamples();
 }
 
 function renderResult(result) {
+  if (!result) {
+    elements.score.textContent = "-";
+    elements.costIndex.textContent = "-";
+    elements.partCount.textContent = "0 parts";
+    elements.breakdownBody.replaceChildren();
+    return;
+  }
+
   elements.score.textContent = formatScore(result.score);
   elements.costIndex.textContent = formatCostIndex(result.costIndex);
   elements.partCount.textContent = `${result.parts.length} parts`;
@@ -92,6 +112,33 @@ function renderResult(result) {
     return row;
   });
   elements.breakdownBody.replaceChildren(...rows);
+}
+
+function renderProductResults() {
+  elements.productCount.textContent = `${state.results.length} products`;
+  const items = state.results.map((result, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = index === state.selectedResultIndex ? "product-row selected" : "product-row";
+    button.innerHTML = `
+      <span>${escapeHtml(result.name)}</span>
+      <strong>${formatScore(result.score)} / ${formatCostIndex(result.costIndex)}</strong>
+    `;
+    button.addEventListener("click", () => {
+      state.selectedResultIndex = index;
+      renderProductResults();
+      renderResult(result);
+    });
+    return button;
+  });
+  elements.productResults.replaceChildren(...items);
+}
+
+function parseInputProducts(value) {
+  return String(value || "")
+    .split(/\n+/)
+    .map((line) => line.trim())
+    .filter(Boolean);
 }
 
 function labelType(type) {

@@ -17,22 +17,25 @@ export function normalizePartName(name) {
   return aliases[trimmed] || trimmed;
 }
 
-export function parseConfig(configText) {
+export function parseConfig(configText, options = {}) {
   const text = String(configText || "").replace(/\s+/g, " ").trim();
-  const ratchetMatch = text.match(/\b([A-Z]{0,3})(\d-\d{2})([A-Z]{1,3})\b/);
+  const cxMode = options.cxMode === true;
+  const ratchetMatch = cxMode
+    ? text.match(/\b([A-Z]{0,3})(\d-\d{2})([A-Z]{1,3})\b/)
+    : text.match(/\b(\d-\d{2})([A-Z]{1,3})\b/);
   if (!ratchetMatch) {
     return [{ name: normalizePartName(text), type: "blade", raw: text }];
   }
 
-  const attachedCxCode = ratchetMatch[1];
-  const ratchet = ratchetMatch[2];
-  const bit = ratchetMatch[3];
+  const attachedCxCode = cxMode ? ratchetMatch[1] : "";
+  const ratchet = cxMode ? ratchetMatch[2] : ratchetMatch[1];
+  const bit = cxMode ? ratchetMatch[3] : ratchetMatch[2];
   const before = text.slice(0, ratchetMatch.index).trim();
   const tokens = before.split(" ").filter(Boolean);
   const parts = [];
 
   const cxCode = tokens.at(-1);
-  const cxCodeLooksSeparate = cxCode && /^[A-Z]{1,3}$/.test(cxCode);
+  const cxCodeLooksSeparate = cxMode && isValidCxCode(cxCode);
   const nameTokens = cxCodeLooksSeparate ? tokens.slice(0, -1) : tokens;
   const bladeName = inferBladeName(nameTokens);
   if (bladeName) {
@@ -44,7 +47,7 @@ export function parseConfig(configText) {
     parts.push({ name: normalizePartName(lockChip), type: "lockChip", raw: lockChip });
   }
 
-  const cxCodeToParse = attachedCxCode || (cxCodeLooksSeparate ? cxCode : "");
+  const cxCodeToParse = isValidCxCode(attachedCxCode) ? attachedCxCode : (cxCodeLooksSeparate ? cxCode : "");
   if (cxCodeToParse) {
     const cxParts = parseCxCode(cxCodeToParse);
     parts.push(...cxParts);
@@ -55,12 +58,12 @@ export function parseConfig(configText) {
   return parts;
 }
 
-export function parseProduct(input) {
+export function parseProduct(input, options = {}) {
   return String(input || "")
     .split(",")
     .map((piece) => piece.trim())
     .filter(Boolean)
-    .flatMap(parseConfig);
+    .flatMap((piece) => parseConfig(piece, options));
 }
 
 export function scorePart(part, options = {}) {
@@ -93,7 +96,7 @@ export function scorePart(part, options = {}) {
 }
 
 export function scoreProduct({ name, configs, price }, options = {}) {
-  const parsedParts = (configs?.length ? configs : [name]).flatMap(parseProduct);
+  const parsedParts = (configs?.length ? configs : [name]).flatMap((config) => parseProduct(config, options));
   const parts = parsedParts.map((part) => scorePart(part, options));
   const score = round(parts.reduce((sum, part) => sum + part.partScore, 0));
   const denominator = parts.reduce((sum, part) => sum + part.costContribution, 0);
@@ -185,6 +188,16 @@ function parseCxCode(code) {
     ];
   }
   return [{ name: code, type: "assistBlade", raw: code }];
+}
+
+function isValidCxCode(code) {
+  if (!code) return false;
+  if (code.length === 1) return Object.hasOwn(assistBladeCodes, code);
+  if (code.length === 2) {
+    const [over, assist] = code;
+    return Object.hasOwn(overBladeCodes, over) && Object.hasOwn(assistBladeCodes, assist);
+  }
+  return false;
 }
 
 function isOwned(name, ownedParts = []) {

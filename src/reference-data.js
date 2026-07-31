@@ -163,12 +163,14 @@ export const sampleProducts = [
   {
     name: "Rage Ragna FE4-55Y CX Infinity Starter",
     price: 19.99,
-    configs: ["Rage Ragna FE4-55Y"]
+    configs: ["Rage Ragna FE4-55Y"],
+    cx: true
   },
   {
     name: "Antler Stag B 2-60HN CX Starter",
     price: 19.99,
-    configs: ["Antler Stag B 2-60HN"]
+    configs: ["Antler Stag B 2-60HN"],
+    cx: true
   },
   {
     name: "Soar Phoenix 9-60GF Deluxe String Launcher Set",
