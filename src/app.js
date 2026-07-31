@@ -1,4 +1,4 @@
-import { sampleProducts } from "./reference-data.js";
+import { sampleProducts } from "./reference-data/index.js";
 import { scoreProduct, summarizeBreakdown } from "./scoring.js";
 
 const state = {

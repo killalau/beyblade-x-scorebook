@@ -1,14 +1,16 @@
 import {
   aliases,
   assistBladeCodes,
-  bbxWeeklyParts,
   bitNames,
-  gamerImageParts,
-  overBladeCodes,
+  overBladeCodes
+} from "./reference-data/names.js";
+import {
   partTypeWeights,
   rankScores,
   rarityMultipliers
-} from "./reference-data.js";
+} from "./reference-data/scoringConfig.js";
+import { partsRanking as gamerPostPartsRanking } from "./reference-data/rankings/gamerPost.js";
+import { partsRanking as bbxWeeklyPartsRanking } from "./reference-data/rankings/bbxWeekly.js";
 
 const partIndex = buildPartIndex();
 
@@ -129,14 +131,14 @@ export function summarizeBreakdown(scored) {
 
 function buildPartIndex() {
   const index = new Map();
-  for (const part of bbxWeeklyParts) {
+  for (const part of bbxWeeklyPartsRanking) {
     setBest(index, part.name, part.type, {
       rankClass: part.rankClass,
       source: "BBX Weekly",
       detail: `#${part.rank}`
     });
   }
-  for (const part of gamerImageParts) {
+  for (const part of gamerPostPartsRanking) {
     setBest(index, part.name, part.type, {
       rankClass: part.rankClass,
       source: "Gamer Image",
