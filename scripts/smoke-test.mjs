@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { scoreProduct } from "../src/scoring.js";
 
 const keel = scoreProduct({
@@ -44,5 +45,9 @@ const antlerCx = scoreProduct({
   cxMode: true
 });
 assert.equal(antlerCx.parts.some((part) => part.type === "assistBlade" && part.name === "B"), true);
+
+const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
+assert.match(html, /id="productRows"/);
+assert.match(html, /id="addProductRow"/);
 
 console.log("Smoke tests passed");

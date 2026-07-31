@@ -22,19 +22,11 @@
       <section class="lookup-grid">
         <form id="lookupForm" class="panel">
           <div class="form-heading">
-            <label for="query">Products or combos</label>
-            <label class="cx-toggle">
-              <input id="cxMode" type="checkbox">
-              <span>CX</span>
-            </label>
+            <label>Products or combos</label>
+            <button id="addProductRow" type="button" class="secondary-button">Add row</button>
           </div>
-          <textarea id="query" rows="5" spellcheck="false">Gill Shark 4-70O, Pearl Tiger 3-60U
-Rage Ragna FE4-55Y</textarea>
-          <div class="compact-row">
-            <label>
-              Price CAD
-              <input id="price" type="number" min="0" step="0.01" value="22.98">
-            </label>
+          <div id="productRows" class="product-editor" aria-label="Product rows"></div>
+          <div class="compact-row rare-row">
             <label>
               Rare parts
               <input id="rareParts" type="text" value="" placeholder="1-60, LR">

@@ -5,14 +5,17 @@ const state = {
   ownedParts: [],
   ownedBeys: [],
   selectedResultIndex: 0,
-  results: []
+  results: [],
+  rows: [
+    { text: "Gill Shark 4-70O, Pearl Tiger 3-60U", price: "22.98", cxMode: false },
+    { text: "Rage Ragna FE4-55Y", price: "19.99", cxMode: true }
+  ]
 };
 
 const elements = {
   form: document.querySelector("#lookupForm"),
-  query: document.querySelector("#query"),
-  cxMode: document.querySelector("#cxMode"),
-  price: document.querySelector("#price"),
+  addProductRow: document.querySelector("#addProductRow"),
+  productRows: document.querySelector("#productRows"),
   rareParts: document.querySelector("#rareParts"),
   score: document.querySelector("#scoreValue"),
   costIndex: document.querySelector("#costIndexValue"),
@@ -24,6 +27,13 @@ const elements = {
   sampleList: document.querySelector("#sampleList"),
   inventoryFile: document.querySelector("#inventoryFile")
 };
+
+elements.addProductRow.addEventListener("click", () => {
+  state.rows.push({ text: "", price: "", cxMode: false });
+  state.selectedResultIndex = state.rows.length - 1;
+  renderProductEditor();
+  calculateCurrent();
+});
 
 elements.form.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -52,10 +62,13 @@ function renderSamples() {
         <strong>${formatScore(result.score)} / ${formatCostIndex(result.costIndex)}</strong>
       `;
       button.addEventListener("click", () => {
-        elements.query.value = product.configs.join(", ");
-        elements.price.value = product.price ?? "";
-        elements.cxMode.checked = product.cx === true;
+        state.rows = [{
+          text: product.configs.join(", "),
+          price: product.price ?? "",
+          cxMode: product.cx === true
+        }];
         state.selectedResultIndex = 0;
+        renderProductEditor();
         calculateCurrent();
       });
       return button;
@@ -68,14 +81,15 @@ function calculateCurrent() {
     .split(",")
     .map((part) => part.trim())
     .filter(Boolean);
-  const products = parseInputProducts(elements.query.value);
-  state.results = products.map((line) => scoreProduct(
+  syncRowsFromDom();
+  const products = state.rows.filter((row) => row.text.trim());
+  state.results = products.map((row) => scoreProduct(
     {
-      name: line,
-      configs: line.split(",").map((config) => config.trim()).filter(Boolean),
-      price: elements.price.value
+      name: row.text,
+      configs: row.text.split(",").map((config) => config.trim()).filter(Boolean),
+      price: row.price
     },
-    { ownedParts: state.ownedParts, rareParts, cxMode: elements.cxMode.checked }
+    { ownedParts: state.ownedParts, rareParts, cxMode: row.cxMode }
   ));
   if (state.selectedResultIndex >= state.results.length) {
     state.selectedResultIndex = 0;
@@ -83,6 +97,40 @@ function calculateCurrent() {
   renderProductResults();
   renderResult(state.results[state.selectedResultIndex]);
   renderSamples();
+}
+
+function renderProductEditor() {
+  const rows = state.rows.map((row, index) => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "editor-row";
+    wrapper.dataset.index = String(index);
+    wrapper.innerHTML = `
+      <input class="product-input" type="text" value="${escapeHtml(row.text)}" placeholder="Product or combo">
+      <input class="price-input" type="number" min="0" step="0.01" value="${escapeHtml(row.price)}" placeholder="Price">
+      <label class="cx-toggle row-toggle">
+        <input class="cx-input" type="checkbox" ${row.cxMode ? "checked" : ""}>
+        <span>CX</span>
+      </label>
+      <button class="remove-row" type="button" aria-label="Remove row">x</button>
+    `;
+    wrapper.querySelector(".product-input").addEventListener("input", () => calculateCurrent());
+    wrapper.querySelector(".price-input").addEventListener("input", () => calculateCurrent());
+    wrapper.querySelector(".cx-input").addEventListener("change", () => calculateCurrent());
+    wrapper.querySelector(".remove-row").addEventListener("click", () => {
+      if (state.rows.length === 1) {
+        state.rows = [{ text: "", price: "", cxMode: false }];
+      } else {
+        state.rows.splice(index, 1);
+      }
+      if (state.selectedResultIndex >= state.rows.length) {
+        state.selectedResultIndex = Math.max(0, state.rows.length - 1);
+      }
+      renderProductEditor();
+      calculateCurrent();
+    });
+    return wrapper;
+  });
+  elements.productRows.replaceChildren(...rows);
 }
 
 function renderResult(result) {
@@ -134,11 +182,14 @@ function renderProductResults() {
   elements.productResults.replaceChildren(...items);
 }
 
-function parseInputProducts(value) {
-  return String(value || "")
-    .split(/\n+/)
-    .map((line) => line.trim())
-    .filter(Boolean);
+function syncRowsFromDom() {
+  const renderedRows = [...elements.productRows.querySelectorAll(".editor-row")];
+  if (!renderedRows.length) return;
+  state.rows = renderedRows.map((row) => ({
+    text: row.querySelector(".product-input").value,
+    price: row.querySelector(".price-input").value,
+    cxMode: row.querySelector(".cx-input").checked
+  }));
 }
 
 function labelType(type) {
@@ -170,4 +221,5 @@ function escapeHtml(value) {
 }
 
 renderSamples();
+renderProductEditor();
 calculateCurrent();
