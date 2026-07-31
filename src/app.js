@@ -4,6 +4,8 @@ import { scoreProduct, summarizeBreakdown } from "./scoring.js";
 const state = {
   ownedParts: [],
   ownedBeys: [],
+  inventoryDetail: [],
+  wishlistItems: [],
   selectedResultIndex: 0,
   results: [],
   rows: [
@@ -14,6 +16,12 @@ const state = {
 
 const elements = {
   form: document.querySelector("#lookupForm"),
+  tabs: [...document.querySelectorAll(".tab-button")],
+  pages: {
+    scorebook: document.querySelector("#scorebookPage"),
+    inventory: document.querySelector("#inventoryPage"),
+    wishlist: document.querySelector("#wishlistPage")
+  },
   addProductRow: document.querySelector("#addProductRow"),
   productRows: document.querySelector("#productRows"),
   rareParts: document.querySelector("#rareParts"),
@@ -25,8 +33,21 @@ const elements = {
   productCount: document.querySelector("#productCount"),
   productResults: document.querySelector("#productResults"),
   sampleList: document.querySelector("#sampleList"),
-  inventoryFile: document.querySelector("#inventoryFile")
+  inventoryFile: document.querySelector("#inventoryFile"),
+  wishlistFile: document.querySelector("#wishlistFile"),
+  inventorySummary: document.querySelector("#inventorySummary"),
+  inventoryPartSummary: document.querySelector("#inventoryPartSummary"),
+  inventoryBeys: document.querySelector("#inventoryBeys"),
+  inventoryPartsBody: document.querySelector("#inventoryPartsBody"),
+  wishlistSummary: document.querySelector("#wishlistSummary"),
+  wishlistSearch: document.querySelector("#wishlistSearch"),
+  wishlistSort: document.querySelector("#wishlistSort"),
+  wishlistItems: document.querySelector("#wishlistItems")
 };
+
+elements.tabs.forEach((tab) => {
+  tab.addEventListener("click", () => showPage(tab.dataset.page));
+});
 
 elements.addProductRow.addEventListener("click", () => {
   state.rows.push({ text: "", price: "", cxMode: false });
@@ -46,9 +67,31 @@ elements.inventoryFile.addEventListener("change", async (event) => {
   const data = JSON.parse(await file.text());
   state.ownedParts = Array.isArray(data.parts) ? data.parts : [];
   state.ownedBeys = Array.isArray(data.beys) ? data.beys : [];
+  state.inventoryDetail = Array.isArray(data.partsDetail) ? data.partsDetail : [];
   elements.inventory.textContent = `${state.ownedParts.length} parts`;
+  renderInventory();
   calculateCurrent();
 });
+
+elements.wishlistFile.addEventListener("change", async (event) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  const data = JSON.parse(await file.text());
+  state.wishlistItems = Array.isArray(data.items) ? data.items : [];
+  renderWishlist();
+});
+
+elements.wishlistSearch.addEventListener("input", renderWishlist);
+elements.wishlistSort.addEventListener("change", renderWishlist);
+
+function showPage(pageName) {
+  for (const [name, page] of Object.entries(elements.pages)) {
+    page.classList.toggle("active-page", name === pageName);
+  }
+  elements.tabs.forEach((tab) => {
+    tab.classList.toggle("selected", tab.dataset.page === pageName);
+  });
+}
 
 function renderSamples() {
   elements.sampleList.replaceChildren(
@@ -133,6 +176,60 @@ function renderProductEditor() {
   elements.productRows.replaceChildren(...rows);
 }
 
+function renderInventory() {
+  elements.inventorySummary.textContent = `${state.ownedBeys.length} beys`;
+  elements.inventoryPartSummary.textContent = `${state.ownedParts.length} parts`;
+
+  const beyItems = state.ownedBeys.map((bey) => {
+    const item = document.createElement("div");
+    item.className = "data-item";
+    item.textContent = bey;
+    return item;
+  });
+  elements.inventoryBeys.replaceChildren(...beyItems);
+
+  const partRows = state.inventoryDetail.map((part) => {
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td>${escapeHtml(part.category ?? "-")}</td>
+      <td>${escapeHtml(part.name ?? "-")}</td>
+      <td>${escapeHtml(part.abbrev ?? "-")}</td>
+      <td>${escapeHtml(part.qty ?? "-")}</td>
+      <td>${escapeHtml(part.source ?? "-")}</td>
+      <td>${escapeHtml(part.notes ?? "-")}</td>
+    `;
+    return row;
+  });
+  elements.inventoryPartsBody.replaceChildren(...partRows);
+}
+
+function renderWishlist() {
+  const query = elements.wishlistSearch.value.trim().toLowerCase();
+  const sortKey = elements.wishlistSort.value;
+  const filtered = state.wishlistItems
+    .filter((item) => !query || JSON.stringify(item).toLowerCase().includes(query))
+    .sort((a, b) => compareWishlistItems(a, b, sortKey));
+
+  elements.wishlistSummary.textContent = `${filtered.length} of ${state.wishlistItems.length} items`;
+  const cards = filtered.map((item) => {
+    const card = document.createElement(item.url ? "a" : "div");
+    card.className = "wishlist-item";
+    if (item.url) {
+      card.href = item.url;
+      card.target = "_blank";
+      card.rel = "noreferrer";
+    }
+    card.innerHTML = `
+      <span>${escapeHtml(item.name ?? "-")}</span>
+      <strong>${formatCostIndex(toNumber(item.costIndex))} CI / ${formatScore(toNumber(item.score))} score</strong>
+      <small>${escapeHtml(item.retailer ?? "-")} · ${formatPrice(item.price)} · ${escapeHtml(item.status ?? "-")}</small>
+      <em>${escapeHtml(item.usefulParts ?? "-")}</em>
+    `;
+    return card;
+  });
+  elements.wishlistItems.replaceChildren(...cards);
+}
+
 function renderResult(result) {
   if (!result) {
     elements.score.textContent = "-";
@@ -211,6 +308,24 @@ function formatCostIndex(value) {
   return Number.isFinite(value) ? `$${value}` : "-";
 }
 
+function formatPrice(value) {
+  const numeric = toNumber(value);
+  return Number.isFinite(numeric) ? `$${numeric}` : "-";
+}
+
+function toNumber(value) {
+  const numeric = Number(value);
+  return Number.isFinite(numeric) ? numeric : null;
+}
+
+function compareWishlistItems(a, b, sortKey) {
+  if (sortKey === "name") return String(a.name ?? "").localeCompare(String(b.name ?? ""));
+  const aValue = toNumber(a[sortKey]);
+  const bValue = toNumber(b[sortKey]);
+  if (sortKey === "score") return (bValue ?? -Infinity) - (aValue ?? -Infinity);
+  return (aValue ?? Infinity) - (bValue ?? Infinity);
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -222,4 +337,6 @@ function escapeHtml(value) {
 
 renderSamples();
 renderProductEditor();
+renderInventory();
+renderWishlist();
 calculateCurrent();

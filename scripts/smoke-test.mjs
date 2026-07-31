@@ -50,6 +50,10 @@ assert.equal(antlerCx.parts.some((part) => part.type === "assistBlade" && part.n
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 assert.match(html, /id="productRows"/);
 assert.match(html, /id="addProductRow"/);
+assert.match(html, /id="scorebookPage"/);
+assert.match(html, /id="inventoryPage"/);
+assert.match(html, /id="wishlistPage"/);
+assert.match(html, /id="wishlistFile"/);
 
 checkRelativeImports(resolve(new URL("..", import.meta.url).pathname), ["src", "scripts"]);
 

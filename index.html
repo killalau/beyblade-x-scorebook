@@ -11,14 +11,27 @@
       <section class="toolbar" aria-label="Score lookup controls">
         <div>
           <h1>Beyblade X Scorebook</h1>
-          <p>Static public scoring reference with optional local inventory weighting.</p>
+          <p>Static public scoring reference with optional local private data.</p>
         </div>
-        <label class="file-button">
-          Load inventory
-          <input id="inventoryFile" type="file" accept="application/json">
-        </label>
+        <div class="file-actions">
+          <label class="file-button">
+            Load inventory
+            <input id="inventoryFile" type="file" accept="application/json">
+          </label>
+          <label class="file-button">
+            Load wishlist
+            <input id="wishlistFile" type="file" accept="application/json">
+          </label>
+        </div>
       </section>
 
+      <nav class="page-tabs" aria-label="Pages">
+        <button class="tab-button selected" type="button" data-page="scorebook">Scorebook</button>
+        <button class="tab-button" type="button" data-page="inventory">Inventory</button>
+        <button class="tab-button" type="button" data-page="wishlist">Wishlist</button>
+      </nav>
+
+      <section id="scorebookPage" class="page active-page">
       <section class="lookup-grid">
         <form id="lookupForm" class="panel">
           <div class="form-heading">
@@ -89,6 +102,57 @@
             <span>public examples</span>
           </div>
           <div id="sampleList" class="sample-list"></div>
+        </section>
+      </section>
+      </section>
+
+      <section id="inventoryPage" class="page">
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Inventory</h2>
+            <span id="inventorySummary">No local file</span>
+          </div>
+          <div id="inventoryBeys" class="data-list"></div>
+        </section>
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Parts</h2>
+            <span id="inventoryPartSummary">0 parts</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Part</th>
+                  <th>Abbrev</th>
+                  <th>Qty</th>
+                  <th>Source</th>
+                  <th>Notes</th>
+                </tr>
+              </thead>
+              <tbody id="inventoryPartsBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </section>
+
+      <section id="wishlistPage" class="page">
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Wishlist</h2>
+            <span id="wishlistSummary">No local file</span>
+          </div>
+          <div class="wishlist-controls">
+            <input id="wishlistSearch" type="search" placeholder="Search wishlist">
+            <select id="wishlistSort" aria-label="Sort wishlist">
+              <option value="costIndex">Cost Index</option>
+              <option value="score">Score</option>
+              <option value="price">Price</option>
+              <option value="name">Name</option>
+            </select>
+          </div>
+          <div id="wishlistItems" class="wishlist-grid"></div>
         </section>
       </section>
     </main>
