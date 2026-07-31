@@ -1,0 +1,10 @@
+node_modules/
+.DS_Store
+
+# Private local data. Keep these out of GitHub Pages.
+data/*.local.json
+data/raw/
+
+# Generated exports from the private workbook workflow.
+exports/
+*.xlsx

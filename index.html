@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Beyblade X Scorebook</title>
+    <link rel="stylesheet" href="./src/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <section class="toolbar" aria-label="Score lookup controls">
+        <div>
+          <h1>Beyblade X Scorebook</h1>
+          <p>Static public scoring reference with optional local inventory weighting.</p>
+        </div>
+        <label class="file-button">
+          Load inventory
+          <input id="inventoryFile" type="file" accept="application/json">
+        </label>
+      </section>
+
+      <section class="lookup-grid">
+        <form id="lookupForm" class="panel">
+          <label for="query">Product or combo</label>
+          <textarea id="query" rows="3" spellcheck="false">Gill Shark 4-70O, Pearl Tiger 3-60U</textarea>
+          <div class="compact-row">
+            <label>
+              Price CAD
+              <input id="price" type="number" min="0" step="0.01" value="22.98">
+            </label>
+            <label>
+              Rare parts
+              <input id="rareParts" type="text" value="" placeholder="1-60, LR">
+            </label>
+          </div>
+          <button type="submit">Calculate</button>
+        </form>
+
+        <section class="panel metrics" aria-label="Score results">
+          <div>
+            <span class="label">Score</span>
+            <strong id="scoreValue">-</strong>
+          </div>
+          <div>
+            <span class="label">Cost Index</span>
+            <strong id="costIndexValue">-</strong>
+          </div>
+          <div>
+            <span class="label">Inventory</span>
+            <strong id="inventoryValue">No local file</strong>
+          </div>
+        </section>
+      </section>
+
+      <section class="content-grid">
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Breakdown</h2>
+            <span id="partCount">0 parts</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Part</th>
+                  <th>Type</th>
+                  <th>Rank</th>
+                  <th>Score</th>
+                  <th>Rarity</th>
+                  <th>Cost Contribution</th>
+                  <th>Source</th>
+                </tr>
+              </thead>
+              <tbody id="breakdownBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Saved Samples</h2>
+            <span>public examples</span>
+          </div>
+          <div id="sampleList" class="sample-list"></div>
+        </section>
+      </section>
+    </main>
+
+    <script type="module" src="./src/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,10 @@
+{
+  "name": "beyblade-x-scorebook",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "test": "node scripts/smoke-test.mjs"
+  }
+}

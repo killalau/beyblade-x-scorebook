@@ -1,0 +1,9 @@
+{
+  "items": [
+    {
+      "name": "Example Product",
+      "price": 19.99,
+      "url": "https://example.com"
+    }
+  ]
+}

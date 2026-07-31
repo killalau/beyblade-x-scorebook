@@ -1,0 +1,202 @@
+import {
+  aliases,
+  assistBladeCodes,
+  bbxWeeklyParts,
+  bitNames,
+  gamerImageParts,
+  overBladeCodes,
+  partTypeWeights,
+  rankScores,
+  rarityMultipliers
+} from "./reference-data.js";
+
+const partIndex = buildPartIndex();
+
+export function normalizePartName(name) {
+  const trimmed = String(name || "").trim();
+  return aliases[trimmed] || trimmed;
+}
+
+export function parseConfig(configText) {
+  const text = String(configText || "").replace(/\s+/g, " ").trim();
+  const ratchetMatch = text.match(/\b([A-Z]{0,3})(\d-\d{2})([A-Z]{1,3})\b/);
+  if (!ratchetMatch) {
+    return [{ name: normalizePartName(text), type: "blade", raw: text }];
+  }
+
+  const attachedCxCode = ratchetMatch[1];
+  const ratchet = ratchetMatch[2];
+  const bit = ratchetMatch[3];
+  const before = text.slice(0, ratchetMatch.index).trim();
+  const tokens = before.split(" ").filter(Boolean);
+  const parts = [];
+
+  const cxCode = tokens.at(-1);
+  const cxCodeLooksSeparate = cxCode && /^[A-Z]{1,3}$/.test(cxCode);
+  const nameTokens = cxCodeLooksSeparate ? tokens.slice(0, -1) : tokens;
+  const bladeName = inferBladeName(nameTokens);
+  if (bladeName) {
+    parts.push({ name: normalizePartName(bladeName), type: "blade", raw: bladeName });
+  }
+
+  if (nameTokens.length > 1 && isLikelyLockChip(nameTokens.at(-1))) {
+    const lockChip = nameTokens.at(-1);
+    parts.push({ name: normalizePartName(lockChip), type: "lockChip", raw: lockChip });
+  }
+
+  const cxCodeToParse = attachedCxCode || (cxCodeLooksSeparate ? cxCode : "");
+  if (cxCodeToParse) {
+    const cxParts = parseCxCode(cxCodeToParse);
+    parts.push(...cxParts);
+  }
+
+  parts.push({ name: ratchet, type: "ratchet", raw: ratchet });
+  parts.push({ name: bit, type: "bit", raw: bit, displayName: bitNames[bit] || bit });
+  return parts;
+}
+
+export function parseProduct(input) {
+  return String(input || "")
+    .split(",")
+    .map((piece) => piece.trim())
+    .filter(Boolean)
+    .flatMap(parseConfig);
+}
+
+export function scorePart(part, options = {}) {
+  const normalized = normalizePartName(part.name);
+  const typedKey = makeKey(normalized, part.type);
+  const genericKey = makeKey(normalized, "");
+  const rank = partIndex.get(typedKey) || partIndex.get(genericKey);
+  const rankClass = rank?.rankClass || defaultRankClass(part);
+  const rankScore = rankScores[rankClass] || 0;
+  const typeWeight = partTypeWeights[part.type] || 1;
+  const partScore = rankScore * typeWeight;
+  const owned = isOwned(normalized, options.ownedParts);
+  const rare = isRare(normalized, options.rareParts);
+  const rarity = owned ? "owned" : rare ? "rare" : "normal";
+  const costContribution = partScore * rarityMultipliers[rarity];
+
+  return {
+    ...part,
+    name: normalized,
+    rankClass,
+    rankSource: rank?.source || "-",
+    rankDetail: rank?.detail || "-",
+    rankScore,
+    typeWeight,
+    partScore,
+    rarity,
+    rarityMultiplier: rarityMultipliers[rarity],
+    costContribution
+  };
+}
+
+export function scoreProduct({ name, configs, price }, options = {}) {
+  const parsedParts = (configs?.length ? configs : [name]).flatMap(parseProduct);
+  const parts = parsedParts.map((part) => scorePart(part, options));
+  const score = round(parts.reduce((sum, part) => sum + part.partScore, 0));
+  const denominator = parts.reduce((sum, part) => sum + part.costContribution, 0);
+  const numericPrice = Number(price);
+  const costIndex = denominator > 0 && Number.isFinite(numericPrice)
+    ? round((numericPrice / denominator) * 5)
+    : null;
+
+  return {
+    name,
+    configs: configs || [name],
+    price: Number.isFinite(numericPrice) ? numericPrice : null,
+    score,
+    costIndex,
+    parts
+  };
+}
+
+export function summarizeBreakdown(scored) {
+  return scored.parts.map((part) => ({
+    part: part.name,
+    type: part.type,
+    rank: part.rankClass,
+    score: part.partScore,
+    rarity: part.rarity,
+    costContribution: part.costContribution,
+    source: part.rankSource
+  }));
+}
+
+function buildPartIndex() {
+  const index = new Map();
+  for (const part of bbxWeeklyParts) {
+    setBest(index, part.name, part.type, {
+      rankClass: part.rankClass,
+      source: "BBX Weekly",
+      detail: `#${part.rank}`
+    });
+  }
+  for (const part of gamerImageParts) {
+    setBest(index, part.name, part.type, {
+      rankClass: part.rankClass,
+      source: "Gamer Image",
+      detail: part.tier
+    });
+  }
+  return index;
+}
+
+function setBest(index, name, type, rank) {
+  const key = makeKey(normalizePartName(name), type);
+  const current = index.get(key);
+  if (!current || (rankScores[rank.rankClass] || 0) > (rankScores[current.rankClass] || 0)) {
+    index.set(key, rank);
+  }
+}
+
+function makeKey(name, type) {
+  return `${String(name).toLowerCase()}|${type || ""}`;
+}
+
+function defaultRankClass(part) {
+  if (part.type === "lockChip" && /^metal/i.test(part.name)) return "S";
+  if (part.type === "lockChip") return "C";
+  return "-";
+}
+
+function inferBladeName(tokens) {
+  if (!tokens.length) return "";
+  if (tokens.length >= 2 && isLikelyLockChip(tokens.at(-1))) {
+    return tokens.slice(0, -1).join(" ");
+  }
+  return tokens.join(" ");
+}
+
+function isLikelyLockChip(token) {
+  return ["Ragna", "Dran", "Aegis", "Shinobi"].includes(token);
+}
+
+function parseCxCode(code) {
+  if (code.length === 1) {
+    return [{ name: assistBladeCodes[code] || code, type: "assistBlade", raw: code }];
+  }
+  if (code.length === 2) {
+    const [over, assist] = code;
+    return [
+      { name: overBladeCodes[over] || over, type: "overBlade", raw: over },
+      { name: assistBladeCodes[assist] || assist, type: "assistBlade", raw: assist }
+    ];
+  }
+  return [{ name: code, type: "assistBlade", raw: code }];
+}
+
+function isOwned(name, ownedParts = []) {
+  const normalized = normalizePartName(name).toLowerCase();
+  return new Set(ownedParts.map((part) => normalizePartName(part).toLowerCase())).has(normalized);
+}
+
+function isRare(name, rareParts = []) {
+  const normalized = normalizePartName(name).toLowerCase();
+  return new Set(rareParts.map((part) => normalizePartName(part).toLowerCase())).has(normalized);
+}
+
+function round(value) {
+  return Math.round(value * 100) / 100;
+}
