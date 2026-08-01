@@ -2,6 +2,8 @@
 
 Private JSON files are local-only. They are ignored by Git and loaded in the browser through file upload/localStorage.
 
+JSON is the source of truth for this project. Excel workbooks are legacy exports or optional reports, not primary storage.
+
 ## `data/inventory.local.json`
 
 ```json
@@ -134,3 +136,28 @@ Public, commit-safe reference data lives under `src/reference-data/`.
 - `names.js`: aliases, bit names, CX code helpers.
 
 These files should not contain private inventory, purchases, or retailer scrape results.
+
+## Validation
+
+Run:
+
+```bash
+npm run validate:data
+```
+
+The validator checks local private JSON files when they exist:
+
+- `data/inventory.local.json`
+- `data/purchases.local.json`
+- `data/wishlist.local.json`
+- every JSON file under `data/raw/`
+
+Missing private files are allowed, because a public GitHub Pages checkout will not include them.
+
+Run:
+
+```bash
+npm run summarize:data
+```
+
+This prints counts for local inventory, purchases, wishlist, and raw files.

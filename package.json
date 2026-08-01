@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "node scripts/serve.mjs",
-    "test": "node scripts/smoke-test.mjs"
+    "test": "node scripts/smoke-test.mjs && node scripts/validate-local-data.mjs",
+    "validate:data": "node scripts/validate-local-data.mjs",
+    "summarize:data": "node scripts/summarize-local-data.mjs"
   }
 }

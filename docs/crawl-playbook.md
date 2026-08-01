@@ -59,12 +59,13 @@ For each product/listing, collect as many of these as reliable:
 2. Check current git status.
 3. Inspect existing private local files under `data/*.local.json` and `data/raw/` if available.
 4. Refresh retailer listings with cautious browser/network behavior.
-5. Normalize listings into `wishlist.local.json` shape.
+5. Normalize listings directly into `data/wishlist.local.json` shape. JSON is the source of truth.
 6. Preserve raw source captures in `data/raw/` when useful.
-7. Update inventory/purchase JSON only when the user says they bought or own something.
-8. Run `npm test`.
-9. Verify private JSON/raw files are ignored and not staged.
-10. Summarize what changed, uncertainty, and any blocked sources.
+7. Update inventory/purchase JSON directly only when the user says they bought or own something.
+8. Run `npm run validate:data`.
+9. Run `npm test`.
+10. Verify private JSON/raw files are ignored and not staged.
+11. Summarize what changed, uncertainty, and any blocked sources.
 
 ## Human Verification
 
