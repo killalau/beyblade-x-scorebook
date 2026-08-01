@@ -360,6 +360,12 @@ th {
   color: var(--warn);
 }
 
+.wishlist-price {
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 800;
+}
+
 .wishlist-item small,
 .wishlist-item em {
   color: var(--muted);

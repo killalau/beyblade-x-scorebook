@@ -221,8 +221,9 @@ function renderWishlist() {
     }
     card.innerHTML = `
       <span>${escapeHtml(item.name ?? "-")}</span>
+      <small class="wishlist-price">${formatPrice(item.price)}</small>
       <strong>${formatCostIndex(toNumber(item.costIndex))} CI / ${formatScore(toNumber(item.score))} score</strong>
-      <small>${escapeHtml(item.retailer ?? "-")} · ${formatPrice(item.price)} · ${escapeHtml(item.status ?? "-")}</small>
+      <small class="wishlist-meta">${escapeHtml(item.retailer ?? "-")} · ${escapeHtml(item.status ?? "-")}</small>
       <em>${escapeHtml(item.usefulParts ?? "-")}</em>
     `;
     return card;
@@ -323,7 +324,11 @@ function compareWishlistItems(a, b, sortKey) {
   const aValue = toNumber(a[sortKey]);
   const bValue = toNumber(b[sortKey]);
   if (sortKey === "score") return (bValue ?? -Infinity) - (aValue ?? -Infinity);
-  return (aValue ?? Infinity) - (bValue ?? Infinity);
+  return sortablePositiveValue(aValue) - sortablePositiveValue(bValue);
+}
+
+function sortablePositiveValue(value) {
+  return Number.isFinite(value) && value > 0 ? value : Infinity;
 }
 
 function escapeHtml(value) {

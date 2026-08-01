@@ -54,6 +54,9 @@ assert.match(html, /id="scorebookPage"/);
 assert.match(html, /id="inventoryPage"/);
 assert.match(html, /id="wishlistPage"/);
 assert.match(html, /id="wishlistFile"/);
+const appSource = readFileSync(new URL("../src/app.js", import.meta.url), "utf8");
+assert.match(appSource, /wishlist-price/);
+assert.match(appSource, /sortablePositiveValue/);
 
 checkRelativeImports(resolve(new URL("..", import.meta.url).pathname), ["src", "scripts"]);
 
