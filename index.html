@@ -22,6 +22,7 @@
             Load wishlist
             <input id="wishlistFile" type="file" accept="application/json">
           </label>
+          <button id="clearLocalData" class="danger-button" type="button">Clear local data</button>
         </div>
       </section>
 
@@ -29,7 +30,14 @@
         <button class="tab-button selected" type="button" data-page="scorebook">Scorebook</button>
         <button class="tab-button" type="button" data-page="inventory">Inventory</button>
         <button class="tab-button" type="button" data-page="wishlist">Wishlist</button>
+        <button class="tab-button" type="button" data-page="rules">Rules</button>
       </nav>
+
+      <section class="status-strip" aria-label="Local data status">
+        <span id="inventoryLoadStatus">Inventory: not loaded</span>
+        <span id="wishlistLoadStatus">Wishlist: not loaded</span>
+        <span id="dataErrorStatus"></span>
+      </section>
 
       <section id="scorebookPage" class="page active-page">
       <section class="lookup-grid">
@@ -153,6 +161,40 @@
             </select>
           </div>
           <div id="wishlistItems" class="wishlist-grid"></div>
+        </section>
+      </section>
+
+      <section id="rulesPage" class="page">
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Scoring Rules</h2>
+            <span>local reference</span>
+          </div>
+          <div class="rules-grid">
+            <div>
+              <h3>Rank Scores</h3>
+              <div id="rankScoreRules" class="rule-list"></div>
+            </div>
+            <div>
+              <h3>Part Type Weights</h3>
+              <div id="partWeightRules" class="rule-list"></div>
+            </div>
+            <div>
+              <h3>Rarity Multipliers</h3>
+              <div id="rarityRules" class="rule-list"></div>
+            </div>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Formula</h2>
+            <span>Cost Index lower is better</span>
+          </div>
+          <div class="formula-grid">
+            <code>Part Score = Rank Score * Part Type Weight</code>
+            <code>Cost Contribution = Part Score * Rarity Multiplier</code>
+            <code>Cost Index = Price / SUM(Cost Contribution) * 5</code>
+          </div>
         </section>
       </section>
     </main>

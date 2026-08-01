@@ -51,10 +51,39 @@ textarea {
   justify-content: flex-end;
 }
 
+.danger-button {
+  background: #a33c20;
+}
+
+.danger-button:hover {
+  background: #7f2e19;
+}
+
 .page-tabs {
   display: flex;
   gap: 8px;
   margin-bottom: 16px;
+}
+
+.status-strip {
+  align-items: center;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -6px 0 16px;
+}
+
+.status-strip span {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 6px 10px;
+}
+
+#dataErrorStatus:not(:empty) {
+  border-color: #c74d2c;
+  color: #a33c20;
 }
 
 .tab-button {
@@ -370,6 +399,53 @@ th {
 .wishlist-item em {
   color: var(--muted);
   font-style: normal;
+}
+
+.rules-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+h3 {
+  font-size: 15px;
+  margin: 0 0 10px;
+}
+
+.rule-list {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.rule-item {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 9px 11px;
+}
+
+.rule-item + .rule-item {
+  border-top: 1px solid var(--line);
+}
+
+.rule-item strong {
+  color: var(--warn);
+}
+
+.formula-grid {
+  display: grid;
+  gap: 8px;
+}
+
+.formula-grid code {
+  background: #f3f6f8;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  display: block;
+  padding: 10px 12px;
+  white-space: normal;
 }
 
 .product-results {

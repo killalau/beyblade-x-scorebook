@@ -1,5 +1,15 @@
 import { sampleProducts } from "./reference-data/index.js";
+import {
+  partTypeWeights,
+  rankScores,
+  rarityMultipliers
+} from "./reference-data/scoringConfig.js";
 import { scoreProduct, summarizeBreakdown } from "./scoring.js";
+
+const storageKeys = {
+  inventory: "beybladeScorebook.inventory",
+  wishlist: "beybladeScorebook.wishlist"
+};
 
 const state = {
   ownedParts: [],
@@ -20,7 +30,8 @@ const elements = {
   pages: {
     scorebook: document.querySelector("#scorebookPage"),
     inventory: document.querySelector("#inventoryPage"),
-    wishlist: document.querySelector("#wishlistPage")
+    wishlist: document.querySelector("#wishlistPage"),
+    rules: document.querySelector("#rulesPage")
   },
   addProductRow: document.querySelector("#addProductRow"),
   productRows: document.querySelector("#productRows"),
@@ -33,8 +44,12 @@ const elements = {
   productCount: document.querySelector("#productCount"),
   productResults: document.querySelector("#productResults"),
   sampleList: document.querySelector("#sampleList"),
+  clearLocalData: document.querySelector("#clearLocalData"),
   inventoryFile: document.querySelector("#inventoryFile"),
   wishlistFile: document.querySelector("#wishlistFile"),
+  inventoryLoadStatus: document.querySelector("#inventoryLoadStatus"),
+  wishlistLoadStatus: document.querySelector("#wishlistLoadStatus"),
+  dataErrorStatus: document.querySelector("#dataErrorStatus"),
   inventorySummary: document.querySelector("#inventorySummary"),
   inventoryPartSummary: document.querySelector("#inventoryPartSummary"),
   inventoryBeys: document.querySelector("#inventoryBeys"),
@@ -42,7 +57,10 @@ const elements = {
   wishlistSummary: document.querySelector("#wishlistSummary"),
   wishlistSearch: document.querySelector("#wishlistSearch"),
   wishlistSort: document.querySelector("#wishlistSort"),
-  wishlistItems: document.querySelector("#wishlistItems")
+  wishlistItems: document.querySelector("#wishlistItems"),
+  rankScoreRules: document.querySelector("#rankScoreRules"),
+  partWeightRules: document.querySelector("#partWeightRules"),
+  rarityRules: document.querySelector("#rarityRules")
 };
 
 elements.tabs.forEach((tab) => {
@@ -64,21 +82,24 @@ elements.form.addEventListener("submit", (event) => {
 elements.inventoryFile.addEventListener("change", async (event) => {
   const file = event.target.files?.[0];
   if (!file) return;
-  const data = JSON.parse(await file.text());
-  state.ownedParts = Array.isArray(data.parts) ? data.parts : [];
-  state.ownedBeys = Array.isArray(data.beys) ? data.beys : [];
-  state.inventoryDetail = Array.isArray(data.partsDetail) ? data.partsDetail : [];
-  elements.inventory.textContent = `${state.ownedParts.length} parts`;
-  renderInventory();
-  calculateCurrent();
+  await loadInventoryFile(file);
 });
 
 elements.wishlistFile.addEventListener("change", async (event) => {
   const file = event.target.files?.[0];
   if (!file) return;
-  const data = JSON.parse(await file.text());
-  state.wishlistItems = Array.isArray(data.items) ? data.items : [];
-  renderWishlist();
+  await loadWishlistFile(file);
+});
+
+elements.clearLocalData.addEventListener("click", () => {
+  localStorage.removeItem(storageKeys.inventory);
+  localStorage.removeItem(storageKeys.wishlist);
+  applyInventoryData({ parts: [], beys: [], partsDetail: [] });
+  applyWishlistData({ items: [] });
+  elements.inventoryLoadStatus.textContent = "Inventory: not loaded";
+  elements.wishlistLoadStatus.textContent = "Wishlist: not loaded";
+  clearDataError();
+  calculateCurrent();
 });
 
 elements.wishlistSearch.addEventListener("input", renderWishlist);
@@ -91,6 +112,124 @@ function showPage(pageName) {
   elements.tabs.forEach((tab) => {
     tab.classList.toggle("selected", tab.dataset.page === pageName);
   });
+}
+
+async function loadInventoryFile(file) {
+  try {
+    const data = JSON.parse(await file.text());
+    validateInventoryData(data);
+    applyInventoryData(data);
+    saveLocalData(storageKeys.inventory, file.name, data);
+    elements.inventoryLoadStatus.textContent = `Inventory: ${file.name} at ${formatTimestamp(new Date())}`;
+    clearDataError();
+    calculateCurrent();
+  } catch (error) {
+    showDataError(`Inventory error: ${error.message}`);
+  }
+}
+
+async function loadWishlistFile(file) {
+  try {
+    const data = JSON.parse(await file.text());
+    validateWishlistData(data);
+    applyWishlistData(data);
+    saveLocalData(storageKeys.wishlist, file.name, data);
+    elements.wishlistLoadStatus.textContent = `Wishlist: ${file.name} at ${formatTimestamp(new Date())}`;
+    clearDataError();
+  } catch (error) {
+    showDataError(`Wishlist error: ${error.message}`);
+  }
+}
+
+function applyInventoryData(data) {
+  state.ownedParts = data.parts;
+  state.ownedBeys = data.beys;
+  state.inventoryDetail = Array.isArray(data.partsDetail) ? data.partsDetail : [];
+  elements.inventory.textContent = `${state.ownedParts.length} parts`;
+  renderInventory();
+}
+
+function applyWishlistData(data) {
+  state.wishlistItems = data.items;
+  renderWishlist();
+}
+
+function loadSavedLocalData() {
+  const savedInventory = readLocalData(storageKeys.inventory);
+  if (savedInventory) {
+    try {
+      validateInventoryData(savedInventory.data);
+      applyInventoryData(savedInventory.data);
+      elements.inventoryLoadStatus.textContent = `Inventory: ${savedInventory.fileName} at ${savedInventory.savedAt}`;
+    } catch {
+      localStorage.removeItem(storageKeys.inventory);
+    }
+  }
+
+  const savedWishlist = readLocalData(storageKeys.wishlist);
+  if (savedWishlist) {
+    try {
+      validateWishlistData(savedWishlist.data);
+      applyWishlistData(savedWishlist.data);
+      elements.wishlistLoadStatus.textContent = `Wishlist: ${savedWishlist.fileName} at ${savedWishlist.savedAt}`;
+    } catch {
+      localStorage.removeItem(storageKeys.wishlist);
+    }
+  }
+}
+
+function saveLocalData(key, fileName, data) {
+  localStorage.setItem(key, JSON.stringify({
+    fileName,
+    savedAt: formatTimestamp(new Date()),
+    data
+  }));
+}
+
+function readLocalData(key) {
+  const raw = localStorage.getItem(key);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    localStorage.removeItem(key);
+    return null;
+  }
+}
+
+function validateInventoryData(data) {
+  if (!data || typeof data !== "object") throw new Error("JSON must be an object.");
+  if (!Array.isArray(data.parts)) throw new Error("Expected a parts array.");
+  if (!Array.isArray(data.beys)) throw new Error("Expected a beys array.");
+}
+
+function validateWishlistData(data) {
+  if (!data || typeof data !== "object") throw new Error("JSON must be an object.");
+  if (!Array.isArray(data.items)) throw new Error("Expected an items array.");
+}
+
+function showDataError(message) {
+  elements.dataErrorStatus.textContent = message;
+}
+
+function clearDataError() {
+  elements.dataErrorStatus.textContent = "";
+}
+
+function renderRules() {
+  renderRuleList(elements.rankScoreRules, rankScores);
+  renderRuleList(elements.partWeightRules, partTypeWeights);
+  renderRuleList(elements.rarityRules, rarityMultipliers);
+}
+
+function renderRuleList(target, rules) {
+  const items = Object.entries(rules).map(([label, value]) => {
+    const item = document.createElement("div");
+    item.className = "rule-item";
+    item.innerHTML = `<span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong>`;
+    return item;
+  });
+  target.replaceChildren(...items);
 }
 
 function renderSamples() {
@@ -309,6 +448,15 @@ function formatCostIndex(value) {
   return Number.isFinite(value) ? `$${value}` : "-";
 }
 
+function formatTimestamp(date) {
+  return date.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
 function formatPrice(value) {
   const numeric = toNumber(value);
   return Number.isFinite(numeric) ? `$${numeric}` : "-";
@@ -342,6 +490,8 @@ function escapeHtml(value) {
 
 renderSamples();
 renderProductEditor();
+renderRules();
+loadSavedLocalData();
 renderInventory();
 renderWishlist();
 calculateCurrent();
