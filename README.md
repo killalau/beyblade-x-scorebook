@@ -1,11 +1,39 @@
 # Beyblade X Scorebook
 
-A small static score lookup page for Beyblade X parts and product combos.
+A static Beyblade X scorebook for checking product value, owned inventory, wishlist items, and scoring rules.
 
-The repo is designed for GitHub Pages:
+The project is designed for GitHub Pages and for Codex-managed local JSON data.
 
-- Public: scoring rules, reference rankings, and the static lookup app.
-- Private/local only: inventory, purchase prices, wishlists, retailer scrape data, and Excel exports.
+## Current Architecture
+
+JSON is the source of truth.
+
+- Public app and reference data are committed.
+- Private local data is ignored by Git and managed as JSON.
+- Excel is legacy/export-only context, not primary storage.
+- Codex/new agents should read and update JSON directly.
+
+Public data:
+
+- `src/reference-data/`: scoring rules, aliases, public rankings.
+- `src/scoring.js`: parser and score/Cost Index logic.
+- `index.html`, `src/app.js`, `src/styles.css`: static app.
+
+Private local data:
+
+- `data/inventory.local.json`
+- `data/purchases.local.json`
+- `data/wishlist.local.json`
+- `data/raw/*.json`
+
+These private files are gitignored.
+
+## Pages
+
+- `Scorebook`: product/combo scoring and Cost Index lookup.
+- `Inventory`: browser-loaded private inventory JSON.
+- `Wishlist`: browser-loaded private wishlist JSON with search and sorting.
+- `Rules`: scoring weights, rarity multipliers, and formulas.
 
 ## Run Locally
 
@@ -13,11 +41,17 @@ The repo is designed for GitHub Pages:
 npm run dev
 ```
 
-Then open `http://localhost:5173`.
+Then open:
 
-## Private Data
+```text
+http://localhost:5173
+```
 
-Copy the examples if you want local private data:
+No build step is required for GitHub Pages.
+
+## Local Private Data
+
+Copy example files if starting fresh:
 
 ```bash
 cp data/inventory.local.example.json data/inventory.local.json
@@ -25,9 +59,36 @@ cp data/purchases.local.example.json data/purchases.local.json
 cp data/wishlist.local.example.json data/wishlist.local.json
 ```
 
-Files matching `data/*.local.json`, `data/raw/`, `exports/`, and `*.xlsx` are gitignored.
+Files matching these patterns are ignored:
 
-The page can also load an inventory JSON file directly in the browser. It is not uploaded anywhere.
+- `data/*.local.json`
+- `data/raw/`
+- `exports/`
+- `*.xlsx`
+
+The app loads private JSON through browser file upload. Uploaded data is stored in browser `localStorage` for convenience and can be cleared with `Clear local data`. It is not uploaded to a server and is not included in GitHub Pages.
+
+## Data Commands
+
+Validate local JSON when private files exist:
+
+```bash
+npm run validate:data
+```
+
+Print local data counts:
+
+```bash
+npm run summarize:data
+```
+
+Run app smoke tests plus local data validation:
+
+```bash
+npm test
+```
+
+Missing private JSON files are allowed so public checkouts can still pass validation.
 
 ## Scoring Summary
 
@@ -43,7 +104,7 @@ Rank scores:
 Part score:
 
 ```text
-rank score * part type weight
+Rank Score * Part Type Weight
 ```
 
 Part type weights:
@@ -58,7 +119,47 @@ Part type weights:
 Cost Index:
 
 ```text
-price / SUM(part score * rarity multiplier) * 5
+Price / SUM(Part Score * Rarity Multiplier) * 5
 ```
 
 Lower Cost Index is better. Owned parts use multiplier `0`, normal missing parts use `1`, and rare missing parts use `1.5`.
+
+## Codex Workflow
+
+For a new Codex session:
+
+1. Read `AGENTS.md`.
+2. Read `docs/json-source-of-truth.md`.
+3. Read `docs/data-contracts.md`.
+4. For listing refreshes, read `docs/crawl-playbook.md`.
+5. Inspect `data/*.local.json` and `data/raw/` if available.
+6. Edit JSON directly, not Excel.
+7. Run `npm run validate:data`.
+8. Run `npm test`.
+9. Confirm private data is ignored before committing.
+
+Useful docs:
+
+- `AGENTS.md`
+- `docs/json-source-of-truth.md`
+- `docs/data-contracts.md`
+- `docs/crawl-playbook.md`
+- `docs/roadmap.md`
+
+## GitHub Pages Privacy Model
+
+The public site contains only committed source files. It cannot and should not automatically read local private JSON from your computer.
+
+Private data becomes visible in the app only after you manually upload it in the browser. Browser `localStorage` keeps it on that device only.
+
+## Commit Safety
+
+Before committing:
+
+```bash
+npm test
+git status --short --untracked-files=all
+git check-ignore -v data/inventory.local.json data/purchases.local.json data/wishlist.local.json data/raw/
+```
+
+Commit only public app, docs, scripts, and reference data.
