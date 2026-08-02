@@ -17,6 +17,23 @@ This playbook records how Codex should refresh retailer data while staying flexi
 - If blocked by robot/CAPTCHA/interstitial pages, pause. Do not fight the block. Use manual inspection, slower browser navigation, or ask the user.
 - Record source URL and collection date for every listing.
 
+## Amazon Search Workflow
+
+Amazon's `Newest arrivals` sort is not a reliable list of the newest official Beyblade products. It can place newly created third-party tops, accessories, storage cases, and unrelated marketplace listings ahead of genuine Hasbro or Takara Tomy products.
+
+- Use the default `Featured` / Best Match search as the primary Amazon discovery surface.
+- Inspect at least the first Featured results page. For a fuller refresh, inspect the second Featured page too.
+- Use `Newest arrivals` only as a supplemental pass; never use it alone to decide whether the wishlist is current.
+- On Featured results, compare the ASINs of prominent genuine Hasbro, Beyblade, and Takara Tomy listings against the existing raw data and wishlist.
+- Treat result position as a temporary observation, not a stable identifier. Ranking varies with location, session, personalization, sponsored cards, and page layout.
+- Use the ASIN as the stable identity and store a canonical URL such as `https://www.amazon.ca/dp/ASIN` when possible.
+- Open every newly discovered ASIN's product page to verify title, included products/configs, price, seller, availability, and delivery text before normalizing it into the wishlist.
+- If the number of extracted product cards is materially lower than the result count or visible page content, treat the capture as incomplete and perform browser-visible/manual verification.
+- When a user supplies an Amazon wishlist or tracking URL, extract its ASIN, inspect the direct product page, and store the canonical `/dp/ASIN` URL rather than the tracking parameters.
+- In the refresh summary, state which Featured and Newest pages were inspected and disclose any extraction, personalization, location, or blocking uncertainty.
+
+Observed example (2026-08-01): the Featured search placed the genuine Amazon-exclusive Rival Rumble Pack (`B0GP22FMHL`) at the front of the official results, while it did not appear among the first 15 extracted Newest-arrivals products. The first five Newest results were generic third-party tops or accessories. This is why Featured is the primary pass.
+
 ## Fields To Collect
 
 For each product/listing, collect as many of these as reliable:
@@ -29,6 +46,8 @@ For each product/listing, collect as many of these as reliable:
 - `seller`: seller or marketplace merchant.
 - `fulfillment`: delivery, pickup, shipped by, or availability text.
 - `url`: canonical product URL.
+- `imageUrl`: first reliable product image/thumbnail URL from the verified listing page.
+- `createdAt`: ISO timestamp set when a listing is first added to the wishlist and preserved on later refreshes.
 - `bundleType`: booster, starter, dual pack, battle set, stadium, launcher, part set, etc.
 - `includedBeys`: English names, comma-separated for multi-packs.
 - `configs`: configs, comma-separated inside one product row.
@@ -58,14 +77,26 @@ For each product/listing, collect as many of these as reliable:
 1. Read `AGENTS.md`, this playbook, and `docs/data-contracts.md`.
 2. Check current git status.
 3. Inspect existing private local files under `data/*.local.json` and `data/raw/` if available.
-4. Refresh retailer listings with cautious browser/network behavior.
-5. Normalize listings directly into `data/wishlist.local.json` shape. JSON is the source of truth.
-6. Preserve raw source captures in `data/raw/` when useful.
-7. Update inventory/purchase JSON directly only when the user says they bought or own something.
-8. Run `npm run validate:data`.
-9. Run `npm test`.
-10. Verify private JSON/raw files are ignored and not staged.
-11. Summarize what changed, uncertainty, and any blocked sources.
+4. Refresh retailer listings with cautious browser/network behavior. For Amazon, run the Featured-first workflow above and use Newest only as a supplemental pass.
+5. Preserve the source evidence in a dated file under `data/raw/`, including source URL, collection timestamp, raw title, raw price/availability text, and product ID where available.
+6. Preview the complete merge/audit/generate flow with `npm run refresh:wishlist -- --dry-run`, inspect updated/stale/candidate/audit and wishlist counts, then run `npm run refresh:wishlist`. Use `npm run report:candidates` and the individual `normalize:crawl`, `audit:normalized`, `gate:normalized`, and `generate:wishlist` commands when review or intervention is needed. Unmatched candidates require product/config verification; do not promote them automatically. Normalized catalogue data includes unavailable and out-of-stock listings. A raw-only refresh is incomplete unless the source was blocked or the captured data was too uncertain to normalize safely; document that exception explicitly.
+7. Reconcile normalized rows by stable listing identity (ASIN, retailer product ID, or canonical URL):
+   - Add newly verified listings.
+   - Update price, seller, fulfillment, availability text, status, delivery/restock date, canonical URL, and notes for existing listings.
+   - Capture the first reliable product image as `imageUrl` when available. Do not fabricate image URLs; preserve the existing value when a refresh cannot obtain a replacement.
+   - Set normalized `firstSeenAt` only when first adding a listing. Preserve it on later refreshes; update `lastSeenAt` and `lastAvailableAt` independently.
+   - Do not put derived `usefulParts`, `helpsInventory`, `score`, or `costIndex` in normalized retailer facts.
+   - Keep one row per retailer listing. The same product sold by different retailers remains separate rows.
+   - Mark a previously known listing `out of stock`, `unavailable`, `unknown`, or `not observed` when supported by the refresh; do not delete it merely because it disappeared from one search page.
+   - Keep multipacks and battle sets as one product row with comma-separated included beys/configs.
+8. Confirm that every newly normalized listing can be traced to a raw record from the same refresh. Report any raw records intentionally excluded as irrelevant, counterfeit/third-party, ambiguous, or duplicate.
+9. Review the audit from `refresh:wishlist`; resolve material issues introduced by this refresh. If audit findings require a catalogue-wide eligibility pass, run `npm run gate:normalized` and rerun `npm run refresh:wishlist`. The eligibility filter requires `normalizationStatus: "verified"`; it excludes out-of-stock, unavailable, not-observed, unknown, and non-orderable records, while retaining available, preorder, delayed/restock, and orderable backorder records.
+10. Update inventory/purchase JSON directly only when the user says they bought or own something, then regenerate wishlist. Keep verified retailer listings in normalized data after purchase; fully owned wishlist rows use `usefulParts: "-"` and `costIndex: null`, while mixed bundles score only missing ranked parts.
+11. Run `npm run validate:data`.
+12. Run `npm run summarize:data` and review normalized, eligible, excluded, and wishlist count changes.
+13. Run `npm test`.
+14. Verify private JSON/raw files are ignored and not staged.
+15. Summarize raw captures, normalized catalogue additions/updates, wishlist eligibility changes, excluded results, uncertainty, and any blocked sources.
 
 ## Human Verification
 

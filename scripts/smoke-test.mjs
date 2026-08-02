@@ -2,6 +2,10 @@ import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, extname, join, resolve } from "node:path";
 import { scoreProduct } from "../src/scoring.js";
+import { matchesPartFilters, partFilterTokens } from "../src/wishlist-filters.js";
+import { generateWishlist, isWishlistEligible, listingIdFor, normalizeStatus } from "./wishlist-pipeline.mjs";
+import { auditNormalized } from "./normalized-audit.mjs";
+import { extractObservations, mergeObservations } from "./crawl-normalizer.mjs";
 
 const keel = scoreProduct({
   name: "Keel Shark 3-60LF Booster",
@@ -38,6 +42,13 @@ const normalRage = scoreProduct({
 assert.equal(normalRage.parts.some((part) => part.type === "overBlade"), false);
 assert.equal(normalRage.parts.some((part) => part.type === "assistBlade"), false);
 
+const buster = scoreProduct({
+  name: "Buster Dran 1-60A",
+  configs: ["Buster Dran 1-60A"],
+  price: 19.99
+});
+assert.equal(buster.parts.some((part) => part.name === "Dran Buster" && part.type === "blade"), true);
+
 const antlerCx = scoreProduct({
   name: "Antler Stag B 2-60HN",
   configs: ["Antler Stag B 2-60HN"],
@@ -47,6 +58,92 @@ const antlerCx = scoreProduct({
 });
 assert.equal(antlerCx.parts.some((part) => part.type === "assistBlade" && part.name === "B"), true);
 
+const blastPegasus = scoreProduct({
+  name: "Blast Pegasus A Tr",
+  configs: ["Blast Pegasus A Tr"],
+  price: 42.36
+}, {
+  cxMode: true
+});
+assert.deepEqual(blastPegasus.parts.map(({ name, type }) => ({ name, type })), [
+  { name: "Blast", type: "blade" },
+  { name: "Pegasus", type: "lockChip" },
+  { name: "A", type: "assistBlade" },
+  { name: "Tr", type: "bit" }
+]);
+assert.equal(blastPegasus.parts.find((part) => part.name === "Blast").rankDetail, "T0");
+assert.equal(blastPegasus.parts.find((part) => part.name === "Blast").partScore, 7.5);
+
+const fusedOp = scoreProduct({
+  name: "Test Pegasus A Op",
+  configs: ["Test Pegasus A Op"],
+  price: 20
+}, { cxMode: true });
+assert.equal(fusedOp.parts.some((part) => part.name === "Op" && part.type === "bit"), true);
+
+assert.equal(listingIdFor("Amazon.ca", "https://www.amazon.ca/dp/B0GP22FMHL"), "amazon-ca:B0GP22FMHL");
+assert.equal(normalizeStatus("Unavailable"), "unavailable");
+assert.equal(isWishlistEligible({ availabilityStatus: "unavailable", orderable: false }), false);
+const generatedWishlist = generateWishlist({ currency: "CAD", items: [{
+  listingId: "amazon-ca:B0D88KFJQP",
+  retailer: "Amazon.ca",
+  name: "Buster Dran 1-60A Starter",
+  price: 19.99,
+  statusLabel: "Available now",
+  availabilityStatus: "available_now",
+  orderable: true,
+  normalizationStatus: "verified",
+  bundleType: "Starter",
+  includedBeys: "Buster Dran 1-60A",
+  configs: ["Buster Dran 1-60A"],
+  cxMode: false,
+  url: "https://www.amazon.ca/dp/B0D88KFJQP",
+  notes: "",
+  availabilityText: "In stock"
+}] }, { parts: ["Dran Buster", "1-60", "A"] });
+assert.equal(generatedWishlist.items[0].costIndex, null);
+assert.equal(generatedWishlist.items[0].usefulParts, "-");
+assert.equal(generatedWishlist.items[0].parts.some((part) => part.name === "1-60" && part.type === "ratchet" && part.owned), true);
+assert.equal(isWishlistEligible({ availabilityStatus: "available_now", orderable: true, normalizationStatus: "needs_review" }), false);
+
+const partFilterItem = {
+  parts: [
+    { name: "7-60", type: "ratchet", owned: false },
+    { name: "LR", type: "bit", owned: true }
+  ]
+};
+assert.deepEqual(partFilterTokens(" LR, 7-60, LR "), ["lr", "7-60"]);
+assert.equal(matchesPartFilters(partFilterItem, { requestedParts: ["lr"] }), true);
+assert.equal(matchesPartFilters(partFilterItem, { requestedParts: ["lr", "7-60"], matchAll: true }), true);
+assert.equal(matchesPartFilters(partFilterItem, { requestedParts: ["lr"], onlyMissing: true }), false);
+assert.equal(matchesPartFilters(partFilterItem, { requestedParts: ["7-60"], partType: "bit" }), false);
+
+const crawlObservations = extractObservations({
+  collectedAt: "2026-08-02T12:00:00Z",
+  retailer: "Amazon.ca",
+  normalizedListings: [{ asin: "B0GP22FMHL", rawTitle: "Raw title", rawPriceText: "$69.99", availabilityText: "In Stock", sourceUrl: "https://www.amazon.ca/dp/B0GP22FMHL" }]
+}, "test.json");
+assert.equal(crawlObservations.length, 1);
+const mergedCatalogue = mergeObservations({ items: [{
+  listingId: "amazon-ca:B0GP22FMHL",
+  name: "Normalized title",
+  url: "https://www.amazon.ca/dp/B0GP22FMHL",
+  lastSeenAt: "2026-08-01T12:00:00Z"
+}] }, crawlObservations).catalogue;
+assert.equal(mergedCatalogue.items[0].name, "Normalized title");
+assert.equal(mergedCatalogue.items[0].price, 69.99);
+const unknownStatusMerge = mergeObservations({ items: [{
+  listingId: "amazon-ca:B0GP22FMHL",
+  name: "Normalized title",
+  url: "https://www.amazon.ca/dp/B0GP22FMHL",
+  availabilityStatus: "available_now",
+  statusLabel: "Available now",
+  orderable: true,
+  lastSeenAt: "2026-08-01T12:00:00Z"
+}] }, [{ ...crawlObservations[0], availabilityStatus: "unknown", observedAt: "2026-08-03T12:00:00Z" }]).catalogue;
+assert.equal(unknownStatusMerge.items[0].availabilityStatus, "available_now");
+assert.equal(auditNormalized({ items: [{ listingId: "x:1", name: "Test", configs: [], availabilityStatus: "unknown", normalizationStatus: "needs_review", url: "https://example.com" }] }).issueCount > 0, true);
+
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");
 assert.match(html, /id="productRows"/);
 assert.match(html, /id="addProductRow"/);
@@ -54,11 +151,15 @@ assert.match(html, /id="scorebookPage"/);
 assert.match(html, /id="inventoryPage"/);
 assert.match(html, /id="wishlistPage"/);
 assert.match(html, /id="wishlistFile"/);
+assert.match(html, /data-wishlist-view="card"/);
+assert.match(html, /value="createdAt"/);
 assert.match(html, /id="rulesPage"/);
 assert.match(html, /id="clearLocalData"/);
 const appSource = readFileSync(new URL("../src/app.js", import.meta.url), "utf8");
 assert.match(appSource, /wishlist-price/);
 assert.match(appSource, /sortablePositiveValue/);
+assert.match(appSource, /sortableCreatedAt/);
+assert.match(appSource, /wishlist-thumbnail/);
 assert.match(appSource, /localStorage/);
 assert.match(appSource, /validateInventoryData/);
 

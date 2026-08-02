@@ -1,5 +1,6 @@
 
 export const partsRanking = [
+  { name: "Blast", type: "blade", tier: "T0", rankClass: "S" },
   { name: "Shark Scale", type: "blade", tier: "T0", rankClass: "S" },
   { name: "Silver Wolf", type: "blade", tier: "T0", rankClass: "S" },
   { name: "Wizard Rod", type: "blade", tier: "T0.5", rankClass: "A+" },

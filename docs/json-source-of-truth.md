@@ -26,10 +26,23 @@ Local-only data lives under `data/` and is ignored by Git:
 
 - `data/inventory.local.json`
 - `data/purchases.local.json`
+- `data/normalized/retailer-listings.local.json`
 - `data/wishlist.local.json`
 - `data/raw/*.json`
 
-Codex should edit these JSON files directly when managing inventory, purchase history, wishlist, or retailer refreshes.
+Codex should edit inventory and purchase JSON directly. Retailer refreshes update normalized listings after preserving raw evidence. Wishlist JSON is derived from normalized listings, inventory, and public ranking/scoring modules.
+
+## Retailer Data Pipeline
+
+```text
+retailer pages
+  -> data/raw/ evidence
+  -> data/normalized/retailer-listings.local.json
+  -> eligibility + inventory/ranking calculation
+  -> data/wishlist.local.json
+```
+
+Normalized listings are the catalogue of verified retailer facts and retain unavailable records. Wishlist is the actionable derived view and excludes `out_of_stock`, `unavailable`, `not_observed`, `unknown`, and records with `orderable: false`.
 
 ## New Agent Workflow
 
@@ -38,10 +51,43 @@ Codex should edit these JSON files directly when managing inventory, purchase hi
 3. Read `docs/crawl-playbook.md` for refresh work.
 4. Inspect existing `data/*.local.json` and `data/raw/` if available.
 5. Make the requested JSON changes directly.
-6. Run `npm run validate:data`.
-7. Run `npm test`.
-8. Check `git status --short --untracked-files=all`.
-9. Do not stage private JSON files.
+6. When ownership or purchase history changes, treat inventory, purchases, and wishlist as one transaction:
+   - Add or remove the requested purchase-history row.
+   - Add or remove the complete bey and all parts supplied by it in inventory. Preserve quantities or shared parts that are still owned from another source.
+   - Recalculate affected wishlist `usefulParts`, `helpsInventory`, `score`, and `costIndex` against the updated inventory.
+   - Keep verified retailer listings after purchase. Fully owned listings use `usefulParts: "-"` and `costIndex: null`; mixed bundles continue scoring only missing useful parts.
+7. Run `npm run validate:data`.
+8. Run `npm test`.
+9. Check `git status --short --untracked-files=all`.
+10. Do not stage private JSON files.
+
+Preview and generate the derived wishlist with:
+
+```bash
+npm run generate:wishlist -- --dry-run
+npm run generate:wishlist
+```
+
+For retailer refreshes:
+
+```bash
+npm run refresh:wishlist -- --dry-run
+npm run refresh:wishlist
+```
+
+The refresh command is the normal end-to-end path: it reads every raw capture, safely merges newer observations into stable normalized listing identities, audits the result, and regenerates the wishlist. For inspection or recovery, the individual commands remain available:
+
+```bash
+npm run audit:normalized
+npm run normalize:crawl -- --dry-run
+npm run normalize:crawl
+npm run report:candidates
+npm run gate:normalized
+npm run generate:wishlist -- --dry-run
+npm run generate:wishlist
+```
+
+`normalize:crawl` merges newer observations only into an existing stable listing identity. Unmatched crawl results are reported as candidates; they require product/config verification before being added to normalized data. `normalizationStatus` other than `verified` is never wishlist-eligible.
 
 ## When Excel Appears
 

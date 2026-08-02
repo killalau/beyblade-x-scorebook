@@ -3,7 +3,13 @@
     {
       "name": "Example Product",
       "price": 19.99,
-      "url": "https://example.com"
+      "url": "https://example.com",
+      "imageUrl": "https://example.com/product-image.jpg",
+      "createdAt": "2026-08-01T09:00:00-07:00",
+      "parts": [
+        { "name": "7-60", "type": "ratchet", "owned": false, "rankClass": "A" },
+        { "name": "LR", "type": "bit", "owned": false, "rankClass": "S" }
+      ]
     }
   ]
 }

@@ -2,6 +2,7 @@ import {
   aliases,
   assistBladeCodes,
   bitNames,
+  fusedBitCodes,
   overBladeCodes
 } from "./reference-data/names.js";
 import {
@@ -22,6 +23,19 @@ export function normalizePartName(name) {
 export function parseConfig(configText, options = {}) {
   const text = String(configText || "").replace(/\s+/g, " ").trim();
   const cxMode = options.cxMode === true;
+  const integratedCxMatch = cxMode
+    ? text.match(/^(.+?)\s+([^\s]+)\s+([A-Z])\s+([^\s]+)$/i)
+    : null;
+  const fusedBit = canonicalFusedBit(integratedCxMatch?.[4]);
+  if (integratedCxMatch && fusedBit && isValidCxCode(integratedCxMatch[3].toUpperCase())) {
+    const [, mainBlade, lockChip, assistBlade] = integratedCxMatch;
+    return [
+      { name: normalizePartName(mainBlade), type: "blade", raw: mainBlade },
+      { name: normalizePartName(lockChip), type: "lockChip", raw: lockChip },
+      ...parseCxCode(assistBlade.toUpperCase()),
+      { name: fusedBit, type: "bit", raw: integratedCxMatch[4], displayName: `${fusedBit} (Fused)` }
+    ];
+  }
   const ratchetMatch = cxMode
     ? text.match(/\b([A-Z]{0,3})(\d-\d{2})([A-Z]{1,3})\b/)
     : text.match(/\b(\d-\d{2})([A-Z]{1,3})\b/);
@@ -39,12 +53,12 @@ export function parseConfig(configText, options = {}) {
   const cxCode = tokens.at(-1);
   const cxCodeLooksSeparate = cxMode && isValidCxCode(cxCode);
   const nameTokens = cxCodeLooksSeparate ? tokens.slice(0, -1) : tokens;
-  const bladeName = inferBladeName(nameTokens);
+  const bladeName = inferBladeName(nameTokens, cxMode);
   if (bladeName) {
     parts.push({ name: normalizePartName(bladeName), type: "blade", raw: bladeName });
   }
 
-  if (nameTokens.length > 1 && isLikelyLockChip(nameTokens.at(-1))) {
+  if (cxMode && nameTokens.length > 1 && isLikelyLockChip(nameTokens.at(-1))) {
     const lockChip = nameTokens.at(-1);
     parts.push({ name: normalizePartName(lockChip), type: "lockChip", raw: lockChip });
   }
@@ -166,9 +180,9 @@ function defaultRankClass(part) {
   return "-";
 }
 
-function inferBladeName(tokens) {
+function inferBladeName(tokens, cxMode) {
   if (!tokens.length) return "";
-  if (tokens.length >= 2 && isLikelyLockChip(tokens.at(-1))) {
+  if (cxMode && tokens.length >= 2 && isLikelyLockChip(tokens.at(-1))) {
     return tokens.slice(0, -1).join(" ");
   }
   return tokens.join(" ");
@@ -200,6 +214,11 @@ function isValidCxCode(code) {
     return Object.hasOwn(overBladeCodes, over) && Object.hasOwn(assistBladeCodes, assist);
   }
   return false;
+}
+
+function canonicalFusedBit(code) {
+  const key = Object.keys(fusedBitCodes).find((candidate) => candidate.toLowerCase() === String(code || "").toLowerCase());
+  return key ? fusedBitCodes[key] : "";
 }
 
 function isOwned(name, ownedParts = []) {

@@ -10,6 +10,7 @@ const checked = [];
 validateOptionalJson("data/inventory.local.json", validateInventory);
 validateOptionalJson("data/purchases.local.json", validatePurchases);
 validateOptionalJson("data/wishlist.local.json", validateWishlist);
+validateOptionalJson("data/normalized/retailer-listings.local.json", validateNormalizedListings);
 validateRawDirectory("data/raw");
 
 if (failures.length) {
@@ -77,6 +78,38 @@ function validateWishlist(data, label) {
     if (item.price !== undefined) assertNumberLike(item.price, `${label}.items[${index}].price`);
     if (item.score !== undefined) assertNumberLike(item.score, `${label}.items[${index}].score`);
     if (item.costIndex !== undefined) assertNumberLike(item.costIndex, `${label}.items[${index}].costIndex`);
+    if (item.imageUrl !== undefined) assertString(item.imageUrl, `${label}.items[${index}].imageUrl`);
+    if (item.createdAt !== undefined) assertString(item.createdAt, `${label}.items[${index}].createdAt`);
+    if (item.parts !== undefined) {
+      assertArray(item.parts, `${label}.items[${index}].parts`);
+      for (const [partIndex, part] of item.parts.entries()) {
+        const partLabel = `${label}.items[${index}].parts[${partIndex}]`;
+        assertObject(part, partLabel);
+        assertString(part.name, `${partLabel}.name`);
+        assertString(part.type, `${partLabel}.type`);
+        assert.equal(typeof part.owned, "boolean", `${partLabel}.owned must be boolean`);
+      }
+    }
+  }
+}
+
+function validateNormalizedListings(data, label) {
+  assertObject(data, label);
+  assertArray(data.items, `${label}.items`);
+  const ids = new Set();
+  const allowedStatuses = new Set(["available_now", "preorder", "delayed", "backorder", "out_of_stock", "unavailable", "not_observed", "unknown"]);
+  for (const [index, item] of data.items.entries()) {
+    const itemLabel = `${label}.items[${index}]`;
+    assertObject(item, itemLabel);
+    assertString(item.listingId, `${itemLabel}.listingId`);
+    assert.equal(ids.has(item.listingId), false, `${itemLabel}.listingId must be unique`);
+    ids.add(item.listingId);
+    assertString(item.name, `${itemLabel}.name`);
+    assertString(item.retailer, `${itemLabel}.retailer`);
+    assertString(item.url, `${itemLabel}.url`);
+    assertArray(item.configs, `${itemLabel}.configs`);
+    assert.equal(allowedStatuses.has(item.availabilityStatus), true, `${itemLabel}.availabilityStatus is invalid`);
+    assert.equal(typeof item.orderable, "boolean", `${itemLabel}.orderable must be boolean`);
   }
 }
 

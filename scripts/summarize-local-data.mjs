@@ -1,12 +1,14 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { isWishlistEligible } from "./wishlist-pipeline.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 
 const inventory = readOptionalJson("data/inventory.local.json");
 const purchases = readOptionalJson("data/purchases.local.json");
 const wishlist = readOptionalJson("data/wishlist.local.json");
+const normalized = readOptionalJson("data/normalized/retailer-listings.local.json");
 const rawFiles = listOptionalRawFiles("data/raw");
 
 console.log(JSON.stringify({
@@ -23,6 +25,11 @@ console.log(JSON.stringify({
   wishlist: wishlist ? {
     items: wishlist.items?.length ?? 0,
     currency: wishlist.currency ?? null
+  } : null,
+  normalizedListings: normalized ? {
+    items: normalized.items?.length ?? 0,
+    eligible: normalized.items?.filter(isWishlistEligible).length ?? 0,
+    excluded: normalized.items?.filter((item) => !isWishlistEligible(item)).length ?? 0
   } : null,
   rawFiles
 }, null, 2));

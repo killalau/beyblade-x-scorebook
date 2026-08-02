@@ -69,6 +69,40 @@ Recommended fields:
 
 - `currency`, `taxRegion`, `pretaxPrice`, `taxRate`, `estimatedTotalPaid`.
 
+## `data/normalized/retailer-listings.local.json`
+
+This private catalogue stores cleaned, verified retailer facts independently of the user's inventory and rankings. It retains listings that are not currently eligible for the wishlist.
+
+Required listing fields:
+
+- `listingId`: stable retailer identity such as `amazon-ca:B0GP22FMHL`.
+- `retailer`, `name`, `url`.
+- `configs`: array of complete normalized combos, not only ratchet/bit fragments.
+- CX fused Bits combine the ratchet and Bit into one part. Preserve their code in the complete config; currently recognized codes are `Tr` and `Op`.
+- `availabilityStatus`: one of `available_now`, `preorder`, `delayed`, `backorder`, `out_of_stock`, `unavailable`, `not_observed`, or `unknown`.
+- `orderable`: boolean retailer ordering signal.
+
+Recommended fields:
+
+- `productId`, `price`, `currency`, `statusLabel`, `bundleType`, `includedBeys`, `cxMode`, `imageUrl`, `availabilityText`, `notes`, `firstSeenAt`, `lastSeenAt`, `lastAvailableAt`, `normalizationStatus`.
+
+Out-of-stock and unavailable records stay here so a later refresh can restore them to the wishlist without losing identity or history.
+
+Audit and merge commands:
+
+```bash
+npm run refresh:wishlist -- --dry-run
+npm run refresh:wishlist
+npm run audit:normalized
+npm run audit:normalized -- --verbose
+npm run normalize:crawl -- --dry-run
+npm run normalize:crawl
+npm run report:candidates
+npm run gate:normalized
+```
+
+`refresh:wishlist` is the deterministic orchestration command and writes both normalized facts and the derived wishlist. The crawl normalizer updates existing stable listing identities with newer observations and reports unmatched records as candidates. It does not guess normalized names/configs for new candidates. The gate command retains suspicious or incomplete records in normalized data but marks them ineligible. Only `normalizationStatus: "verified"` records can enter the generated wishlist.
+
 ## `data/wishlist.local.json`
 
 ```json
@@ -87,6 +121,8 @@ Recommended fields:
       "configs": "Bey A 3-60R, Bey B 5-60B",
       "usefulParts": "3-60, R",
       "helpsInventory": "Adds missing attack bit",
+      "imageUrl": "https://example.com/product-image.jpg",
+      "createdAt": "2026-08-01T08:40:47-07:00",
       "url": "https://example.com/product",
       "notes": "Any uncertainty goes here."
     }
@@ -98,15 +134,25 @@ Required fields:
 
 - `items`: array.
 
+This file is derived. Do not use it as the retailer catalogue. Generate it from normalized listings plus inventory and public ranking/scoring data with `npm run generate:wishlist`.
+
 Recommended fields:
 
-- `name`, `price`, `retailer`, `status`, `url`, `configs`, `score`, `costIndex`.
+- `name`, `price`, `retailer`, `status`, `url`, `configs`, `parts`, `score`, `costIndex`, `imageUrl`, `createdAt`.
+
+Field guidance:
+
+- `imageUrl`: first reliable product thumbnail from the verified retailer product/listing page. Do not guess image URLs. The app shows a placeholder when missing or broken.
+- `createdAt`: ISO 8601 timestamp for when the listing was first added to the local wishlist. Preserve it on later refreshes; use a separate raw collection timestamp for each crawl.
+- `parts`: generated structured part array used by the Wishlist filters. Each entry contains `name`, `type`, `owned`, and `rankClass`; fused Bits such as `Tr` and `Op` also use `fused: true`.
+- Eligibility excludes normalized `out_of_stock`, `unavailable`, `not_observed`, `unknown`, and `orderable: false` records. Available, preorder, delayed/restock, and orderable backorder records remain eligible.
 
 Sorting behavior in the app:
 
 - Cost Index and price sort ascending.
 - Zero or missing Cost Index/price sorts last.
 - Score sorts descending.
+- Newest added sorts valid `createdAt` values descending; rows without a valid date sort last.
 
 ## Raw Crawl Files
 

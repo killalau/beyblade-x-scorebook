@@ -7,6 +7,13 @@
     "dev": "node scripts/serve.mjs",
     "test": "node scripts/smoke-test.mjs && node scripts/validate-local-data.mjs",
     "validate:data": "node scripts/validate-local-data.mjs",
-    "summarize:data": "node scripts/summarize-local-data.mjs"
+    "summarize:data": "node scripts/summarize-local-data.mjs",
+    "migrate:normalized": "node scripts/migrate-normalized-listings.mjs",
+    "generate:wishlist": "node scripts/generate-wishlist.mjs",
+    "audit:normalized": "node scripts/audit-normalized.mjs",
+    "normalize:crawl": "node scripts/normalize-crawl.mjs",
+    "gate:normalized": "node scripts/apply-normalized-gates.mjs",
+    "report:candidates": "node scripts/report-crawl-candidates.mjs",
+    "refresh:wishlist": "node scripts/refresh-wishlist.mjs"
   }
 }

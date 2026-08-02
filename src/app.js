@@ -5,17 +5,24 @@ import {
   rarityMultipliers
 } from "./reference-data/scoringConfig.js";
 import { scoreProduct, summarizeBreakdown } from "./scoring.js";
+import { matchesPartFilters, partFilterTokens } from "./wishlist-filters.js";
 
 const storageKeys = {
   inventory: "beybladeScorebook.inventory",
-  wishlist: "beybladeScorebook.wishlist"
+  wishlist: "beybladeScorebook.wishlist",
+  wishlistView: "beybladeScorebook.wishlistView",
+  wishlistPartFilters: "beybladeScorebook.wishlistPartFilters"
 };
+
+const savedWishlistPartFilters = readWishlistPartFilters();
 
 const state = {
   ownedParts: [],
   ownedBeys: [],
   inventoryDetail: [],
   wishlistItems: [],
+  wishlistView: localStorage.getItem(storageKeys.wishlistView) === "list" ? "list" : "card",
+  wishlistPartFilters: savedWishlistPartFilters,
   selectedResultIndex: 0,
   results: [],
   rows: [
@@ -57,11 +64,23 @@ const elements = {
   wishlistSummary: document.querySelector("#wishlistSummary"),
   wishlistSearch: document.querySelector("#wishlistSearch"),
   wishlistSort: document.querySelector("#wishlistSort"),
+  wishlistParts: document.querySelector("#wishlistParts"),
+  wishlistPartOptions: document.querySelector("#wishlistPartOptions"),
+  wishlistPartType: document.querySelector("#wishlistPartType"),
+  wishlistPartMatch: document.querySelector("#wishlistPartMatch"),
+  wishlistOnlyMissing: document.querySelector("#wishlistOnlyMissing"),
+  wishlistClearParts: document.querySelector("#wishlistClearParts"),
+  wishlistViewButtons: [...document.querySelectorAll("[data-wishlist-view]")],
   wishlistItems: document.querySelector("#wishlistItems"),
   rankScoreRules: document.querySelector("#rankScoreRules"),
   partWeightRules: document.querySelector("#partWeightRules"),
   rarityRules: document.querySelector("#rarityRules")
 };
+
+elements.wishlistParts.value = state.wishlistPartFilters.parts || "";
+elements.wishlistPartType.value = state.wishlistPartFilters.type || "";
+elements.wishlistPartMatch.value = state.wishlistPartFilters.match === "all" ? "all" : "any";
+elements.wishlistOnlyMissing.checked = state.wishlistPartFilters.onlyMissing === true;
 
 elements.tabs.forEach((tab) => {
   tab.addEventListener("click", () => showPage(tab.dataset.page));
@@ -104,6 +123,27 @@ elements.clearLocalData.addEventListener("click", () => {
 
 elements.wishlistSearch.addEventListener("input", renderWishlist);
 elements.wishlistSort.addEventListener("change", renderWishlist);
+[elements.wishlistParts, elements.wishlistPartType, elements.wishlistPartMatch, elements.wishlistOnlyMissing].forEach((control) => {
+  control.addEventListener(control === elements.wishlistParts ? "input" : "change", () => {
+    saveWishlistPartFilters();
+    renderWishlist();
+  });
+});
+elements.wishlistClearParts.addEventListener("click", () => {
+  elements.wishlistParts.value = "";
+  elements.wishlistPartType.value = "";
+  elements.wishlistPartMatch.value = "any";
+  elements.wishlistOnlyMissing.checked = false;
+  saveWishlistPartFilters();
+  renderWishlist();
+});
+elements.wishlistViewButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    state.wishlistView = button.dataset.wishlistView;
+    localStorage.setItem(storageKeys.wishlistView, state.wishlistView);
+    renderWishlist();
+  });
+});
 
 function showPage(pageName) {
   for (const [name, page] of Object.entries(elements.pages)) {
@@ -151,6 +191,7 @@ function applyInventoryData(data) {
 
 function applyWishlistData(data) {
   state.wishlistItems = data.items;
+  renderWishlistPartOptions();
   renderWishlist();
 }
 
@@ -345,11 +386,23 @@ function renderInventory() {
 function renderWishlist() {
   const query = elements.wishlistSearch.value.trim().toLowerCase();
   const sortKey = elements.wishlistSort.value;
+  const requestedParts = partFilterTokens(elements.wishlistParts.value);
+  const partType = elements.wishlistPartType.value;
+  const matchAll = elements.wishlistPartMatch.value === "all";
+  const onlyMissing = elements.wishlistOnlyMissing.checked;
   const filtered = state.wishlistItems
     .filter((item) => !query || JSON.stringify(item).toLowerCase().includes(query))
+    .filter((item) => matchesPartFilters(item, { requestedParts, partType, matchAll, onlyMissing }))
     .sort((a, b) => compareWishlistItems(a, b, sortKey));
 
   elements.wishlistSummary.textContent = `${filtered.length} of ${state.wishlistItems.length} items`;
+  elements.wishlistItems.dataset.view = state.wishlistView;
+  elements.wishlistItems.classList.toggle("wishlist-list", state.wishlistView === "list");
+  elements.wishlistViewButtons.forEach((button) => {
+    const selected = button.dataset.wishlistView === state.wishlistView;
+    button.classList.toggle("selected", selected);
+    button.setAttribute("aria-pressed", String(selected));
+  });
   const cards = filtered.map((item) => {
     const card = document.createElement(item.url ? "a" : "div");
     card.className = "wishlist-item";
@@ -359,15 +412,58 @@ function renderWishlist() {
       card.rel = "noreferrer";
     }
     card.innerHTML = `
-      <span>${escapeHtml(item.name ?? "-")}</span>
+      <span class="wishlist-thumbnail${item.imageUrl ? " has-image" : ""}">
+        ${item.imageUrl
+          ? `<img src="${escapeHtml(item.imageUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer">`
+          : `<span aria-hidden="true">BX</span>`}
+      </span>
+      <span class="wishlist-name">${escapeHtml(item.name ?? "-")}</span>
       <small class="wishlist-price">${formatPrice(item.price)}</small>
-      <strong>${formatCostIndex(toNumber(item.costIndex))} CI / ${formatScore(toNumber(item.score))} score</strong>
+      <strong class="wishlist-score">${formatCostIndex(toNumber(item.costIndex))} CI / ${formatScore(toNumber(item.score))} score</strong>
       <small class="wishlist-meta">${escapeHtml(item.retailer ?? "-")} · ${escapeHtml(item.status ?? "-")}</small>
-      <em>${escapeHtml(item.usefulParts ?? "-")}</em>
+      <em class="wishlist-parts">${escapeHtml(item.usefulParts ?? "-")}</em>
+      ${item.createdAt ? `<small class="wishlist-created">${formatCreatedAt(item.createdAt)}</small>` : ""}
     `;
+    const image = card.querySelector("img");
+    image?.addEventListener("error", () => {
+      const fallback = document.createElement("span");
+      fallback.textContent = "BX";
+      fallback.setAttribute("aria-hidden", "true");
+      image.replaceWith(fallback);
+      card.querySelector(".wishlist-thumbnail")?.classList.remove("has-image");
+    });
     return card;
   });
   elements.wishlistItems.replaceChildren(...cards);
+}
+
+function renderWishlistPartOptions() {
+  const names = [...new Set(state.wishlistItems.flatMap((item) => (item.parts || []).map((part) => part.name)).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  elements.wishlistPartOptions.replaceChildren(...names.map((name) => {
+    const option = document.createElement("option");
+    option.value = name;
+    return option;
+  }));
+}
+
+function readWishlistPartFilters() {
+  try {
+    return JSON.parse(localStorage.getItem(storageKeys.wishlistPartFilters)) || {};
+  } catch {
+    return {};
+  }
+}
+
+function saveWishlistPartFilters() {
+  const filters = {
+    parts: elements.wishlistParts.value,
+    type: elements.wishlistPartType.value,
+    match: elements.wishlistPartMatch.value,
+    onlyMissing: elements.wishlistOnlyMissing.checked
+  };
+  state.wishlistPartFilters = filters;
+  localStorage.setItem(storageKeys.wishlistPartFilters, JSON.stringify(filters));
 }
 
 function renderResult(result) {
@@ -462,6 +558,16 @@ function formatPrice(value) {
   return Number.isFinite(numeric) ? `$${numeric}` : "-";
 }
 
+function formatCreatedAt(value) {
+  const timestamp = Date.parse(value);
+  if (!Number.isFinite(timestamp)) return "";
+  return `Added ${new Date(timestamp).toLocaleDateString(undefined, {
+    year: "numeric",
+    month: "short",
+    day: "numeric"
+  })}`;
+}
+
 function toNumber(value) {
   const numeric = Number(value);
   return Number.isFinite(numeric) ? numeric : null;
@@ -469,10 +575,16 @@ function toNumber(value) {
 
 function compareWishlistItems(a, b, sortKey) {
   if (sortKey === "name") return String(a.name ?? "").localeCompare(String(b.name ?? ""));
+  if (sortKey === "createdAt") return sortableCreatedAt(b.createdAt) - sortableCreatedAt(a.createdAt);
   const aValue = toNumber(a[sortKey]);
   const bValue = toNumber(b[sortKey]);
   if (sortKey === "score") return (bValue ?? -Infinity) - (aValue ?? -Infinity);
   return sortablePositiveValue(aValue) - sortablePositiveValue(bValue);
+}
+
+function sortableCreatedAt(value) {
+  const timestamp = Date.parse(value);
+  return Number.isFinite(timestamp) ? timestamp : -Infinity;
 }
 
 function sortablePositiveValue(value) {

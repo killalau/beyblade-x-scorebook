@@ -157,10 +157,46 @@
               <option value="costIndex">Cost Index</option>
               <option value="score">Score</option>
               <option value="price">Price</option>
+              <option value="createdAt">Newest added</option>
               <option value="name">Name</option>
             </select>
+            <div class="view-toggle" role="group" aria-label="Wishlist view">
+              <button class="view-toggle-button selected" type="button" data-wishlist-view="card" aria-pressed="true">Cards</button>
+              <button class="view-toggle-button" type="button" data-wishlist-view="list" aria-pressed="false">List</button>
+            </div>
           </div>
-          <div id="wishlistItems" class="wishlist-grid"></div>
+          <div class="wishlist-part-filters" aria-label="Filter wishlist by parts">
+            <label>
+              Parts
+              <input id="wishlistParts" type="search" list="wishlistPartOptions" placeholder="LR, 7-60" autocomplete="off">
+              <datalist id="wishlistPartOptions"></datalist>
+            </label>
+            <label>
+              Part type
+              <select id="wishlistPartType">
+                <option value="">All types</option>
+                <option value="blade">Main blade</option>
+                <option value="lockChip">Lock chip</option>
+                <option value="overBlade">Over blade</option>
+                <option value="assistBlade">Assist blade</option>
+                <option value="ratchet">Ratchet / 固鎖</option>
+                <option value="bit">Bit / 軸心</option>
+              </select>
+            </label>
+            <label>
+              Match
+              <select id="wishlistPartMatch">
+                <option value="any">Any selected part</option>
+                <option value="all">All selected parts</option>
+              </select>
+            </label>
+            <label class="wishlist-checkbox">
+              <input id="wishlistOnlyMissing" type="checkbox">
+              Only missing parts
+            </label>
+            <button id="wishlistClearParts" class="secondary-button" type="button">Clear part filters</button>
+          </div>
+          <div id="wishlistItems" class="wishlist-grid" data-view="card"></div>
         </section>
       </section>
 
