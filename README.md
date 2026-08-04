@@ -49,6 +49,8 @@ http://localhost:5173
 
 No build step is required for GitHub Pages.
 
+See [GitHub Pages Hosting Notes](docs/github-pages-hosting.md) for the recommended Actions workflow, privacy boundary, setup steps, and deployment checklist.
+
 ## Local Private Data
 
 Copy example files if starting fresh:

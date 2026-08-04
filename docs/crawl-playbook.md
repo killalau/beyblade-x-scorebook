@@ -9,6 +9,8 @@ This playbook records how Codex should refresh retailer data while staying flexi
 - Real Canadian Superstore search/product pages when useful.
 - Other Canadian retailers may be added after confirming the source is relevant and safe to inspect.
 
+Product/part reference databases are documented separately in [`docs/reference-sources.md`](reference-sources.md). They may help verify product contents and part provenance, but they are not retailer sources for Canadian price or availability.
+
 ## Crawl Posture
 
 - Prefer the lightest reliable method for the current site state.
