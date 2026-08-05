@@ -49,6 +49,8 @@ Guidance:
 
 The collection file deliberately keeps inventory and purchase history as separate sections. Purchase history records provenance; current inventory remains authoritative because gifts, trades, losses, sales, and loose parts cannot always be derived from purchases.
 
+The Inventory page displays total spend as the sum of `estimatedTotalPaid`. For legacy rows without that field, it falls back to `pretaxPrice`, applying `taxRate` when present unless `taxIncluded` is true.
+
 Migrate the former two-file format with `npm run migrate:collection`. The command refuses to overwrite an existing collection unless `--force` is explicitly supplied and preserves the legacy input files as recoverable backups.
 
 ## `data/normalized/retailer-listings.local.json`

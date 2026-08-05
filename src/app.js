@@ -6,6 +6,7 @@ import {
 } from "./reference-data/scoringConfig.js";
 import { scoreProduct, summarizeBreakdown } from "./scoring.js";
 import { matchesPartFilters, partFilterTokens } from "./wishlist-filters.js";
+import { calculateTotalSpend } from "./collection-summary.js";
 
 const storageKeys = {
   collection: "beybladeScorebook.collection",
@@ -21,6 +22,8 @@ const state = {
   ownedParts: [],
   ownedBeys: [],
   inventoryDetail: [],
+  purchases: [],
+  collectionCurrency: "CAD",
   wishlistItems: [],
   wishlistView: localStorage.getItem(storageKeys.wishlistView) === "list" ? "list" : "card",
   wishlistPartFilters: savedWishlistPartFilters,
@@ -59,6 +62,9 @@ const elements = {
   wishlistLoadStatus: document.querySelector("#wishlistLoadStatus"),
   dataErrorStatus: document.querySelector("#dataErrorStatus"),
   inventorySummary: document.querySelector("#inventorySummary"),
+  inventoryBeyCount: document.querySelector("#inventoryBeyCount"),
+  inventoryPurchaseCount: document.querySelector("#inventoryPurchaseCount"),
+  inventoryTotalSpend: document.querySelector("#inventoryTotalSpend"),
   inventoryPartSummary: document.querySelector("#inventoryPartSummary"),
   inventoryBeys: document.querySelector("#inventoryBeys"),
   inventoryPartsBody: document.querySelector("#inventoryPartsBody"),
@@ -115,6 +121,8 @@ elements.clearLocalData.addEventListener("click", () => {
   localStorage.removeItem(storageKeys.collection);
   localStorage.removeItem(storageKeys.inventory);
   localStorage.removeItem(storageKeys.wishlist);
+  state.purchases = [];
+  state.collectionCurrency = "CAD";
   applyInventoryData({ parts: [], beys: [], partsDetail: [] });
   applyWishlistData({ items: [] });
   elements.inventoryLoadStatus.textContent = "Collection: not loaded";
@@ -192,6 +200,8 @@ function applyInventoryData(data) {
 }
 
 function applyCollectionData(data) {
+  state.purchases = data.purchases.items;
+  state.collectionCurrency = data.currency || "CAD";
   applyInventoryData(data.inventory);
 }
 
@@ -385,6 +395,9 @@ function renderProductEditor() {
 function renderInventory() {
   elements.inventorySummary.textContent = `${state.ownedBeys.length} beys`;
   elements.inventoryPartSummary.textContent = `${state.ownedParts.length} parts`;
+  elements.inventoryBeyCount.textContent = String(state.ownedBeys.length);
+  elements.inventoryPurchaseCount.textContent = String(state.purchases.length);
+  elements.inventoryTotalSpend.textContent = formatCurrency(calculateTotalSpend({ items: state.purchases }), state.collectionCurrency);
 
   const beyItems = state.ownedBeys.map((bey) => {
     const item = document.createElement("div");
@@ -582,6 +595,12 @@ function formatTimestamp(date) {
 function formatPrice(value) {
   const numeric = toNumber(value);
   return Number.isFinite(numeric) ? `$${numeric}` : "-";
+}
+
+function formatCurrency(value, currency = "CAD") {
+  const numeric = toNumber(value);
+  if (!Number.isFinite(numeric)) return "-";
+  return `$${numeric.toFixed(2)} ${currency}`;
 }
 
 function formatCreatedAt(value) {
