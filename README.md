@@ -21,8 +21,7 @@ Public data:
 
 Private local data:
 
-- `data/inventory.local.json`
-- `data/purchases.local.json`
+- `data/collection.local.json` (inventory and purchase history)
 - `data/wishlist.local.json`
 - `data/raw/*.json`
 
@@ -31,7 +30,7 @@ These private files are gitignored.
 ## Pages
 
 - `Scorebook`: product/combo scoring and Cost Index lookup.
-- `Inventory`: browser-loaded private inventory JSON.
+- `Inventory`: browser-loaded private collection JSON.
 - `Wishlist`: browser-loaded private wishlist JSON with search and sorting.
 - `Rules`: scoring weights, rarity multipliers, and formulas.
 
@@ -56,8 +55,7 @@ See [GitHub Pages Hosting Notes](docs/github-pages-hosting.md) for the recommend
 Copy example files if starting fresh:
 
 ```bash
-cp data/inventory.local.example.json data/inventory.local.json
-cp data/purchases.local.example.json data/purchases.local.json
+cp data/collection.local.example.json data/collection.local.json
 cp data/wishlist.local.example.json data/wishlist.local.json
 ```
 
@@ -161,7 +159,7 @@ Before committing:
 ```bash
 npm test
 git status --short --untracked-files=all
-git check-ignore -v data/inventory.local.json data/purchases.local.json data/wishlist.local.json data/raw/
+git check-ignore -v data/collection.local.json data/wishlist.local.json data/raw/
 ```
 
 Commit only public app, docs, scripts, and reference data.

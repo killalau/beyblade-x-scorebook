@@ -1,0 +1,20 @@
+{
+  "version": 1,
+  "currency": "CAD",
+  "taxRegion": "BC",
+  "inventory": {
+    "parts": ["Fang Leon", "3-60", "U"],
+    "beys": ["Fang Leon T 4-60U"],
+    "partsDetail": []
+  },
+  "purchases": {
+    "items": [
+      {
+        "name": "Wand Wizard 5-70DB Starter",
+        "pretaxPrice": 20,
+        "taxIncluded": true,
+        "source": "private sale"
+      }
+    ]
+  }
+}

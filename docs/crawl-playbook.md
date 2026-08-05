@@ -93,7 +93,7 @@ For each product/listing, collect as many of these as reliable:
    - Keep multipacks and battle sets as one product row with comma-separated included beys/configs.
 8. Confirm that every newly normalized listing can be traced to a raw record from the same refresh. Report any raw records intentionally excluded as irrelevant, counterfeit/third-party, ambiguous, or duplicate.
 9. Review the audit from `refresh:wishlist`; resolve material issues introduced by this refresh. If audit findings require a catalogue-wide eligibility pass, run `npm run gate:normalized` and rerun `npm run refresh:wishlist`. The eligibility filter requires `normalizationStatus: "verified"`; it excludes out-of-stock, unavailable, not-observed, unknown, and non-orderable records, while retaining available, preorder, delayed/restock, and orderable backorder records.
-10. Update inventory/purchase JSON directly only when the user says they bought or own something, then regenerate wishlist. Keep verified retailer listings in normalized data after purchase; fully owned wishlist rows use `usefulParts: "-"` and `costIndex: null`, while mixed bundles score only missing ranked parts.
+10. Update both `inventory` and `purchases` sections of `data/collection.local.json` only when the user says they bought or own something, then regenerate wishlist. Keep verified retailer listings in normalized data after purchase; fully owned wishlist rows use `usefulParts: "-"` and `costIndex: null`, while mixed bundles score only missing ranked parts.
 11. Run `npm run validate:data`.
 12. Run `npm run summarize:data` and review normalized, eligible, excluded, and wishlist count changes.
 13. Run `npm test`.

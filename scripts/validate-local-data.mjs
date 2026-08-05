@@ -7,8 +7,7 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const failures = [];
 const checked = [];
 
-validateOptionalJson("data/inventory.local.json", validateInventory);
-validateOptionalJson("data/purchases.local.json", validatePurchases);
+validateOptionalJson("data/collection.local.json", validateCollection);
 validateOptionalJson("data/wishlist.local.json", validateWishlist);
 validateOptionalJson("data/normalized/retailer-listings.local.json", validateNormalizedListings);
 validateRawDirectory("data/raw");
@@ -55,6 +54,15 @@ function validateInventory(data, label) {
   assertArray(data.parts, `${label}.parts`);
   assertArray(data.beys, `${label}.beys`);
   if (data.partsDetail !== undefined) assertArray(data.partsDetail, `${label}.partsDetail`);
+}
+
+function validateCollection(data, label) {
+  assertObject(data, label);
+  assert.equal(data.version, 1, `${label}.version must be 1`);
+  if (data.currency !== undefined) assertString(data.currency, `${label}.currency`);
+  if (data.taxRegion !== undefined && data.taxRegion !== null) assertString(data.taxRegion, `${label}.taxRegion`);
+  validateInventory(data.inventory, `${label}.inventory`);
+  validatePurchases(data.purchases, `${label}.purchases`);
 }
 
 function validatePurchases(data, label) {

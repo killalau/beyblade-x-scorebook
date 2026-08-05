@@ -6,6 +6,15 @@ import { matchesPartFilters, partFilterTokens } from "../src/wishlist-filters.js
 import { generateWishlist, isWishlistEligible, listingIdFor, normalizeStatus } from "./wishlist-pipeline.mjs";
 import { auditNormalized } from "./normalized-audit.mjs";
 import { extractObservations, mergeObservations } from "./crawl-normalizer.mjs";
+import { combineLegacyCollection, inventoryFromCollection } from "./collection-data.mjs";
+
+const migratedCollection = combineLegacyCollection(
+  { parts: ["LR"], beys: ["Test 1-60LR"], partsDetail: [{ name: "LR" }] },
+  { currency: "CAD", taxRegion: "BC", items: [{ name: "Test purchase" }] }
+);
+assert.equal(migratedCollection.version, 1);
+assert.deepEqual(inventoryFromCollection(migratedCollection).parts, ["LR"]);
+assert.equal(migratedCollection.purchases.items[0].name, "Test purchase");
 
 const keel = scoreProduct({
   name: "Keel Shark 3-60LF Booster",
@@ -149,6 +158,7 @@ assert.match(html, /id="productRows"/);
 assert.match(html, /id="addProductRow"/);
 assert.match(html, /id="scorebookPage"/);
 assert.match(html, /id="inventoryPage"/);
+assert.match(html, /id="collectionFile"/);
 assert.match(html, /id="wishlistPage"/);
 assert.match(html, /id="wishlistFile"/);
 assert.match(html, /data-wishlist-view="card"/);
@@ -161,7 +171,7 @@ assert.match(appSource, /sortablePositiveValue/);
 assert.match(appSource, /sortableCreatedAt/);
 assert.match(appSource, /wishlist-thumbnail/);
 assert.match(appSource, /localStorage/);
-assert.match(appSource, /validateInventoryData/);
+assert.match(appSource, /validateCollectionData/);
 
 checkRelativeImports(resolve(new URL("..", import.meta.url).pathname), ["src", "scripts"]);
 

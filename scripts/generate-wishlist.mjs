@@ -4,17 +4,17 @@ import { compareWishlists, generateWishlist } from "./wishlist-pipeline.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const normalizedPath = `${root}/data/normalized/retailer-listings.local.json`;
-const inventoryPath = `${root}/data/inventory.local.json`;
+const collectionPath = `${root}/data/collection.local.json`;
 const wishlistPath = `${root}/data/wishlist.local.json`;
 const dryRun = process.argv.includes("--dry-run");
 const verbose = process.argv.includes("--verbose");
 
-const [normalized, inventory, previous] = await Promise.all([
+const [normalized, collection, previous] = await Promise.all([
   readJson(normalizedPath),
-  readJson(inventoryPath),
+  readJson(collectionPath),
   readJson(wishlistPath)
 ]);
-const next = generateWishlist(normalized, inventory);
+const next = generateWishlist(normalized, collection.inventory);
 const report = compareWishlists(previous, next);
 
 console.log(JSON.stringify({

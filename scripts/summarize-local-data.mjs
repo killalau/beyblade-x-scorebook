@@ -5,8 +5,9 @@ import { isWishlistEligible } from "./wishlist-pipeline.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 
-const inventory = readOptionalJson("data/inventory.local.json");
-const purchases = readOptionalJson("data/purchases.local.json");
+const collection = readOptionalJson("data/collection.local.json");
+const inventory = collection?.inventory;
+const purchases = collection?.purchases;
 const wishlist = readOptionalJson("data/wishlist.local.json");
 const normalized = readOptionalJson("data/normalized/retailer-listings.local.json");
 const rawFiles = listOptionalRawFiles("data/raw");
@@ -19,8 +20,8 @@ console.log(JSON.stringify({
   } : null,
   purchases: purchases ? {
     items: purchases.items?.length ?? 0,
-    currency: purchases.currency ?? null,
-    taxRegion: purchases.taxRegion ?? null
+    currency: collection.currency ?? null,
+    taxRegion: collection.taxRegion ?? null
   } : null,
   wishlist: wishlist ? {
     items: wishlist.items?.length ?? 0,

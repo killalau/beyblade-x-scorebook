@@ -24,13 +24,12 @@ These files contain scoring rules, aliases, abbreviations, and public ranking re
 
 Local-only data lives under `data/` and is ignored by Git:
 
-- `data/inventory.local.json`
-- `data/purchases.local.json`
+- `data/collection.local.json` (authoritative inventory and purchase history)
 - `data/normalized/retailer-listings.local.json`
 - `data/wishlist.local.json`
 - `data/raw/*.json`
 
-Codex should edit inventory and purchase JSON directly. Retailer refreshes update normalized listings after preserving raw evidence. Wishlist JSON is derived from normalized listings, inventory, and public ranking/scoring modules.
+Codex should edit the `inventory` and `purchases` sections of collection JSON directly. Retailer refreshes update normalized listings after preserving raw evidence. Wishlist JSON is derived from normalized listings, collection inventory, and public ranking/scoring modules.
 
 ## Retailer Data Pipeline
 
@@ -49,11 +48,11 @@ Normalized listings are the catalogue of verified retailer facts and retain unav
 1. Read `AGENTS.md`.
 2. Read `docs/data-contracts.md`.
 3. Read `docs/crawl-playbook.md` for refresh work.
-4. Inspect existing `data/*.local.json` and `data/raw/` if available.
+4. Inspect existing `data/collection.local.json`, other local JSON, and `data/raw/` if available.
 5. Make the requested JSON changes directly.
-6. When ownership or purchase history changes, treat inventory, purchases, and wishlist as one transaction:
-   - Add or remove the requested purchase-history row.
-   - Add or remove the complete bey and all parts supplied by it in inventory. Preserve quantities or shared parts that are still owned from another source.
+6. When ownership or purchase history changes, treat collection and wishlist as one transaction:
+   - Add or remove the requested row under `collection.purchases.items`.
+   - Add or remove the complete bey and all parts supplied by it under `collection.inventory`. Preserve quantities or shared parts that are still owned from another source.
    - Recalculate affected wishlist `usefulParts`, `helpsInventory`, `score`, and `costIndex` against the updated inventory.
    - Keep verified retailer listings after purchase. Fully owned listings use `usefulParts: "-"` and `costIndex: null`; mixed bundles continue scoring only missing useful parts.
 7. Run `npm run validate:data`.
@@ -107,3 +106,5 @@ npm test
 ```
 
 `validate:data` allows missing private files so public clones can still pass tests.
+
+Legacy installations can combine their old files once with `npm run migrate:collection`. The migration preserves both legacy inputs but active tools use `data/collection.local.json` afterward.

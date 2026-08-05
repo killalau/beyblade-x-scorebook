@@ -5,7 +5,7 @@ This repo is a static Beyblade X scorebook intended for GitHub Pages. JSON is th
 ## Privacy
 
 - Do not commit `data/*.local.json`, `data/raw/`, `data/normalized/`, `exports/`, or `*.xlsx`.
-- Treat inventory, purchases, wishlist, retailer scrape output, and local workbook exports as private.
+- Treat collection (inventory plus purchases), wishlist, retailer scrape output, and local workbook exports as private.
 - The public app should load private data through browser file upload or browser-local storage only.
 - Before every commit, run `git status --short --untracked-files=all` and confirm private files are not staged.
 
@@ -23,9 +23,10 @@ This repo is a static Beyblade X scorebook intended for GitHub Pages. JSON is th
 ## App And Data Rules
 
 - JSON files are authoritative. Codex should read and update `data/*.local.json` directly for private state.
+- `data/collection.local.json` is the authoritative owned-state file. Its `inventory` and `purchases` sections must be updated together when a purchase changes ownership. The former `inventory.local.json` and `purchases.local.json` files are legacy migration inputs only.
 - Normalized retailer facts live in `data/normalized/retailer-listings.local.json` and include available, delayed, backorder, out-of-stock, unavailable, not-observed, and unknown listings. Do not delete normalized listings merely because they are not currently purchasable.
 - `data/wishlist.local.json` is derived from normalized listings, inventory, and public ranking/scoring modules. Generate it with `npm run generate:wishlist`; out-of-stock, unavailable, not-observed, unknown, or non-orderable listings must be excluded from the generated wishlist.
-- Treat inventory, purchase history, and wishlist as synchronized private state. After any ownership or purchase change, reconcile all three files in the same task: add/remove the requested purchase record, add/remove the complete bey and its parts in inventory, then recalculate affected wishlist `usefulParts`, `helpsInventory`, `score`, and `costIndex`.
+- Treat collection and wishlist as synchronized private state. After any ownership or purchase change, update both collection sections in the same task: add/remove the requested purchase row, add/remove the complete bey and its parts in inventory, then regenerate wishlist `usefulParts`, `helpsInventory`, `score`, and `costIndex`.
 - Keep verified retailer listings in normalized data after purchase. If the listing remains eligible, a fully owned wishlist row uses `usefulParts: "-"` and `costIndex: null`; mixed bundles continue scoring only missing ranked parts.
 - Default page is `Scorebook`; private pages are `Inventory` and `Wishlist`; `Rules` documents scoring.
 - Scoring logic lives in `src/scoring.js`.

@@ -4,70 +4,52 @@ Private JSON files are local-only. They are ignored by Git and loaded in the bro
 
 JSON is the source of truth for this project. Excel workbooks are legacy exports or optional reports, not primary storage.
 
-## `data/inventory.local.json`
+## `data/collection.local.json`
 
 ```json
 {
-  "parts": ["3-60", "Rush", "R"],
-  "beys": ["Lance Knight 3-60LF"],
-  "partsDetail": [
-    {
-      "category": "Ratchet",
-      "name": "3-60",
-      "abbrev": "3-60",
-      "code": "BX-21 / G1671",
-      "type": "-",
-      "spin": "-",
-      "qty": 1,
-      "source": "Lance Knight 3-60LF",
-      "notes": "Core low ratchet.",
-      "sourceUrl": "https://example.com"
-    }
-  ]
+  "version": 1,
+  "currency": "CAD",
+  "taxRegion": "BC",
+  "inventory": {
+    "parts": ["3-60", "Rush", "R"],
+    "beys": ["Lance Knight 3-60LF"],
+    "partsDetail": []
+  },
+  "purchases": {
+    "items": [
+      {
+        "name": "Wand Wizard 5-70DB Starter",
+        "source": "Private purchase",
+        "pretaxPrice": 20,
+        "taxRate": 0,
+        "estimatedTotalPaid": 20
+      }
+    ]
+  }
 }
 ```
 
 Required fields:
 
-- `parts`: array of owned part names and useful abbreviations.
-- `beys`: array of owned complete beys/products.
+- `version`: currently `1`.
+- `inventory.parts`: array of owned part names and useful abbreviations.
+- `inventory.beys`: array of owned complete beys/products.
+- `purchases.items`: purchase-history array.
 
 Optional fields:
 
-- `partsDetail`: detailed rows for the Inventory page.
+- `currency`, `taxRegion`: collection-level purchase defaults.
+- `inventory.partsDetail`: detailed rows for the Inventory page.
 
 Guidance:
 
 - Include both full names and abbreviations when useful, e.g. `Rush` and `R`, `Unite` and `U`.
 - Include complete combo names only if useful for lookup, but part scoring mainly uses individual parts.
 
-## `data/purchases.local.json`
+The collection file deliberately keeps inventory and purchase history as separate sections. Purchase history records provenance; current inventory remains authoritative because gifts, trades, losses, sales, and loose parts cannot always be derived from purchases.
 
-```json
-{
-  "currency": "CAD",
-  "taxRegion": "BC",
-  "items": [
-    {
-      "name": "Wand Wizard 5-70DB Starter",
-      "source": "Private purchase",
-      "pretaxPrice": 20,
-      "taxRate": 0,
-      "estimatedTotalPaid": 20,
-      "recordedFrom": "User bought from individual on 2026-07-30",
-      "notes": "No tax assumed."
-    }
-  ]
-}
-```
-
-Required fields:
-
-- `items`: array.
-
-Recommended fields:
-
-- `currency`, `taxRegion`, `pretaxPrice`, `taxRate`, `estimatedTotalPaid`.
+Migrate the former two-file format with `npm run migrate:collection`. The command refuses to overwrite an existing collection unless `--force` is explicitly supplied and preserves the legacy input files as recoverable backups.
 
 ## `data/normalized/retailer-listings.local.json`
 
@@ -193,8 +175,7 @@ npm run validate:data
 
 The validator checks local private JSON files when they exist:
 
-- `data/inventory.local.json`
-- `data/purchases.local.json`
+- `data/collection.local.json`
 - `data/wishlist.local.json`
 - every JSON file under `data/raw/`
 

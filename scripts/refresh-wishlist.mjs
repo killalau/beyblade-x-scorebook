@@ -9,8 +9,8 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const dryRun = process.argv.includes("--dry-run");
 const normalizedPath = join(root, "data/normalized/retailer-listings.local.json");
 const wishlistPath = join(root, "data/wishlist.local.json");
-const [normalized, inventory, previous] = await Promise.all([
-  readJson(normalizedPath), readJson(join(root, "data/inventory.local.json")), readJson(wishlistPath)
+const [normalized, collection, previous] = await Promise.all([
+  readJson(normalizedPath), readJson(join(root, "data/collection.local.json")), readJson(wishlistPath)
 ]);
 const observations = [];
 for (const file of (await readdir(join(root, "data/raw"))).filter((name) => name.endsWith(".json"))) {
@@ -20,7 +20,7 @@ const merged = mergeObservations(normalized, observations);
 const audit = auditNormalized(merged.catalogue);
 const fatal = audit.issues.filter((issue) => issue.code === "duplicate_listing_id");
 if (fatal.length) throw new Error(`Refresh blocked by ${fatal.length} duplicate listing IDs`);
-const wishlist = generateWishlist(merged.catalogue, inventory);
+const wishlist = generateWishlist(merged.catalogue, collection.inventory);
 const changes = compareWishlists(previous, wishlist);
 console.log(JSON.stringify({ mode: dryRun ? "dry-run" : "write", observations: observations.length, normalized: merged.catalogue.items.length, updated: merged.report.updated.length, stale: merged.report.stale.length, candidates: merged.report.candidates.length, audit: audit.counts, wishlist: wishlist.items.length, added: changes.added.length, removed: changes.removed.length, changed: changes.changed.length }, null, 2));
 if (!dryRun) {

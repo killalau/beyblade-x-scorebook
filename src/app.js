@@ -8,6 +8,7 @@ import { scoreProduct, summarizeBreakdown } from "./scoring.js";
 import { matchesPartFilters, partFilterTokens } from "./wishlist-filters.js";
 
 const storageKeys = {
+  collection: "beybladeScorebook.collection",
   inventory: "beybladeScorebook.inventory",
   wishlist: "beybladeScorebook.wishlist",
   wishlistView: "beybladeScorebook.wishlistView",
@@ -52,7 +53,7 @@ const elements = {
   productResults: document.querySelector("#productResults"),
   sampleList: document.querySelector("#sampleList"),
   clearLocalData: document.querySelector("#clearLocalData"),
-  inventoryFile: document.querySelector("#inventoryFile"),
+  collectionFile: document.querySelector("#collectionFile"),
   wishlistFile: document.querySelector("#wishlistFile"),
   inventoryLoadStatus: document.querySelector("#inventoryLoadStatus"),
   wishlistLoadStatus: document.querySelector("#wishlistLoadStatus"),
@@ -98,10 +99,10 @@ elements.form.addEventListener("submit", (event) => {
   calculateCurrent();
 });
 
-elements.inventoryFile.addEventListener("change", async (event) => {
+elements.collectionFile.addEventListener("change", async (event) => {
   const file = event.target.files?.[0];
   if (!file) return;
-  await loadInventoryFile(file);
+  await loadCollectionFile(file);
 });
 
 elements.wishlistFile.addEventListener("change", async (event) => {
@@ -111,11 +112,12 @@ elements.wishlistFile.addEventListener("change", async (event) => {
 });
 
 elements.clearLocalData.addEventListener("click", () => {
+  localStorage.removeItem(storageKeys.collection);
   localStorage.removeItem(storageKeys.inventory);
   localStorage.removeItem(storageKeys.wishlist);
   applyInventoryData({ parts: [], beys: [], partsDetail: [] });
   applyWishlistData({ items: [] });
-  elements.inventoryLoadStatus.textContent = "Inventory: not loaded";
+  elements.inventoryLoadStatus.textContent = "Collection: not loaded";
   elements.wishlistLoadStatus.textContent = "Wishlist: not loaded";
   clearDataError();
   calculateCurrent();
@@ -154,17 +156,17 @@ function showPage(pageName) {
   });
 }
 
-async function loadInventoryFile(file) {
+async function loadCollectionFile(file) {
   try {
     const data = JSON.parse(await file.text());
-    validateInventoryData(data);
-    applyInventoryData(data);
-    saveLocalData(storageKeys.inventory, file.name, data);
-    elements.inventoryLoadStatus.textContent = `Inventory: ${file.name} at ${formatTimestamp(new Date())}`;
+    validateCollectionData(data);
+    applyCollectionData(data);
+    saveLocalData(storageKeys.collection, file.name, data);
+    elements.inventoryLoadStatus.textContent = `Collection: ${file.name} at ${formatTimestamp(new Date())}`;
     clearDataError();
     calculateCurrent();
   } catch (error) {
-    showDataError(`Inventory error: ${error.message}`);
+    showDataError(`Collection error: ${error.message}`);
   }
 }
 
@@ -189,6 +191,10 @@ function applyInventoryData(data) {
   renderInventory();
 }
 
+function applyCollectionData(data) {
+  applyInventoryData(data.inventory);
+}
+
 function applyWishlistData(data) {
   state.wishlistItems = data.items;
   renderWishlistPartOptions();
@@ -196,12 +202,23 @@ function applyWishlistData(data) {
 }
 
 function loadSavedLocalData() {
+  const savedCollection = readLocalData(storageKeys.collection);
+  if (savedCollection) {
+    try {
+      validateCollectionData(savedCollection.data);
+      applyCollectionData(savedCollection.data);
+      elements.inventoryLoadStatus.textContent = `Collection: ${savedCollection.fileName} at ${savedCollection.savedAt}`;
+    } catch {
+      localStorage.removeItem(storageKeys.collection);
+    }
+  }
+
   const savedInventory = readLocalData(storageKeys.inventory);
-  if (savedInventory) {
+  if (!savedCollection && savedInventory) {
     try {
       validateInventoryData(savedInventory.data);
       applyInventoryData(savedInventory.data);
-      elements.inventoryLoadStatus.textContent = `Inventory: ${savedInventory.fileName} at ${savedInventory.savedAt}`;
+      elements.inventoryLoadStatus.textContent = `Legacy inventory: ${savedInventory.fileName} at ${savedInventory.savedAt}`;
     } catch {
       localStorage.removeItem(storageKeys.inventory);
     }
@@ -242,6 +259,15 @@ function validateInventoryData(data) {
   if (!data || typeof data !== "object") throw new Error("JSON must be an object.");
   if (!Array.isArray(data.parts)) throw new Error("Expected a parts array.");
   if (!Array.isArray(data.beys)) throw new Error("Expected a beys array.");
+}
+
+function validateCollectionData(data) {
+  if (!data || typeof data !== "object") throw new Error("JSON must be an object.");
+  if (data.version !== 1) throw new Error("Expected collection version 1.");
+  if (!data.inventory || typeof data.inventory !== "object") throw new Error("Expected an inventory object.");
+  if (!data.purchases || typeof data.purchases !== "object") throw new Error("Expected a purchases object.");
+  validateInventoryData(data.inventory);
+  if (!Array.isArray(data.purchases.items)) throw new Error("Expected a purchases.items array.");
 }
 
 function validateWishlistData(data) {
