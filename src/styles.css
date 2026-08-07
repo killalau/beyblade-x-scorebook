@@ -81,6 +81,10 @@ textarea {
   padding: 6px 10px;
 }
 
+#dataErrorStatus:empty {
+  display: none;
+}
+
 #dataErrorStatus:not(:empty) {
   border-color: #c74d2c;
   color: #a33c20;
