@@ -88,6 +88,7 @@ const elements = {
   catalogueSearch: document.querySelector("#catalogueSearch"),
   catalogueRetailer: document.querySelector("#catalogueRetailer"),
   catalogueStatus: document.querySelector("#catalogueStatus"),
+  catalogueSort: document.querySelector("#catalogueSort"),
   catalogueItems: document.querySelector("#catalogueItems"),
   rankScoreRules: document.querySelector("#rankScoreRules"),
   partWeightRules: document.querySelector("#partWeightRules"),
@@ -174,7 +175,7 @@ elements.wishlistViewButtons.forEach((button) => {
     renderWishlist();
   });
 });
-[elements.catalogueSearch, elements.catalogueRetailer, elements.catalogueStatus].forEach((control) => {
+[elements.catalogueSearch, elements.catalogueRetailer, elements.catalogueStatus, elements.catalogueSort].forEach((control) => {
   control.addEventListener(control === elements.catalogueSearch ? "input" : "change", renderCatalogue);
 });
 
@@ -408,6 +409,7 @@ function renderCatalogue() {
   const query = elements.catalogueSearch.value.trim().toLowerCase();
   const retailer = elements.catalogueRetailer.value;
   const status = elements.catalogueStatus.value;
+  const sortKey = elements.catalogueSort.value;
   const items = state.catalogueItems
     .filter((item) => !retailer || item.retailer === retailer)
     .filter((item) => !status || item.availabilityStatus === status)
@@ -417,7 +419,7 @@ function renderCatalogue() {
         .filter(Boolean)
         .some((value) => String(value).toLowerCase().includes(query));
     })
-    .sort((a, b) => sortableCreatedAt(b.lastSeenAt) - sortableCreatedAt(a.lastSeenAt) || a.name.localeCompare(b.name));
+    .sort((a, b) => compareCatalogueItems(a, b, sortKey));
 
   elements.catalogueSummary.textContent = `${items.length} of ${state.catalogueItems.length} listings`;
   elements.catalogueItems.innerHTML = items.map((item) => {
@@ -438,6 +440,31 @@ function renderCatalogue() {
       <td>${escapeHtml(formatCatalogueDate(item.lastSeenAt))}</td>
     </tr>`;
   }).join("");
+}
+
+function compareCatalogueItems(a, b, sortKey) {
+  const byName = String(a.name ?? "").localeCompare(String(b.name ?? ""));
+  if (sortKey === "name") return byName;
+  if (sortKey === "retailer") return String(a.retailer ?? "").localeCompare(String(b.retailer ?? "")) || byName;
+  if (sortKey === "availability") {
+    const statusOrder = ["available_now", "preorder", "delayed", "backorder", "out_of_stock", "unavailable", "not_observed", "unknown"];
+    const aStatus = statusOrder.indexOf(a.availabilityStatus);
+    const bStatus = statusOrder.indexOf(b.availabilityStatus);
+    return (aStatus < 0 ? statusOrder.length : aStatus) - (bStatus < 0 ? statusOrder.length : bStatus) || byName;
+  }
+  if (sortKey === "priceAsc") return sortablePositiveValue(toNumber(a.price)) - sortablePositiveValue(toNumber(b.price)) || byName;
+  if (sortKey === "priceDesc") {
+    const aPrice = toNumber(a.price);
+    const bPrice = toNumber(b.price);
+    if (!Number.isFinite(aPrice)) return Number.isFinite(bPrice) ? 1 : byName;
+    if (!Number.isFinite(bPrice)) return -1;
+    return bPrice - aPrice || byName;
+  }
+  const aSeen = sortableCreatedAt(a.lastSeenAt);
+  const bSeen = sortableCreatedAt(b.lastSeenAt);
+  if (!Number.isFinite(aSeen)) return Number.isFinite(bSeen) ? 1 : byName;
+  if (!Number.isFinite(bSeen)) return -1;
+  return bSeen - aSeen || byName;
 }
 
 function formatCatalogueDate(value) {

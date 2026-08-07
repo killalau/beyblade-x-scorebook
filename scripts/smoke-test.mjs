@@ -181,6 +181,7 @@ assert.match(html, /id="wishlistPage"/);
 assert.match(html, /id="wishlistFile"/);
 assert.match(html, /id="cataloguePage"/);
 assert.match(html, /id="catalogueFile"/);
+assert.match(html, /id="catalogueSort"/);
 assert.match(html, /data-wishlist-view="card"/);
 assert.match(html, /value="createdAt"/);
 assert.match(html, /id="rulesPage"/);
@@ -194,6 +195,7 @@ assert.match(appSource, /localStorage/);
 assert.match(appSource, /validateCollectionData/);
 assert.match(appSource, /loadPublicCatalogue/);
 assert.match(appSource, /renderCatalogue/);
+assert.match(appSource, /compareCatalogueItems/);
 
 checkRelativeImports(resolve(new URL("..", import.meta.url).pathname), ["src", "scripts"]);
 

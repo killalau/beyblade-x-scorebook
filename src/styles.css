@@ -399,7 +399,7 @@ th {
 .catalogue-controls {
   display: grid;
   gap: 10px;
-  grid-template-columns: minmax(240px, 1fr) 180px 180px;
+  grid-template-columns: minmax(240px, 1fr) repeat(3, 170px);
   margin-bottom: 12px;
 }
 
