@@ -14,7 +14,7 @@ This repo is a static Beyblade X scorebook intended for GitHub Pages. JSON is th
 - Keep crawling flexible. Do not hard-code a brittle scraper when browser inspection or a lighter data extraction is safer.
 - Prefer Codex-led refreshes using the current site behavior, user browser context, and cautious manual verification.
 - For Amazon refreshes, follow the Featured-first search workflow in `docs/crawl-playbook.md`; do not rely on Newest arrivals alone.
-- A completed retailer refresh must update raw crawl evidence, `data/normalized/retailer-listings.local.json`, and the generated `data/wishlist.local.json`; raw-only refreshes are incomplete unless the source was blocked or the captured data could not be normalized reliably.
+- A completed retailer refresh must update raw crawl evidence, `data/normalized/retailer-listings.local.json`, the generated `data/wishlist.local.json`, and the sanitized `data/retailer-listings.json` public snapshot; raw-only refreshes are incomplete unless the source was blocked or the captured data could not be normalized reliably.
 - Be gentle with retailers. If Amazon, Walmart, or grocery sites show robot/CAPTCHA/blocking behavior, stop aggressive retrying and switch to manual inspection or ask the user.
 - Follow `docs/crawl-playbook.md` for sources, fields, status rules, and refresh checklist.
 - Follow `docs/data-contracts.md` when writing local JSON.
@@ -25,6 +25,7 @@ This repo is a static Beyblade X scorebook intended for GitHub Pages. JSON is th
 - JSON files are authoritative. Codex should read and update `data/*.local.json` directly for private state.
 - `data/collection.local.json` is the authoritative owned-state file. Its `inventory` and `purchases` sections must be updated together when a purchase changes ownership. The former `inventory.local.json` and `purchases.local.json` files are legacy migration inputs only.
 - Normalized retailer facts live in `data/normalized/retailer-listings.local.json` and include available, delayed, backorder, out-of-stock, unavailable, not-observed, and unknown listings. Do not delete normalized listings merely because they are not currently purchasable.
+- `data/retailer-listings.json` is a generated, sanitized public snapshot for the Catalogue page, not a source of truth. Build it with `npm run export:catalogue`; include verified listings of every availability status and exclude private notes, raw availability text, location, and session context.
 - `data/wishlist.local.json` is derived from normalized listings, inventory, and public ranking/scoring modules. Generate it with `npm run generate:wishlist`; out-of-stock, unavailable, not-observed, unknown, or non-orderable listings must be excluded from the generated wishlist.
 - Treat collection and wishlist as synchronized private state. After any ownership or purchase change, update both collection sections in the same task: add/remove the requested purchase row, add/remove the complete bey and its parts in inventory, then regenerate wishlist `usefulParts`, `helpsInventory`, `score`, and `costIndex`.
 - Keep verified retailer listings in normalized data after purchase. If the listing remains eligible, a fully owned wishlist row uses `usefulParts: "-"` and `costIndex: null`; mixed bundles continue scoring only missing ranked parts.

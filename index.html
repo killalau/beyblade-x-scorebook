@@ -22,6 +22,10 @@
             Load wishlist
             <input id="wishlistFile" type="file" accept="application/json">
           </label>
+          <label class="file-button">
+            Load catalogue
+            <input id="catalogueFile" type="file" accept="application/json">
+          </label>
           <button id="clearLocalData" class="danger-button" type="button">Clear local data</button>
         </div>
       </section>
@@ -30,12 +34,14 @@
         <button class="tab-button selected" type="button" data-page="scorebook">Scorebook</button>
         <button class="tab-button" type="button" data-page="inventory">Inventory</button>
         <button class="tab-button" type="button" data-page="wishlist">Wishlist</button>
+        <button class="tab-button" type="button" data-page="catalogue">Catalogue</button>
         <button class="tab-button" type="button" data-page="rules">Rules</button>
       </nav>
 
       <section class="status-strip" aria-label="Local data status">
         <span id="inventoryLoadStatus">Collection: not loaded</span>
         <span id="wishlistLoadStatus">Wishlist: not loaded</span>
+        <span id="catalogueLoadStatus">Catalogue: loading public snapshot</span>
         <span id="dataErrorStatus"></span>
       </section>
 
@@ -211,6 +217,48 @@
             <button id="wishlistClearParts" class="secondary-button" type="button">Clear part filters</button>
           </div>
           <div id="wishlistItems" class="wishlist-grid" data-view="card"></div>
+        </section>
+      </section>
+
+      <section id="cataloguePage" class="page">
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Retailer Catalogue</h2>
+            <span id="catalogueSummary">Loading</span>
+          </div>
+          <p class="catalogue-intro">All normalized crawl records are shown, including unavailable and out-of-stock listings.</p>
+          <div class="catalogue-controls">
+            <input id="catalogueSearch" type="search" placeholder="Search products, configs, or retailer">
+            <select id="catalogueRetailer" aria-label="Filter catalogue by retailer">
+              <option value="">All retailers</option>
+            </select>
+            <select id="catalogueStatus" aria-label="Filter catalogue by availability">
+              <option value="">All statuses</option>
+              <option value="available_now">Available now</option>
+              <option value="preorder">Preorder</option>
+              <option value="delayed">Delayed</option>
+              <option value="backorder">Backorder</option>
+              <option value="out_of_stock">Out of stock</option>
+              <option value="unavailable">Unavailable</option>
+              <option value="not_observed">Not observed</option>
+              <option value="unknown">Unknown</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table class="catalogue-table">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Retailer</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Configs</th>
+                  <th>Last observed</th>
+                </tr>
+              </thead>
+              <tbody id="catalogueItems"></tbody>
+            </table>
+          </div>
         </section>
       </section>
 

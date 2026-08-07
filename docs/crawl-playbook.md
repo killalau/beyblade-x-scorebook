@@ -95,10 +95,11 @@ For each product/listing, collect as many of these as reliable:
 9. Review the audit from `refresh:wishlist`; resolve material issues introduced by this refresh. If audit findings require a catalogue-wide eligibility pass, run `npm run gate:normalized` and rerun `npm run refresh:wishlist`. The eligibility filter requires `normalizationStatus: "verified"`; it excludes out-of-stock, unavailable, not-observed, unknown, and non-orderable records, while retaining available, preorder, delayed/restock, and orderable backorder records.
 10. Update both `inventory` and `purchases` sections of `data/collection.local.json` only when the user says they bought or own something, then regenerate wishlist. Keep verified retailer listings in normalized data after purchase; fully owned wishlist rows use `usefulParts: "-"` and `costIndex: null`, while mixed bundles score only missing ranked parts.
 11. Run `npm run validate:data`.
-12. Run `npm run summarize:data` and review normalized, eligible, excluded, and wishlist count changes.
-13. Run `npm test`.
-14. Verify private JSON/raw files are ignored and not staged.
-15. Summarize raw captures, normalized catalogue additions/updates, wishlist eligibility changes, excluded results, uncertainty, and any blocked sources.
+12. Run `npm run export:catalogue -- --dry-run`, inspect the count, then run `npm run export:catalogue`. The public snapshot contains all verified normalized listings regardless of availability, but strips private notes and raw availability/location context.
+13. Run `npm run summarize:data` and review normalized, eligible, excluded, and wishlist count changes.
+14. Run `npm test`.
+15. Verify private JSON/raw files are ignored and not staged.
+16. Summarize raw captures, normalized catalogue additions/updates, wishlist eligibility changes, excluded results, uncertainty, and any blocked sources.
 
 ## Human Verification
 

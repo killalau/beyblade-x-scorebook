@@ -15,6 +15,7 @@
     "normalize:crawl": "node scripts/normalize-crawl.mjs",
     "gate:normalized": "node scripts/apply-normalized-gates.mjs",
     "report:candidates": "node scripts/report-crawl-candidates.mjs",
-    "refresh:wishlist": "node scripts/refresh-wishlist.mjs"
+    "refresh:wishlist": "node scripts/refresh-wishlist.mjs",
+    "export:catalogue": "node scripts/export-public-catalogue.mjs"
   }
 }

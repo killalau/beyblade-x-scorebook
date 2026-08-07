@@ -8,6 +8,16 @@ import { generateWishlist, isWishlistEligible, listingIdFor, normalizeStatus } f
 import { auditNormalized } from "./normalized-audit.mjs";
 import { extractObservations, mergeObservations } from "./crawl-normalizer.mjs";
 import { combineLegacyCollection, inventoryFromCollection } from "./collection-data.mjs";
+import { buildPublicCatalogue } from "./export-public-catalogue.mjs";
+
+const publicCatalogue = buildPublicCatalogue({ currency: "CAD", items: [
+  { listingId: "shop:1", retailer: "Shop", name: "Missing Product", url: "https://example.com/1", configs: ["Test 1-60R"], availabilityStatus: "out_of_stock", orderable: false, normalizationStatus: "verified", notes: "Private note", availabilityText: "Local delivery context", lastSeenAt: "2026-08-01T00:00:00Z" },
+  { listingId: "shop:2", retailer: "Shop", name: "Review Product", url: "https://example.com/2", configs: [], availabilityStatus: "unknown", orderable: false, normalizationStatus: "needs_review" }
+] });
+assert.equal(publicCatalogue.items.length, 1);
+assert.equal(publicCatalogue.items[0].availabilityStatus, "out_of_stock");
+assert.equal("notes" in publicCatalogue.items[0], false);
+assert.equal("availabilityText" in publicCatalogue.items[0], false);
 
 const migratedCollection = combineLegacyCollection(
   { parts: ["LR"], beys: ["Test 1-60LR"], partsDetail: [{ name: "LR" }] },
@@ -169,6 +179,8 @@ assert.match(html, /id="inventoryTotalSpend"/);
 assert.match(html, /id="collectionFile"/);
 assert.match(html, /id="wishlistPage"/);
 assert.match(html, /id="wishlistFile"/);
+assert.match(html, /id="cataloguePage"/);
+assert.match(html, /id="catalogueFile"/);
 assert.match(html, /data-wishlist-view="card"/);
 assert.match(html, /value="createdAt"/);
 assert.match(html, /id="rulesPage"/);
@@ -180,6 +192,8 @@ assert.match(appSource, /sortableCreatedAt/);
 assert.match(appSource, /wishlist-thumbnail/);
 assert.match(appSource, /localStorage/);
 assert.match(appSource, /validateCollectionData/);
+assert.match(appSource, /loadPublicCatalogue/);
+assert.match(appSource, /renderCatalogue/);
 
 checkRelativeImports(resolve(new URL("..", import.meta.url).pathname), ["src", "scripts"]);
 

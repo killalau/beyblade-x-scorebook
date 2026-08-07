@@ -12,6 +12,7 @@ const storageKeys = {
   collection: "beybladeScorebook.collection",
   inventory: "beybladeScorebook.inventory",
   wishlist: "beybladeScorebook.wishlist",
+  catalogue: "beybladeScorebook.catalogue",
   wishlistView: "beybladeScorebook.wishlistView",
   wishlistPartFilters: "beybladeScorebook.wishlistPartFilters"
 };
@@ -25,6 +26,7 @@ const state = {
   purchases: [],
   collectionCurrency: "CAD",
   wishlistItems: [],
+  catalogueItems: [],
   wishlistView: localStorage.getItem(storageKeys.wishlistView) === "list" ? "list" : "card",
   wishlistPartFilters: savedWishlistPartFilters,
   selectedResultIndex: 0,
@@ -42,6 +44,7 @@ const elements = {
     scorebook: document.querySelector("#scorebookPage"),
     inventory: document.querySelector("#inventoryPage"),
     wishlist: document.querySelector("#wishlistPage"),
+    catalogue: document.querySelector("#cataloguePage"),
     rules: document.querySelector("#rulesPage")
   },
   addProductRow: document.querySelector("#addProductRow"),
@@ -58,8 +61,10 @@ const elements = {
   clearLocalData: document.querySelector("#clearLocalData"),
   collectionFile: document.querySelector("#collectionFile"),
   wishlistFile: document.querySelector("#wishlistFile"),
+  catalogueFile: document.querySelector("#catalogueFile"),
   inventoryLoadStatus: document.querySelector("#inventoryLoadStatus"),
   wishlistLoadStatus: document.querySelector("#wishlistLoadStatus"),
+  catalogueLoadStatus: document.querySelector("#catalogueLoadStatus"),
   dataErrorStatus: document.querySelector("#dataErrorStatus"),
   inventorySummary: document.querySelector("#inventorySummary"),
   inventoryBeyCount: document.querySelector("#inventoryBeyCount"),
@@ -79,6 +84,11 @@ const elements = {
   wishlistClearParts: document.querySelector("#wishlistClearParts"),
   wishlistViewButtons: [...document.querySelectorAll("[data-wishlist-view]")],
   wishlistItems: document.querySelector("#wishlistItems"),
+  catalogueSummary: document.querySelector("#catalogueSummary"),
+  catalogueSearch: document.querySelector("#catalogueSearch"),
+  catalogueRetailer: document.querySelector("#catalogueRetailer"),
+  catalogueStatus: document.querySelector("#catalogueStatus"),
+  catalogueItems: document.querySelector("#catalogueItems"),
   rankScoreRules: document.querySelector("#rankScoreRules"),
   partWeightRules: document.querySelector("#partWeightRules"),
   rarityRules: document.querySelector("#rarityRules")
@@ -117,18 +127,28 @@ elements.wishlistFile.addEventListener("change", async (event) => {
   await loadWishlistFile(file);
 });
 
-elements.clearLocalData.addEventListener("click", () => {
+elements.catalogueFile.addEventListener("change", async (event) => {
+  const file = event.target.files?.[0];
+  if (!file) return;
+  await loadCatalogueFile(file);
+});
+
+elements.clearLocalData.addEventListener("click", async () => {
   localStorage.removeItem(storageKeys.collection);
   localStorage.removeItem(storageKeys.inventory);
   localStorage.removeItem(storageKeys.wishlist);
+  localStorage.removeItem(storageKeys.catalogue);
   state.purchases = [];
   state.collectionCurrency = "CAD";
   applyInventoryData({ parts: [], beys: [], partsDetail: [] });
   applyWishlistData({ items: [] });
+  applyCatalogueData({ items: [] });
   elements.inventoryLoadStatus.textContent = "Collection: not loaded";
   elements.wishlistLoadStatus.textContent = "Wishlist: not loaded";
+  elements.catalogueLoadStatus.textContent = "Catalogue: loading public snapshot";
   clearDataError();
   calculateCurrent();
+  await loadPublicCatalogue();
 });
 
 elements.wishlistSearch.addEventListener("input", renderWishlist);
@@ -153,6 +173,9 @@ elements.wishlistViewButtons.forEach((button) => {
     localStorage.setItem(storageKeys.wishlistView, state.wishlistView);
     renderWishlist();
   });
+});
+[elements.catalogueSearch, elements.catalogueRetailer, elements.catalogueStatus].forEach((control) => {
+  control.addEventListener(control === elements.catalogueSearch ? "input" : "change", renderCatalogue);
 });
 
 function showPage(pageName) {
@@ -191,6 +214,19 @@ async function loadWishlistFile(file) {
   }
 }
 
+async function loadCatalogueFile(file) {
+  try {
+    const data = JSON.parse(await file.text());
+    validateCatalogueData(data);
+    applyCatalogueData(data);
+    saveLocalData(storageKeys.catalogue, file.name, data);
+    elements.catalogueLoadStatus.textContent = `Catalogue: ${file.name} at ${formatTimestamp(new Date())}`;
+    clearDataError();
+  } catch (error) {
+    showDataError(`Catalogue error: ${error.message}`);
+  }
+}
+
 function applyInventoryData(data) {
   state.ownedParts = data.parts;
   state.ownedBeys = data.beys;
@@ -209,6 +245,12 @@ function applyWishlistData(data) {
   state.wishlistItems = data.items;
   renderWishlistPartOptions();
   renderWishlist();
+}
+
+function applyCatalogueData(data) {
+  state.catalogueItems = data.items;
+  renderCatalogueRetailers();
+  renderCatalogue();
 }
 
 function loadSavedLocalData() {
@@ -243,6 +285,33 @@ function loadSavedLocalData() {
     } catch {
       localStorage.removeItem(storageKeys.wishlist);
     }
+  }
+
+  const savedCatalogue = readLocalData(storageKeys.catalogue);
+  if (savedCatalogue) {
+    try {
+      validateCatalogueData(savedCatalogue.data);
+      applyCatalogueData(savedCatalogue.data);
+      elements.catalogueLoadStatus.textContent = `Catalogue: ${savedCatalogue.fileName} at ${savedCatalogue.savedAt}`;
+    } catch {
+      localStorage.removeItem(storageKeys.catalogue);
+    }
+  }
+}
+
+async function loadPublicCatalogue() {
+  if (readLocalData(storageKeys.catalogue)) return;
+  try {
+    const response = await fetch("./data/retailer-listings.json", { cache: "no-cache" });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const data = await response.json();
+    validateCatalogueData(data);
+    applyCatalogueData(data);
+    const generated = data.generatedAt ? ` (${formatCatalogueDate(data.generatedAt)})` : "";
+    elements.catalogueLoadStatus.textContent = `Catalogue: public snapshot${generated}`;
+  } catch (error) {
+    elements.catalogueLoadStatus.textContent = "Catalogue: public snapshot unavailable";
+    console.warn("Could not load public catalogue", error);
   }
 }
 
@@ -285,6 +354,14 @@ function validateWishlistData(data) {
   if (!Array.isArray(data.items)) throw new Error("Expected an items array.");
 }
 
+function validateCatalogueData(data) {
+  if (!data || typeof data !== "object") throw new Error("JSON must be an object.");
+  if (!Array.isArray(data.items)) throw new Error("Expected an items array.");
+  if (data.items.some((item) => !item || typeof item !== "object" || !item.listingId)) {
+    throw new Error("Every catalogue item must have a listingId.");
+  }
+}
+
 function showDataError(message) {
   elements.dataErrorStatus.textContent = message;
 }
@@ -307,6 +384,66 @@ function renderRuleList(target, rules) {
     return item;
   });
   target.replaceChildren(...items);
+}
+
+function renderCatalogueRetailers() {
+  const selected = elements.catalogueRetailer.value;
+  const retailers = [...new Set(state.catalogueItems.map((item) => item.retailer).filter(Boolean))]
+    .sort((a, b) => a.localeCompare(b));
+  elements.catalogueRetailer.replaceChildren(
+    optionElement("", "All retailers"),
+    ...retailers.map((retailer) => optionElement(retailer, retailer))
+  );
+  elements.catalogueRetailer.value = retailers.includes(selected) ? selected : "";
+}
+
+function optionElement(value, label) {
+  const option = document.createElement("option");
+  option.value = value;
+  option.textContent = label;
+  return option;
+}
+
+function renderCatalogue() {
+  const query = elements.catalogueSearch.value.trim().toLowerCase();
+  const retailer = elements.catalogueRetailer.value;
+  const status = elements.catalogueStatus.value;
+  const items = state.catalogueItems
+    .filter((item) => !retailer || item.retailer === retailer)
+    .filter((item) => !status || item.availabilityStatus === status)
+    .filter((item) => {
+      if (!query) return true;
+      return [item.name, item.retailer, item.includedBeys, ...(item.configs ?? [])]
+        .filter(Boolean)
+        .some((value) => String(value).toLowerCase().includes(query));
+    })
+    .sort((a, b) => sortableCreatedAt(b.lastSeenAt) - sortableCreatedAt(a.lastSeenAt) || a.name.localeCompare(b.name));
+
+  elements.catalogueSummary.textContent = `${items.length} of ${state.catalogueItems.length} listings`;
+  elements.catalogueItems.innerHTML = items.map((item) => {
+    const statusClass = `catalogue-status-${escapeHtml(item.availabilityStatus ?? "unknown")}`;
+    const configs = Array.isArray(item.configs) && item.configs.length ? item.configs.join(", ") : "-";
+    const product = item.url
+      ? `<a href="${escapeHtml(item.url)}" target="_blank" rel="noreferrer">${escapeHtml(item.name)}</a>`
+      : escapeHtml(item.name);
+    const thumbnail = item.imageUrl
+      ? `<img class="catalogue-thumbnail" src="${escapeHtml(item.imageUrl)}" alt="" loading="lazy">`
+      : `<span class="catalogue-thumbnail catalogue-thumbnail-placeholder" aria-hidden="true">X</span>`;
+    return `<tr>
+      <td><div class="catalogue-product">${thumbnail}<div>${product}<small>${escapeHtml(item.bundleType ?? "")}</small></div></div></td>
+      <td>${escapeHtml(item.retailer)}</td>
+      <td>${escapeHtml(formatCurrency(item.price, item.currency))}</td>
+      <td><span class="catalogue-status ${statusClass}">${escapeHtml(item.statusLabel ?? item.availabilityStatus ?? "Unknown")}</span></td>
+      <td>${escapeHtml(configs)}</td>
+      <td>${escapeHtml(formatCatalogueDate(item.lastSeenAt))}</td>
+    </tr>`;
+  }).join("");
+}
+
+function formatCatalogueDate(value) {
+  const timestamp = Date.parse(value);
+  if (!Number.isFinite(timestamp)) return "-";
+  return new Date(timestamp).toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
 }
 
 function renderSamples() {
@@ -649,6 +786,7 @@ renderSamples();
 renderProductEditor();
 renderRules();
 loadSavedLocalData();
+loadPublicCatalogue();
 renderInventory();
 renderWishlist();
 calculateCurrent();

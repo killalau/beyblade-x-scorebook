@@ -72,6 +72,16 @@ Recommended fields:
 
 Out-of-stock and unavailable records stay here so a later refresh can restore them to the wishlist without losing identity or history.
 
+## `data/retailer-listings.json`
+
+This committed file is a deterministic, sanitized export used by the public Catalogue page. It is not a source of truth. Generate it from the private normalized catalogue with `npm run export:catalogue`.
+
+- Only `normalizationStatus: "verified"` listings are exported.
+- Every availability status is retained, including out-of-stock, unavailable, not-observed, and unknown.
+- Public product facts such as listing ID, retailer, name, price, configs, status, URL, image, and observation timestamps are retained.
+- `notes`, `availabilityText`, location details, raw evidence, and browser/session context are not exported.
+- Uploading the full private normalized JSON in the browser temporarily overrides the public snapshot through localStorage.
+
 Audit and merge commands:
 
 ```bash
@@ -179,7 +189,10 @@ The validator checks local private JSON files when they exist:
 
 - `data/collection.local.json`
 - `data/wishlist.local.json`
+- `data/normalized/retailer-listings.local.json`
 - every JSON file under `data/raw/`
+
+It also always validates the committed sanitized `data/retailer-listings.json` snapshot when present.
 
 Missing private files are allowed, because a public GitHub Pages checkout will not include them.
 

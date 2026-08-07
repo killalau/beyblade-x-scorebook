@@ -10,6 +10,7 @@ const checked = [];
 validateOptionalJson("data/collection.local.json", validateCollection);
 validateOptionalJson("data/wishlist.local.json", validateWishlist);
 validateOptionalJson("data/normalized/retailer-listings.local.json", validateNormalizedListings);
+validateOptionalJson("data/retailer-listings.json", validatePublicCatalogue);
 validateRawDirectory("data/raw");
 
 if (failures.length) {
@@ -118,6 +119,16 @@ function validateNormalizedListings(data, label) {
     assertArray(item.configs, `${itemLabel}.configs`);
     assert.equal(allowedStatuses.has(item.availabilityStatus), true, `${itemLabel}.availabilityStatus is invalid`);
     assert.equal(typeof item.orderable, "boolean", `${itemLabel}.orderable must be boolean`);
+  }
+}
+
+function validatePublicCatalogue(data, label) {
+  assertObject(data, label);
+  assert.equal(data.version, 1, `${label}.version must be 1`);
+  validateNormalizedListings(data, label);
+  for (const [index, item] of data.items.entries()) {
+    assert.equal("notes" in item, false, `${label}.items[${index}] must not expose notes`);
+    assert.equal("availabilityText" in item, false, `${label}.items[${index}] must not expose availabilityText`);
   }
 }
 

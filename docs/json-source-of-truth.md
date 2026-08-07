@@ -20,6 +20,8 @@ Commit-safe data lives in source modules:
 
 These files contain scoring rules, aliases, abbreviations, and public ranking references.
 
+`data/retailer-listings.json` is also commit-safe, but it is generated rather than authoritative. It is a sanitized snapshot of verified normalized retailer listings for the public Catalogue page. The full local catalogue remains private.
+
 ## Private Data
 
 Local-only data lives under `data/` and is ignored by Git:
@@ -39,9 +41,18 @@ retailer pages
   -> data/normalized/retailer-listings.local.json
   -> eligibility + inventory/ranking calculation
   -> data/wishlist.local.json
+  -> sanitize verified listings of every availability status
+  -> data/retailer-listings.json
 ```
 
 Normalized listings are the catalogue of verified retailer facts and retain unavailable records. Wishlist is the actionable derived view and excludes `out_of_stock`, `unavailable`, `not_observed`, `unknown`, and records with `orderable: false`.
+
+The public catalogue snapshot also retains unavailable records, but removes private notes, raw availability text, location, and browser/session context. Regenerate it after a successful retailer refresh:
+
+```bash
+npm run export:catalogue -- --dry-run
+npm run export:catalogue
+```
 
 ## New Agent Workflow
 
