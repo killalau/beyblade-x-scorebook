@@ -12,7 +12,6 @@ const storageKeys = {
   collection: "beybladeScorebook.collection",
   inventory: "beybladeScorebook.inventory",
   wishlist: "beybladeScorebook.wishlist",
-  catalogue: "beybladeScorebook.catalogue",
   wishlistView: "beybladeScorebook.wishlistView",
   wishlistPartFilters: "beybladeScorebook.wishlistPartFilters"
 };
@@ -61,7 +60,6 @@ const elements = {
   clearLocalData: document.querySelector("#clearLocalData"),
   collectionFile: document.querySelector("#collectionFile"),
   wishlistFile: document.querySelector("#wishlistFile"),
-  catalogueFile: document.querySelector("#catalogueFile"),
   inventoryLoadStatus: document.querySelector("#inventoryLoadStatus"),
   wishlistLoadStatus: document.querySelector("#wishlistLoadStatus"),
   catalogueLoadStatus: document.querySelector("#catalogueLoadStatus"),
@@ -128,17 +126,10 @@ elements.wishlistFile.addEventListener("change", async (event) => {
   await loadWishlistFile(file);
 });
 
-elements.catalogueFile.addEventListener("change", async (event) => {
-  const file = event.target.files?.[0];
-  if (!file) return;
-  await loadCatalogueFile(file);
-});
-
 elements.clearLocalData.addEventListener("click", async () => {
   localStorage.removeItem(storageKeys.collection);
   localStorage.removeItem(storageKeys.inventory);
   localStorage.removeItem(storageKeys.wishlist);
-  localStorage.removeItem(storageKeys.catalogue);
   state.purchases = [];
   state.collectionCurrency = "CAD";
   applyInventoryData({ parts: [], beys: [], partsDetail: [] });
@@ -215,19 +206,6 @@ async function loadWishlistFile(file) {
   }
 }
 
-async function loadCatalogueFile(file) {
-  try {
-    const data = JSON.parse(await file.text());
-    validateCatalogueData(data);
-    applyCatalogueData(data);
-    saveLocalData(storageKeys.catalogue, file.name, data);
-    elements.catalogueLoadStatus.textContent = `Catalogue: ${file.name} at ${formatTimestamp(new Date())}`;
-    clearDataError();
-  } catch (error) {
-    showDataError(`Catalogue error: ${error.message}`);
-  }
-}
-
 function applyInventoryData(data) {
   state.ownedParts = data.parts;
   state.ownedBeys = data.beys;
@@ -255,6 +233,7 @@ function applyCatalogueData(data) {
 }
 
 function loadSavedLocalData() {
+  localStorage.removeItem("beybladeScorebook.catalogue");
   const savedCollection = readLocalData(storageKeys.collection);
   if (savedCollection) {
     try {
@@ -288,20 +267,9 @@ function loadSavedLocalData() {
     }
   }
 
-  const savedCatalogue = readLocalData(storageKeys.catalogue);
-  if (savedCatalogue) {
-    try {
-      validateCatalogueData(savedCatalogue.data);
-      applyCatalogueData(savedCatalogue.data);
-      elements.catalogueLoadStatus.textContent = `Catalogue: ${savedCatalogue.fileName} at ${savedCatalogue.savedAt}`;
-    } catch {
-      localStorage.removeItem(storageKeys.catalogue);
-    }
-  }
 }
 
 async function loadPublicCatalogue() {
-  if (readLocalData(storageKeys.catalogue)) return;
   try {
     const response = await fetch("./data/retailer-listings.json", { cache: "no-cache" });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);

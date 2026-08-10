@@ -80,7 +80,7 @@ This committed file is a deterministic, sanitized export used by the public Cata
 - Every availability status is retained, including out-of-stock, unavailable, not-observed, and unknown.
 - Public product facts such as listing ID, retailer, name, price, configs, status, URL, image, and observation timestamps are retained.
 - `notes`, `availabilityText`, location details, raw evidence, and browser/session context are not exported.
-- Uploading the full private normalized JSON in the browser temporarily overrides the public snapshot through localStorage.
+- The Catalogue page always loads this public snapshot automatically; the full private normalized catalogue is not loaded into the public app.
 
 Audit and merge commands:
 
