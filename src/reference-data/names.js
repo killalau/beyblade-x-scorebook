@@ -20,6 +20,8 @@ export const aliases = {
   "Antler Stag": "Antler Stag"
 };
 
+export const lockChipNames = ["Ragna", "Dran", "Aegis", "Shinobi", "Bahamut"];
+
 export const assistBladeCodes = {
   A: "A",
   B: "B",
@@ -28,11 +30,13 @@ export const assistBladeCodes = {
   E: "E",
   F: "F",
   G: "G",
+  K: "Knuckle",
   L: "L",
   R: "R"
 };
 
 export const overBladeCodes = {
+  B: "Break",
   F: "F",
   W: "W"
 };
@@ -49,6 +53,7 @@ export const bitNames = {
   E: "Elevate",
   GF: "Gear Flat",
   HN: "High Needle",
+  I: "Ignition",
   LF: "Low Flat",
   LR: "Low Rush",
   O: "Orb",

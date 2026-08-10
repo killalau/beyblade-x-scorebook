@@ -100,6 +100,21 @@ assert.deepEqual(blastPegasus.parts.map(({ name, type }) => ({ name, type })), [
 assert.equal(blastPegasus.parts.find((part) => part.name === "Blast").rankDetail, "T0");
 assert.equal(blastPegasus.parts.find((part) => part.name === "Blast").partScore, 7.5);
 
+const blitzBahamut = scoreProduct({
+  name: "Blitz Bahamut BK 1-50I",
+  configs: ["Blitz Bahamut BK 1-50I"],
+  price: 19.96
+}, { cxMode: true });
+assert.deepEqual(blitzBahamut.parts.map(({ name, type }) => ({ name, type })), [
+  { name: "Blitz", type: "blade" },
+  { name: "Bahamut", type: "lockChip" },
+  { name: "Break", type: "overBlade" },
+  { name: "Knuckle", type: "assistBlade" },
+  { name: "1-50", type: "ratchet" },
+  { name: "I", type: "bit" }
+]);
+assert.equal(blitzBahamut.parts.find((part) => part.name === "I").displayName, "Ignition");
+
 const fusedOp = scoreProduct({
   name: "Test Pegasus A Op",
   configs: ["Test Pegasus A Op"],

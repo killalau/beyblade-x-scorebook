@@ -3,6 +3,7 @@ import {
   assistBladeCodes,
   bitNames,
   fusedBitCodes,
+  lockChipNames,
   overBladeCodes
 } from "./reference-data/names.js";
 import {
@@ -189,7 +190,7 @@ function inferBladeName(tokens, cxMode) {
 }
 
 function isLikelyLockChip(token) {
-  return ["Ragna", "Dran", "Aegis", "Shinobi"].includes(token);
+  return lockChipNames.includes(token);
 }
 
 function parseCxCode(code) {
