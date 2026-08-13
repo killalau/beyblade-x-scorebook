@@ -24,6 +24,7 @@ const state = {
   inventoryDetail: [],
   purchases: [],
   collectionCurrency: "CAD",
+  inventoryPartCategory: "Blade",
   wishlistItems: [],
   catalogueItems: [],
   wishlistView: localStorage.getItem(storageKeys.wishlistView) === "list" ? "list" : "card",
@@ -73,7 +74,7 @@ const elements = {
   inventoryPartsBody: document.querySelector("#inventoryPartsBody"),
   inventoryPartSearch: document.querySelector("#inventoryPartSearch"),
   inventoryPartOptions: document.querySelector("#inventoryPartOptions"),
-  inventoryPartCategory: document.querySelector("#inventoryPartCategory"),
+  inventoryPartTabs: document.querySelector("#inventoryPartTabs"),
   inventoryPartClear: document.querySelector("#inventoryPartClear"),
   wishlistSummary: document.querySelector("#wishlistSummary"),
   wishlistSearch: document.querySelector("#wishlistSearch"),
@@ -149,10 +150,14 @@ elements.clearLocalData.addEventListener("click", async () => {
 
 elements.wishlistSearch.addEventListener("input", renderWishlist);
 elements.inventoryPartSearch.addEventListener("input", renderInventory);
-elements.inventoryPartCategory.addEventListener("change", renderInventory);
+elements.inventoryPartTabs.addEventListener("click", (event) => {
+  const tab = event.target.closest("[data-category]");
+  if (!tab) return;
+  state.inventoryPartCategory = tab.dataset.category;
+  renderInventory();
+});
 elements.inventoryPartClear.addEventListener("click", () => {
   elements.inventoryPartSearch.value = "";
-  elements.inventoryPartCategory.value = "";
   renderInventory();
 });
 elements.wishlistSort.addEventListener("change", renderWishlist);
@@ -567,13 +572,20 @@ function renderInventory() {
   elements.inventoryBeys.replaceChildren(...beyItems);
 
   const query = elements.inventoryPartSearch.value.trim().toLowerCase();
-  const category = elements.inventoryPartCategory.value;
+  const category = state.inventoryPartCategory;
+  const inventoryParts = state.inventoryDetail.filter((part) => part.category !== "Complete Combo");
   const filteredParts = state.inventoryDetail
-    .filter((part) => !category || partMatchesInventoryCategory(part, category))
+    .filter((part) => part.category !== "Complete Combo")
+    .filter((part) => partMatchesInventoryCategory(part, category))
     .filter((part) => !query || [part.name, part.abbrev, part.category, part.source]
       .filter(Boolean).some((value) => String(value).toLowerCase().includes(query)));
-  elements.inventoryPartSummary.textContent = `${filteredParts.length} of ${state.inventoryDetail.length} rows`;
-  renderInventoryPartOptions();
+  elements.inventoryPartSummary.textContent = `${filteredParts.length} ${inventoryPartTabLabel(category)} parts`;
+  elements.inventoryPartTabs.querySelectorAll("[data-category]").forEach((tab) => {
+    const selected = tab.dataset.category === category;
+    tab.classList.toggle("selected", selected);
+    tab.setAttribute("aria-selected", String(selected));
+  });
+  renderInventoryPartOptions(inventoryParts);
 
   const partRows = filteredParts.map((part) => {
     const row = document.createElement("tr");
@@ -590,15 +602,19 @@ function renderInventory() {
   elements.inventoryPartsBody.replaceChildren(...partRows);
 }
 
-function renderInventoryPartOptions() {
-  const values = [...new Set(state.inventoryDetail.flatMap((part) => [part.name, part.abbrev]).filter((value) => value && value !== "-"))]
+function renderInventoryPartOptions(parts) {
+  const values = [...new Set(parts.flatMap((part) => [part.name, part.abbrev]).filter((value) => value && value !== "-"))]
     .sort((a, b) => String(a).localeCompare(String(b)));
   elements.inventoryPartOptions.replaceChildren(...values.map((value) => optionElement(value, value)));
 }
 
 function partMatchesInventoryCategory(part, category) {
-  if (category !== "blade") return part.category === category;
-  return ["Blade", "Main Blade", "Lock Chip", "Over Blade", "Assist Blade"].includes(part.category);
+  if (category !== "other") return part.category === category;
+  return !["Blade", "Lock Chip", "Main Blade", "Over Blade", "Assist Blade", "Ratchet", "Bit", "Complete Combo"].includes(part.category);
+}
+
+function inventoryPartTabLabel(category) {
+  return category === "other" ? "Other" : category === "Lock Chip" ? "Clip Lock" : category;
 }
 
 function findPurchaseForBey(bey) {

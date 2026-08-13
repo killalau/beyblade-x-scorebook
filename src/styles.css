@@ -439,8 +439,31 @@ th {
 .inventory-part-filters {
   display: grid;
   gap: 10px;
-  grid-template-columns: minmax(240px, 1fr) 180px auto;
+  grid-template-columns: minmax(240px, 1fr) auto;
   margin-bottom: 12px;
+}
+
+.inventory-part-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: thin;
+}
+
+.inventory-part-tab {
+  background: #fff;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  flex: 0 0 auto;
+  padding: 8px 12px;
+}
+
+.inventory-part-tab.selected {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
 }
 
 .wishlist-controls {

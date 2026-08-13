@@ -143,21 +143,20 @@
             <h2>Parts</h2>
             <span id="inventoryPartSummary">0 parts</span>
           </div>
+          <div id="inventoryPartTabs" class="inventory-part-tabs" role="tablist" aria-label="Inventory part type">
+            <button class="inventory-part-tab" type="button" role="tab" data-category="Blade" aria-selected="true">Blade</button>
+            <button class="inventory-part-tab" type="button" role="tab" data-category="Lock Chip" aria-selected="false">Clip Lock</button>
+            <button class="inventory-part-tab" type="button" role="tab" data-category="Main Blade" aria-selected="false">Main Blade</button>
+            <button class="inventory-part-tab" type="button" role="tab" data-category="Over Blade" aria-selected="false">Over Blade</button>
+            <button class="inventory-part-tab" type="button" role="tab" data-category="Assist Blade" aria-selected="false">Assist Blade</button>
+            <button class="inventory-part-tab" type="button" role="tab" data-category="Ratchet" aria-selected="false">Ratchet</button>
+            <button class="inventory-part-tab" type="button" role="tab" data-category="Bit" aria-selected="false">Bit</button>
+            <button class="inventory-part-tab" type="button" role="tab" data-category="other" aria-selected="false">Others</button>
+          </div>
           <div class="inventory-part-filters">
             <input id="inventoryPartSearch" type="search" list="inventoryPartOptions" placeholder="Search part, e.g. LR or 7-60">
             <datalist id="inventoryPartOptions"></datalist>
-            <select id="inventoryPartCategory" aria-label="Filter inventory parts by category">
-              <option value="">All part types</option>
-              <option value="blade">All blades</option>
-              <option value="Lock Chip">Lock Chip</option>
-              <option value="Main Blade">Main Blade</option>
-              <option value="Blade">Blade</option>
-              <option value="Over Blade">Over Blade</option>
-              <option value="Assist Blade">Assist Blade</option>
-              <option value="Ratchet">Ratchet</option>
-              <option value="Bit">Bit</option>
-            </select>
-            <button id="inventoryPartClear" class="secondary-button" type="button">Clear filters</button>
+            <button id="inventoryPartClear" class="secondary-button" type="button">Clear search</button>
           </div>
           <div class="table-wrap">
             <table>
