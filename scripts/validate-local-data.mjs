@@ -75,6 +75,7 @@ function validatePurchases(data, label) {
     if (item.pretaxPrice !== undefined) assertNumberLike(item.pretaxPrice, `${label}.items[${index}].pretaxPrice`);
     if (item.taxRate !== undefined) assertNumberLike(item.taxRate, `${label}.items[${index}].taxRate`);
     if (item.estimatedTotalPaid !== undefined) assertNumberLike(item.estimatedTotalPaid, `${label}.items[${index}].estimatedTotalPaid`);
+    if (item.imageUrl !== undefined) assertString(item.imageUrl, `${label}.items[${index}].imageUrl`);
   }
 }
 

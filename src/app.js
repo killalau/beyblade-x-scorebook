@@ -548,11 +548,12 @@ function renderInventory() {
     item.className = "data-item inventory-bey-card";
     const purchase = findPurchaseForBey(bey);
     const listing = findCatalogueListingForBey(bey, purchase);
+    const imageUrl = purchase?.imageUrl ?? listing?.imageUrl;
     const paid = purchase ? purchasePaidAmount(purchase) : null;
     item.innerHTML = `
-      <span class="inventory-bey-thumbnail${listing?.imageUrl ? " has-image" : ""}">
-        ${listing?.imageUrl
-          ? `<img src="${escapeHtml(listing.imageUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer">`
+      <span class="inventory-bey-thumbnail${imageUrl ? " has-image" : ""}">
+        ${imageUrl
+          ? `<img src="${escapeHtml(imageUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer">`
           : `<span aria-hidden="true">BX</span>`}
       </span>
       <span class="inventory-bey-info">

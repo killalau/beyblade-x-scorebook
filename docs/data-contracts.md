@@ -41,6 +41,7 @@ Optional fields:
 
 - `currency`, `taxRegion`: collection-level purchase defaults.
 - `inventory.partsDetail`: detailed rows for the Inventory page.
+- `purchases.items[].imageUrl`: reliable image for an owned product. Inventory prefers this image, then falls back to a matching Catalogue listing.
 
 Guidance:
 
