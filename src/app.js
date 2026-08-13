@@ -6,7 +6,7 @@ import {
 } from "./reference-data/scoringConfig.js";
 import { scoreProduct, summarizeBreakdown } from "./scoring.js";
 import { matchesPartFilters, partFilterTokens } from "./wishlist-filters.js";
-import { calculateTotalSpend } from "./collection-summary.js";
+import { calculateTotalSpend, purchasePaidAmount } from "./collection-summary.js";
 
 const storageKeys = {
   collection: "beybladeScorebook.collection",
@@ -71,6 +71,10 @@ const elements = {
   inventoryPartSummary: document.querySelector("#inventoryPartSummary"),
   inventoryBeys: document.querySelector("#inventoryBeys"),
   inventoryPartsBody: document.querySelector("#inventoryPartsBody"),
+  inventoryPartSearch: document.querySelector("#inventoryPartSearch"),
+  inventoryPartOptions: document.querySelector("#inventoryPartOptions"),
+  inventoryPartCategory: document.querySelector("#inventoryPartCategory"),
+  inventoryPartClear: document.querySelector("#inventoryPartClear"),
   wishlistSummary: document.querySelector("#wishlistSummary"),
   wishlistSearch: document.querySelector("#wishlistSearch"),
   wishlistSort: document.querySelector("#wishlistSort"),
@@ -144,6 +148,13 @@ elements.clearLocalData.addEventListener("click", async () => {
 });
 
 elements.wishlistSearch.addEventListener("input", renderWishlist);
+elements.inventoryPartSearch.addEventListener("input", renderInventory);
+elements.inventoryPartCategory.addEventListener("change", renderInventory);
+elements.inventoryPartClear.addEventListener("click", () => {
+  elements.inventoryPartSearch.value = "";
+  elements.inventoryPartCategory.value = "";
+  renderInventory();
+});
 elements.wishlistSort.addEventListener("change", renderWishlist);
 [elements.wishlistParts, elements.wishlistPartType, elements.wishlistPartMatch, elements.wishlistOnlyMissing].forEach((control) => {
   control.addEventListener(control === elements.wishlistParts ? "input" : "change", () => {
@@ -230,6 +241,7 @@ function applyCatalogueData(data) {
   state.catalogueItems = data.items;
   renderCatalogueRetailers();
   renderCatalogue();
+  renderInventory();
 }
 
 function loadSavedLocalData() {
@@ -533,13 +545,36 @@ function renderInventory() {
 
   const beyItems = state.ownedBeys.map((bey) => {
     const item = document.createElement("div");
-    item.className = "data-item";
-    item.textContent = bey;
+    item.className = "data-item inventory-bey-card";
+    const purchase = findPurchaseForBey(bey);
+    const listing = findCatalogueListingForBey(bey, purchase);
+    const paid = purchase ? purchasePaidAmount(purchase) : null;
+    item.innerHTML = `
+      <span class="inventory-bey-thumbnail${listing?.imageUrl ? " has-image" : ""}">
+        ${listing?.imageUrl
+          ? `<img src="${escapeHtml(listing.imageUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer">`
+          : `<span aria-hidden="true">BX</span>`}
+      </span>
+      <span class="inventory-bey-info">
+        <strong>${escapeHtml(bey)}</strong>
+        <small>${escapeHtml(purchase?.source ?? "Owned item")}</small>
+      </span>
+      <strong class="inventory-bey-price">${escapeHtml(formatCurrency(paid, state.collectionCurrency))}</strong>
+    `;
     return item;
   });
   elements.inventoryBeys.replaceChildren(...beyItems);
 
-  const partRows = state.inventoryDetail.map((part) => {
+  const query = elements.inventoryPartSearch.value.trim().toLowerCase();
+  const category = elements.inventoryPartCategory.value;
+  const filteredParts = state.inventoryDetail
+    .filter((part) => !category || partMatchesInventoryCategory(part, category))
+    .filter((part) => !query || [part.name, part.abbrev, part.category, part.source]
+      .filter(Boolean).some((value) => String(value).toLowerCase().includes(query)));
+  elements.inventoryPartSummary.textContent = `${filteredParts.length} of ${state.inventoryDetail.length} rows`;
+  renderInventoryPartOptions();
+
+  const partRows = filteredParts.map((part) => {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${escapeHtml(part.category ?? "-")}</td>
@@ -552,6 +587,48 @@ function renderInventory() {
     return row;
   });
   elements.inventoryPartsBody.replaceChildren(...partRows);
+}
+
+function renderInventoryPartOptions() {
+  const values = [...new Set(state.inventoryDetail.flatMap((part) => [part.name, part.abbrev]).filter((value) => value && value !== "-"))]
+    .sort((a, b) => String(a).localeCompare(String(b)));
+  elements.inventoryPartOptions.replaceChildren(...values.map((value) => optionElement(value, value)));
+}
+
+function partMatchesInventoryCategory(part, category) {
+  if (category !== "blade") return part.category === category;
+  return ["Blade", "Main Blade", "Lock Chip", "Over Blade", "Assist Blade"].includes(part.category);
+}
+
+function findPurchaseForBey(bey) {
+  const exact = state.purchases.find((purchase) => purchase.name === bey);
+  if (exact) return exact;
+  const normalizedBey = normalizeInventoryText(bey);
+  return state.purchases.find((purchase) => {
+    const normalizedPurchase = normalizeInventoryText(purchase.name);
+    return normalizedPurchase.includes(normalizedBey) || normalizedBey.includes(normalizedPurchase);
+  });
+}
+
+function findCatalogueListingForBey(bey, purchase) {
+  const candidates = [bey, purchase?.name].filter(Boolean).map(normalizeInventoryText);
+  const exactMatches = state.catalogueItems.filter((listing) => {
+    const productValues = [listing.includedBeys, ...(listing.configs ?? [])]
+      .filter(Boolean).map(normalizeInventoryText).filter(Boolean);
+    return candidates.some((candidate) => productValues.includes(candidate));
+  });
+  const fuzzyMatches = state.catalogueItems.filter((listing) => {
+    const name = normalizeInventoryText(listing.name);
+    return name.length >= 8 && candidates.some((candidate) => candidate.length >= 8 && (name.includes(candidate) || candidate.includes(name)));
+  });
+  const matches = exactMatches.length ? exactMatches : fuzzyMatches;
+  const preferredRetailer = String(purchase?.source ?? "").toLowerCase();
+  return matches.find((listing) => preferredRetailer.includes(String(listing.retailer ?? "").split(".")[0].toLowerCase()))
+    ?? matches[0];
+}
+
+function normalizeInventoryText(value) {
+  return String(value ?? "").toLowerCase().replace(/\b(starter|pack|set|dual|deluxe|with launcher)\b/g, " ").replace(/[^a-z0-9]+/g, "");
 }
 
 function renderWishlist() {

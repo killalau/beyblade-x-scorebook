@@ -143,6 +143,22 @@
             <h2>Parts</h2>
             <span id="inventoryPartSummary">0 parts</span>
           </div>
+          <div class="inventory-part-filters">
+            <input id="inventoryPartSearch" type="search" list="inventoryPartOptions" placeholder="Search part, e.g. LR or 7-60">
+            <datalist id="inventoryPartOptions"></datalist>
+            <select id="inventoryPartCategory" aria-label="Filter inventory parts by category">
+              <option value="">All part types</option>
+              <option value="blade">All blades</option>
+              <option value="Lock Chip">Lock Chip</option>
+              <option value="Main Blade">Main Blade</option>
+              <option value="Blade">Blade</option>
+              <option value="Over Blade">Over Blade</option>
+              <option value="Assist Blade">Assist Blade</option>
+              <option value="Ratchet">Ratchet</option>
+              <option value="Bit">Bit</option>
+            </select>
+            <button id="inventoryPartClear" class="secondary-button" type="button">Clear filters</button>
+          </div>
           <div class="table-wrap">
             <table>
               <thead>
