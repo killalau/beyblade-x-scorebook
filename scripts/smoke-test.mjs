@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, extname, join, resolve } from "node:path";
-import { scoreProduct } from "../src/scoring.js";
+import { parseConfig, scoreProduct } from "../src/scoring.js";
 import { matchesPartFilters, partFilterTokens } from "../src/wishlist-filters.js";
 import { calculateTotalSpend, purchasePaidAmount } from "../src/collection-summary.js";
 import { generateWishlist, isWishlistEligible, listingIdFor, normalizeStatus } from "./wishlist-pipeline.mjs";
@@ -115,6 +115,16 @@ assert.deepEqual(blitzBahamut.parts.map(({ name, type }) => ({ name, type })), [
 ]);
 assert.equal(blitzBahamut.parts.find((part) => part.name === "I").displayName, "Ignition");
 
+const newOwnedCxBeys = [
+  ["Flame Cerberus W 5-80WB", ["Flame", "Cerberus", "Wheel", "5-80", "WB"]],
+  ["Rage Ragna FE4-55Y", ["Rage", "Ragna", "Flow", "Erase", "4-55", "Y"]],
+  ["Fortress Knight GV8-70UN", ["Fortress", "Knight", "Guard", "Vertical", "8-70", "UN"]],
+  ["Reaper Incendio T4-70K", ["Reaper", "Incendio", "Turn", "4-70", "K"]]
+];
+for (const [config, expectedParts] of newOwnedCxBeys) {
+  assert.deepEqual(parseConfig(config, { cxMode: true }).map((part) => part.name), expectedParts);
+}
+
 const fusedOp = scoreProduct({
   name: "Test Pegasus A Op",
   configs: ["Test Pegasus A Op"],
@@ -183,6 +193,39 @@ const unknownStatusMerge = mergeObservations({ items: [{
   lastSeenAt: "2026-08-01T12:00:00Z"
 }] }, [{ ...crawlObservations[0], availabilityStatus: "unknown", observedAt: "2026-08-03T12:00:00Z" }]).catalogue;
 assert.equal(unknownStatusMerge.items[0].availabilityStatus, "available_now");
+const delayedDeliveryMerge = mergeObservations({ items: [{
+  listingId: "walmart-ca:TEST12345678",
+  name: "Delayed product",
+  url: "https://www.walmart.ca/en/ip/TEST12345678",
+  availabilityStatus: "available_now",
+  orderable: true,
+  lastSeenAt: "2026-08-01T12:00:00Z"
+}] }, extractObservations({
+  collectedAt: "2026-08-11T12:00:00-07:00",
+  sources: [{
+    retailer: "Walmart.ca",
+    verifiedListings: [{
+      productId: "TEST12345678",
+      sourceUrl: "https://www.walmart.ca/en/ip/TEST12345678",
+      availabilityText: "Delivery, Fri Aug 21",
+      availabilityStatus: "available_now"
+    }]
+  }]
+})).catalogue;
+assert.equal(delayedDeliveryMerge.items[0].availabilityStatus, "delayed");
+const pickupTodayObservation = extractObservations({
+  collectedAt: "2026-08-11T12:00:00-07:00",
+  sources: [{
+    retailer: "Walmart.ca",
+    verifiedListings: [{
+      productId: "TEST87654321",
+      sourceUrl: "https://www.walmart.ca/en/ip/TEST87654321",
+      availabilityText: "Delivery, Fri Aug 21 | Free pickup, today",
+      availabilityStatus: "available_now"
+    }]
+  }]
+})[0];
+assert.equal(pickupTodayObservation.availabilityStatus, "available_now");
 assert.equal(auditNormalized({ items: [{ listingId: "x:1", name: "Test", configs: [], availabilityStatus: "unknown", normalizationStatus: "needs_review", url: "https://example.com" }] }).issueCount > 0, true);
 
 const html = readFileSync(new URL("../index.html", import.meta.url), "utf8");

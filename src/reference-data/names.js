@@ -20,24 +20,28 @@ export const aliases = {
   "Antler Stag": "Antler Stag"
 };
 
-export const lockChipNames = ["Ragna", "Dran", "Aegis", "Shinobi", "Bahamut"];
+export const lockChipNames = ["Ragna", "Dran", "Aegis", "Shinobi", "Bahamut", "Cerberus", "Knight", "Incendio"];
 
 export const assistBladeCodes = {
   A: "A",
   B: "B",
   C: "C",
   D: "D",
-  E: "E",
+  E: "Erase",
   F: "F",
   G: "G",
   K: "Knuckle",
   L: "L",
-  R: "R"
+  R: "R",
+  T: "Turn",
+  V: "Vertical",
+  W: "Wheel"
 };
 
 export const overBladeCodes = {
   B: "Break",
-  F: "F",
+  F: "Flow",
+  G: "Guard",
   W: "W"
 };
 
@@ -54,6 +58,7 @@ export const bitNames = {
   GF: "Gear Flat",
   HN: "High Needle",
   I: "Ignition",
+  K: "Kick",
   LF: "Low Flat",
   LR: "Low Rush",
   O: "Orb",
@@ -63,5 +68,6 @@ export const bitNames = {
   Tr: "Tr",
   U: "Unite",
   UN: "Under Needle",
+  WB: "Wall Ball",
   Y: "Yield"
 };

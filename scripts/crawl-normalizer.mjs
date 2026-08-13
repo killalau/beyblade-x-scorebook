@@ -70,7 +70,7 @@ function observationFromDetail(item, sourceFile) {
 function observation(item, retailer, observedAt, sourceFile, verified = true) {
   const url = item.sourceUrl || item.pageUrl || item.productUrl || item.href || "";
   const availabilityText = item.availabilityText || item.availability || item.fulfillmentText || item.status || "";
-  const availabilityStatus = item.availabilityStatus || statusFromText(availabilityText);
+  const availabilityStatus = statusFromText(availabilityText, observedAt, item.availabilityStatus);
   return {
     listingId: listingIdFor(retailer, url),
     retailer,
@@ -89,13 +89,33 @@ function observation(item, retailer, observedAt, sourceFile, verified = true) {
   };
 }
 
-function statusFromText(value) {
+function statusFromText(value, observedAt, explicitStatus) {
   const text = String(value || "").toLowerCase();
   if (/temporarily out of stock|no current buying option|unavailable/.test(text)) return "unavailable";
   if (/back.?order|email you when/.test(text)) return "backorder";
   if (/pre.?order/.test(text)) return "preorder";
-  if (/delivery|in stock|add to cart|add button/.test(text)) return "available_now";
-  return normalizeStatus(value);
+  const baseStatus = explicitStatus || (/delivery|in stock|add to cart|add button/.test(text) ? "available_now" : normalizeStatus(value));
+  if (baseStatus === "available_now" && deliveryIsAfterSevenDays(value, observedAt)) return "delayed";
+  return baseStatus;
+}
+
+function deliveryIsAfterSevenDays(value, observedAt) {
+  if (/pickup,?\s*today|as soon as\s+\d+\s+hour/i.test(String(value || ""))) return false;
+  const observed = new Date(observedAt);
+  if (!Number.isFinite(observed.getTime())) return false;
+  const monthNumbers = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+  const dates = [...String(value || "").matchAll(/\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\s+(\d{1,2})\b/gi)]
+    .map((match) => {
+      let year = observed.getFullYear();
+      const month = monthNumbers[match[1].slice(0, 3).toLowerCase()];
+      if (month < observed.getMonth() - 6) year += 1;
+      return new Date(year, month, Number(match[2]), 23, 59, 59);
+    });
+  if (!dates.length) return false;
+  const cutoff = new Date(observed);
+  cutoff.setDate(cutoff.getDate() + 7);
+  cutoff.setHours(23, 59, 59, 999);
+  return dates.every((date) => date > cutoff);
 }
 
 function statusLabel(status, raw) {

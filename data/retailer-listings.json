@@ -1,7 +1,7 @@
 {
   "version": 1,
   "currency": "CAD",
-  "generatedAt": "2026-08-06T00:07:51-07:00",
+  "generatedAt": "2026-08-11T15:49:29-07:00",
   "items": [
     {
       "listingId": "amazon-ca:B001DR87UE",
@@ -22,7 +22,7 @@
       "url": "https://www.amazon.ca/dp/B001DR87UE",
       "imageUrl": "https://m.media-amazon.com/images/I/61qzUglMgEL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0C52C4L3T",
@@ -31,8 +31,8 @@
       "name": "BX-02 Starter Hells Size 4-60T",
       "price": 37.45,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Starter with launcher",
       "includedBeys": "-",
@@ -43,8 +43,8 @@
       "url": "https://www.amazon.ca/dp/B0C52C4L3T",
       "imageUrl": "https://m.media-amazon.com/images/I/61aJExH96+L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0C52R16P1",
@@ -87,8 +87,8 @@
       "url": "https://www.amazon.ca/dp/B0C52YJQBC",
       "imageUrl": "https://m.media-amazon.com/images/I/516r5DrOFDL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0C533Q31X",
@@ -109,8 +109,8 @@
       "url": "https://www.amazon.ca/dp/B0C533Q31X",
       "imageUrl": "https://m.media-amazon.com/images/I/41I+55DN8yL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0C535TZP7",
@@ -152,17 +152,17 @@
       "url": "https://www.amazon.ca/dp/B0CHR9FP8L",
       "imageUrl": "https://m.media-amazon.com/images/I/516yKZ3Y0oL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0CLFNMPF6",
       "retailer": "Amazon.ca",
       "productId": "B0CLFNMPF6",
       "name": "Optimus Prime 4-60P, Megatron 4-80B Multipack",
-      "price": 30.09,
+      "price": 30.03,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Multi-pack",
       "includedBeys": "Optimus Prime 4-60P, Megatron 4-80B",
@@ -174,18 +174,18 @@
       "url": "https://www.amazon.ca/dp/B0CLFNMPF6",
       "imageUrl": "https://m.media-amazon.com/images/I/81Z1ubxBcbL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0CMZQ9157",
       "retailer": "Amazon.ca",
       "productId": "B0CMZQ9157",
       "name": "BX-25 Gear Case",
-      "price": 96.53,
+      "price": 84,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Single top / other",
       "includedBeys": "-",
@@ -193,10 +193,11 @@
         "-"
       ],
       "cxMode": false,
-      "url": "https://www.amazon.ca/Beyblade-BX-25-Gear-Case/dp/B0CMZQ9157",
-      "imageUrl": "https://m.media-amazon.com/images/I/619ruy98JUL._AC_SY300_SX300_QL70_ML2_.jpg",
+      "url": "https://www.amazon.ca/dp/B0CMZQ9157",
+      "imageUrl": "https://m.media-amazon.com/images/I/619ruy98JUL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-07-30T22:06:30.881Z"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0CMZSRJ3Q",
@@ -290,8 +291,8 @@
       "name": "Xtreme Battle Set (Dagger Dran 4-60R, Tusk Mammoth 3-60T)",
       "price": 70,
       "currency": "CAD",
-      "statusLabel": "Out of stock",
-      "availabilityStatus": "out_of_stock",
+      "statusLabel": "Unavailable",
+      "availabilityStatus": "unavailable",
       "orderable": false,
       "bundleType": "Stadium / battle set",
       "includedBeys": "Dagger Dran 4-60R, Tusk Mammoth 3-60T",
@@ -303,7 +304,7 @@
       "url": "https://www.amazon.ca/dp/B0CQ3HMP9M",
       "imageUrl": "https://m.media-amazon.com/images/I/61eCET4G7GL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
       "lastAvailableAt": "2026-07-30T22:06:30.881Z"
     },
     {
@@ -332,7 +333,7 @@
       "retailer": "Amazon.ca",
       "productId": "B0CS878V9D",
       "name": "Dranzer Spiral 3-80T Starter",
-      "price": 20.11,
+      "price": 20.92,
       "currency": "CAD",
       "statusLabel": "Available now",
       "availabilityStatus": "available_now",
@@ -346,8 +347,8 @@
       "url": "https://www.amazon.ca/dp/B0CS878V9D",
       "imageUrl": "https://m.media-amazon.com/images/I/816OzFIN0PL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0CS87JMQN",
@@ -365,10 +366,10 @@
         "Scythe Incendio 4-60T"
       ],
       "cxMode": false,
-      "url": "https://www.amazon.ca/Beyblade-Incendio-Right-Spinning-Launcher-Battling/dp/B0CS87JMQN",
-      "imageUrl": "https://m.media-amazon.com/images/I/81WQGNj0RiL._AC_SY300_SX300_QL70_ML2_.jpg",
+      "url": "https://www.amazon.ca/dp/B0CS87JMQN",
+      "imageUrl": "https://m.media-amazon.com/images/I/81WQGNj0RiL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-07-24T15:56:11.485Z"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0CS885DDX",
@@ -389,8 +390,8 @@
       "url": "https://www.amazon.ca/dp/B0CS885DDX",
       "imageUrl": "https://m.media-amazon.com/images/I/818j7xrS94L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0CS89NLVK",
@@ -419,7 +420,7 @@
       "retailer": "Amazon.ca",
       "productId": "B0CS8DNRFF",
       "name": "Claw Leon 5-60P Starter",
-      "price": 24.99,
+      "price": 24.98,
       "currency": "CAD",
       "statusLabel": "Delayed delivery",
       "availabilityStatus": "delayed",
@@ -433,18 +434,18 @@
       "url": "https://www.amazon.ca/dp/B0CS8DNRFF",
       "imageUrl": "https://m.media-amazon.com/images/I/718V57p5bAL._AC_UL320_.jpg",
       "firstSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0CS8KQ2ZL",
       "retailer": "Amazon.ca",
       "productId": "B0CS8KQ2ZL",
       "name": "Soar Phoenix 9-60GF Starter",
-      "price": 25.35,
+      "price": 34.68,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Starter with launcher",
       "includedBeys": "Soar Phoenix 9-60GF",
@@ -455,15 +456,15 @@
       "url": "https://www.amazon.ca/dp/B0CS8KQ2ZL",
       "imageUrl": "https://m.media-amazon.com/images/I/81nvIcSbQeL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0CS8MW28F",
       "retailer": "Amazon.ca",
       "productId": "B0CS8MW28F",
       "name": "Lance Knight 4-80HN Starter",
-      "price": 18.89,
+      "price": 18.87,
       "currency": "CAD",
       "statusLabel": "Available now",
       "availabilityStatus": "available_now",
@@ -477,8 +478,8 @@
       "url": "https://www.amazon.ca/dp/B0CS8MW28F",
       "imageUrl": "https://m.media-amazon.com/images/I/71q7LuNXrvL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0CT9Q2M9B",
@@ -499,7 +500,7 @@
       "url": "https://www.amazon.ca/dp/B0CT9Q2M9B",
       "imageUrl": "https://m.media-amazon.com/images/I/81X1JZCkSGL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
       "lastAvailableAt": "2026-08-06T00:07:51-07:00"
     },
     {
@@ -521,8 +522,8 @@
       "url": "https://www.amazon.ca/dp/B0CV2TDB57",
       "imageUrl": "https://m.media-amazon.com/images/I/815Cr+suaEL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0D1YM8D4Q",
@@ -552,8 +553,8 @@
       "name": "Sting Unicorn 5-60GP Booster",
       "price": 22.99,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Booster",
       "includedBeys": "Sting Unicorn 5-60GP",
@@ -564,15 +565,15 @@
       "url": "https://www.amazon.ca/dp/B0D64TGH27",
       "imageUrl": "https://m.media-amazon.com/images/I/81x3IZcDC4L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0D6MZB1VF",
       "retailer": "Amazon.ca",
       "productId": "B0D6MZB1VF",
       "name": "Cobalt Dragoon 2-60C Starter",
-      "price": 74.28,
+      "price": 69.31,
       "currency": "CAD",
       "statusLabel": "Available now",
       "availabilityStatus": "available_now",
@@ -586,8 +587,8 @@
       "url": "https://www.amazon.ca/dp/B0D6MZB1VF",
       "imageUrl": "https://m.media-amazon.com/images/I/61LOQ-xHnQL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0D821GF5S",
@@ -596,8 +597,8 @@
       "name": "Wand Wizard 5-70DB Starter",
       "price": 47.35,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Starter with launcher",
       "includedBeys": "Wand Wizard 5-70DB",
@@ -608,8 +609,8 @@
       "url": "https://www.amazon.ca/dp/B0D821GF5S",
       "imageUrl": "https://m.media-amazon.com/images/I/71D+D45CyKL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-07-30T22:06:30.881Z"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0D87L8PKD",
@@ -673,8 +674,8 @@
       "url": "https://www.amazon.ca/dp/B0D88FVGBH",
       "imageUrl": "https://m.media-amazon.com/images/I/81ewQBMfpJL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0D88KFJQP",
@@ -695,7 +696,7 @@
       "url": "https://www.amazon.ca/dp/B0D88KFJQP",
       "imageUrl": "https://m.media-amazon.com/images/I/71i0bU-Y5RL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0D9Z364CT",
@@ -716,8 +717,8 @@
       "url": "https://www.amazon.ca/dp/B0D9Z364CT",
       "imageUrl": "https://m.media-amazon.com/images/I/81SvI+okTFL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0D9Z4YWLH",
@@ -738,8 +739,8 @@
       "url": "https://www.amazon.ca/dp/B0D9Z4YWLH",
       "imageUrl": "https://m.media-amazon.com/images/I/71fup85RzHL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0D9ZGXMRN",
@@ -760,8 +761,8 @@
       "url": "https://www.amazon.ca/dp/B0D9ZGXMRN",
       "imageUrl": "https://m.media-amazon.com/images/I/81X2PNb4iML._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0D9ZV4Z9L",
@@ -888,8 +889,8 @@
       "url": "https://www.amazon.ca/dp/B0DJQQDFPS",
       "imageUrl": "https://m.media-amazon.com/images/I/61jv21uYbaL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DN6WFN6V",
@@ -910,15 +911,15 @@
       "url": "https://www.amazon.ca/dp/B0DN6WFN6V",
       "imageUrl": "https://m.media-amazon.com/images/I/815KtA3Tp2L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DN6X2P4S",
       "retailer": "Amazon.ca",
       "productId": "B0DN6X2P4S",
       "name": "Dark Perseus B6-80W Starter",
-      "price": 18.12,
+      "price": 18.51,
       "currency": "CAD",
       "statusLabel": "Available now",
       "availabilityStatus": "available_now",
@@ -932,8 +933,8 @@
       "url": "https://www.amazon.ca/dp/B0DN6X2P4S",
       "imageUrl": "https://m.media-amazon.com/images/I/71jgzHilE8L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DN6X5FGH",
@@ -962,7 +963,7 @@
       "retailer": "Amazon.ca",
       "productId": "B0DN6X7VG4",
       "name": "Fort Hornet R7-60T Starter",
-      "price": 19.04,
+      "price": 19.22,
       "currency": "CAD",
       "statusLabel": "Available now",
       "availabilityStatus": "available_now",
@@ -976,18 +977,18 @@
       "url": "https://www.amazon.ca/dp/B0DN6X7VG4",
       "imageUrl": "https://m.media-amazon.com/images/I/71PeL-hJu1L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DN6XKB7W",
       "retailer": "Amazon.ca",
       "productId": "B0DN6XKB7W",
       "name": "and Transformers Collab, Bumblebee 3-60GP vs. Shockwave 5-80O, 2 Tops, 2 Laun...",
-      "price": 39.8,
+      "price": 37.99,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Starter with launcher",
       "includedBeys": "-",
@@ -998,15 +999,15 @@
       "url": "https://www.amazon.ca/dp/B0DN6XKB7W",
       "imageUrl": "https://m.media-amazon.com/images/I/814sPNghuuL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DN6XN4VQ",
       "retailer": "Amazon.ca",
       "productId": "B0DN6XN4VQ",
       "name": "Arc Wizard R4-55LO Starter",
-      "price": 19.17,
+      "price": 19.13,
       "currency": "CAD",
       "statusLabel": "Available now",
       "availabilityStatus": "available_now",
@@ -1020,8 +1021,8 @@
       "url": "https://www.amazon.ca/dp/B0DN6XN4VQ",
       "imageUrl": "https://m.media-amazon.com/images/I/71yR4L3yA9L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DN6XN4W4",
@@ -1042,8 +1043,8 @@
       "url": "https://www.amazon.ca/dp/B0DN6XN4W4",
       "imageUrl": "https://m.media-amazon.com/images/I/8112+zBkhLL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DN6XQK96",
@@ -1064,8 +1065,8 @@
       "url": "https://www.amazon.ca/dp/B0DN6XQK96",
       "imageUrl": "https://m.media-amazon.com/images/I/81NKf1jgg0L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DN6XVRML",
@@ -1086,7 +1087,7 @@
       "url": "https://www.amazon.ca/dp/B0DN6XVRML",
       "imageUrl": "https://m.media-amazon.com/images/I/81tpt6i8AoL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
       "lastAvailableAt": "2026-08-06T00:07:51-07:00"
     },
     {
@@ -1108,18 +1109,18 @@
       "url": "https://www.amazon.ca/dp/B0DN6YDVC6",
       "imageUrl": "https://m.media-amazon.com/images/I/81enejlYS5L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DN6YR3HF",
       "retailer": "Amazon.ca",
       "productId": "B0DN6YR3HF",
       "name": "Victory Grip Right-Spin Launcher Set with Saber Samurai 2-70L",
-      "price": 31.05,
+      "price": 32.65,
       "currency": "CAD",
-      "statusLabel": "Out of stock",
-      "availabilityStatus": "out_of_stock",
+      "statusLabel": "Unavailable",
+      "availabilityStatus": "unavailable",
       "orderable": false,
       "bundleType": "Launcher set",
       "includedBeys": "Saber Samurai 2-70L",
@@ -1130,7 +1131,7 @@
       "url": "https://www.amazon.ca/dp/B0DN6YR3HF",
       "imageUrl": "https://m.media-amazon.com/images/I/81kp0g261CL._AC_UL320_.jpg",
       "firstSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastSeenAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DN6YSH77",
@@ -1151,8 +1152,8 @@
       "url": "https://www.amazon.ca/dp/B0DN6YSH77",
       "imageUrl": "https://m.media-amazon.com/images/I/81e4CztMpDL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DN6YTNYZ",
@@ -1161,8 +1162,8 @@
       "name": "Drop Attack Battle Set (Impact Drake 9-60LR, Hover Wyvern 3-85N)",
       "price": 68.04,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Stadium / battle set",
       "includedBeys": "Impact Drake 9-60LR, Hover Wyvern 3-85N",
@@ -1174,8 +1175,8 @@
       "url": "https://www.amazon.ca/dp/B0DN6YTNYZ",
       "imageUrl": "https://m.media-amazon.com/images/I/81gazOutLuL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DN73G4BZ",
@@ -1196,15 +1197,15 @@
       "url": "https://www.amazon.ca/dp/B0DN73G4BZ",
       "imageUrl": "https://m.media-amazon.com/images/I/71C42kE2dOL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DN7MVWSC",
       "retailer": "Amazon.ca",
       "productId": "B0DN7MVWSC",
       "name": "Shelter Drake 7-80GP Starter",
-      "price": 17.6,
+      "price": 17.5,
       "currency": "CAD",
       "statusLabel": "Available now",
       "availabilityStatus": "available_now",
@@ -1218,8 +1219,8 @@
       "url": "https://www.amazon.ca/dp/B0DN7MVWSC",
       "imageUrl": "https://m.media-amazon.com/images/I/81r+HCk4wJL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DNFPBQKK",
@@ -1247,7 +1248,7 @@
       "retailer": "Amazon.ca",
       "productId": "B0DNFPTG38",
       "name": "Hasbro X-Over Project Driger Slash 4-80P Starter Pack Spinning Top and Starter",
-      "price": 77.56,
+      "price": 77.33,
       "currency": "CAD",
       "statusLabel": "Available now",
       "availabilityStatus": "available_now",
@@ -1258,10 +1259,11 @@
         "4-80P"
       ],
       "cxMode": false,
-      "url": "https://www.amazon.ca/Hasbro-Beyblade-Project-Starter-Spinning/dp/B0DNFPTG38",
-      "imageUrl": "https://m.media-amazon.com/images/I/815KtA3Tp2L._AC_SX679_.jpg",
+      "url": "https://www.amazon.ca/dp/B0DNFPTG38",
+      "imageUrl": "https://m.media-amazon.com/images/I/815KtA3Tp2L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-07-30T22:06:30.881Z"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DSJJVTHF",
@@ -1324,15 +1326,15 @@
       "url": "https://www.amazon.ca/dp/B0DTVH1TF1",
       "imageUrl": "https://m.media-amazon.com/images/I/61mev0MM2vL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DWS3ZFF7",
       "retailer": "Amazon.ca",
       "productId": "B0DWS3ZFF7",
       "name": "タカラトミー() BX-43 Gear Case White Ver.",
-      "price": 96.79,
+      "price": 102.14,
       "currency": "CAD",
       "statusLabel": "Available now",
       "availabilityStatus": "available_now",
@@ -1343,10 +1345,11 @@
         "-"
       ],
       "cxMode": false,
-      "url": "https://www.amazon.ca/%E3%82%BF%E3%82%AB%E3%83%A9%E3%83%88%E3%83%9F%E3%83%BC-TAKARA-TOMY-BEYBLADE-Beyblade/dp/B0DWS3ZFF7",
-      "imageUrl": "https://m.media-amazon.com/images/I/511H5QhxO+L._AC_SY300_SX300_QL70_ML2_.jpg",
+      "url": "https://www.amazon.ca/dp/B0DWS3ZFF7",
+      "imageUrl": "https://m.media-amazon.com/images/I/511H5QhxO+L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-07-30T22:06:30.881Z"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DWSRHP7J",
@@ -1364,17 +1367,18 @@
         "R4-55LO"
       ],
       "cxMode": true,
-      "url": "https://www.amazon.ca/%E3%82%BF%E3%82%AB%E3%83%A9%E3%83%88%E3%83%9F%E3%83%BC-TAKARA-TOMY-Beyblade-Starter/dp/B0DWSRHP7J",
-      "imageUrl": "https://m.media-amazon.com/images/I/61qO6OBNzBL._AC_SY300_SX300_QL70_ML2_.jpg",
+      "url": "https://www.amazon.ca/dp/B0DWSRHP7J",
+      "imageUrl": "https://m.media-amazon.com/images/I/61qO6OBNzBL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-07-30T22:06:30.881Z"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DX3WBQD9",
       "retailer": "Amazon.ca",
       "productId": "B0DX3WBQD9",
       "name": "BEY BBX Double Extreme Motorized Stadium",
-      "price": 148.55,
+      "price": 154.95,
       "currency": "CAD",
       "statusLabel": "Available now",
       "availabilityStatus": "available_now",
@@ -1385,10 +1389,11 @@
         "-"
       ],
       "cxMode": false,
-      "url": "https://www.amazon.ca/BEY-Double-Extreme-Motorized-Stadium/dp/B0DX3WBQD9",
-      "imageUrl": "https://m.media-amazon.com/images/I/81VXJ8MchIL._AC_SY300_SX300_QL70_ML2_.jpg",
+      "url": "https://www.amazon.ca/dp/B0DX3WBQD9",
+      "imageUrl": "https://m.media-amazon.com/images/I/81VXJ8MchIL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-07-30T22:06:30.881Z"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0DZXMCLMX",
@@ -1438,7 +1443,7 @@
       "retailer": "Amazon.ca",
       "productId": "B0FBJP6G5Z",
       "name": "BX-00 Double Xtreme Motorized Beystadium Battle Arena for Beyblade",
-      "price": 117.85,
+      "price": 118.88,
       "currency": "CAD",
       "statusLabel": "Available now",
       "availabilityStatus": "available_now",
@@ -1452,8 +1457,8 @@
       "url": "https://www.amazon.ca/dp/B0FBJP6G5Z",
       "imageUrl": "https://m.media-amazon.com/images/I/81SJDYx+lWL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0FCYSM4DM",
@@ -1495,7 +1500,7 @@
       "url": "https://www.amazon.ca/dp/B0FCYT95DR",
       "imageUrl": "https://m.media-amazon.com/images/I/81B65ZzGfZL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0FH4FF4NJ",
@@ -1526,9 +1531,9 @@
       "name": "X-treme Expansion Pack (12 Parts)",
       "price": 39.97,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
-      "orderable": true,
+      "statusLabel": "Unavailable",
+      "availabilityStatus": "unavailable",
+      "orderable": false,
       "bundleType": "Part set",
       "includedBeys": "Mail Knight 3-85BS",
       "configs": [
@@ -1538,7 +1543,7 @@
       "url": "https://www.amazon.ca/dp/B0FH7976XT",
       "imageUrl": "https://m.media-amazon.com/images/I/71NcMuMhe8L._AC_UL320_.jpg",
       "firstSeenAt": "2026-08-01T08:40:47-07:00",
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
       "lastAvailableAt": "2026-08-06T00:07:51-07:00"
     },
     {
@@ -1560,15 +1565,15 @@
       "url": "https://www.amazon.ca/dp/B0FH79BBD9",
       "imageUrl": "https://m.media-amazon.com/images/I/71SmRHUVLqL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0FH79Q7R3",
       "retailer": "Amazon.ca",
       "productId": "B0FH79Q7R3",
       "name": "Yggdrasil, Sting Unicorn 5-60GP, Cowl Sphinx 9-80GN Multipack",
-      "price": 41.22,
+      "price": 41.59,
       "currency": "CAD",
       "statusLabel": "Available now",
       "availabilityStatus": "available_now",
@@ -1584,15 +1589,15 @@
       "url": "https://www.amazon.ca/dp/B0FH79Q7R3",
       "imageUrl": "https://m.media-amazon.com/images/I/81pLO4d7NrL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0FH7BK9FW",
       "retailer": "Amazon.ca",
       "productId": "B0FH7BK9FW",
       "name": "Flame Cerberus W 5-80WB Starter",
-      "price": 19.99,
+      "price": 19.96,
       "currency": "CAD",
       "statusLabel": "Available now",
       "availabilityStatus": "available_now",
@@ -1606,8 +1611,8 @@
       "url": "https://www.amazon.ca/dp/B0FH7BK9FW",
       "imageUrl": "https://m.media-amazon.com/images/I/81B65ZzGfZL._AC_UL320_.jpg",
       "firstSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0FH7D8TVR",
@@ -1628,7 +1633,7 @@
       "url": "https://www.amazon.ca/dp/B0FH7D8TVR",
       "imageUrl": "https://m.media-amazon.com/images/I/71nZ1ufnFgL._AC_UL320_.jpg",
       "firstSeenAt": "2026-08-01T08:40:48-07:00",
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
       "lastAvailableAt": "2026-08-06T00:07:51-07:00"
     },
     {
@@ -1650,8 +1655,8 @@
       "url": "https://www.amazon.ca/dp/B0FH7DTKXZ",
       "imageUrl": "https://m.media-amazon.com/images/I/81z969OTUuL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0FH7F6W8W",
@@ -1672,8 +1677,8 @@
       "url": "https://www.amazon.ca/dp/B0FH7F6W8W",
       "imageUrl": "https://m.media-amazon.com/images/I/714ExLwC-aL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0FH7F9B58",
@@ -1694,8 +1699,8 @@
       "url": "https://www.amazon.ca/dp/B0FH7F9B58",
       "imageUrl": "https://m.media-amazon.com/images/I/714dKGXoeNL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0FHMRQYMQ",
@@ -1704,8 +1709,8 @@
       "name": "Circle Ghost 4-60LR Dual Pack",
       "price": 25.56,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Multi-pack",
       "includedBeys": "Circle Ghost 4-60LR",
@@ -1716,8 +1721,8 @@
       "url": "https://www.amazon.ca/dp/B0FHMRQYMQ",
       "imageUrl": "https://m.media-amazon.com/images/I/81J8--3781L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0FJQQQDCQ",
@@ -1738,8 +1743,8 @@
       "url": "https://www.amazon.ca/dp/B0FJQQQDCQ",
       "imageUrl": "https://m.media-amazon.com/images/I/81fZLUzelBL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0FLCFNPF2",
@@ -1760,8 +1765,8 @@
       "url": "https://www.amazon.ca/dp/B0FLCFNPF2",
       "imageUrl": "https://m.media-amazon.com/images/I/71DPaTFm20L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0FQ9ZSLPD",
@@ -1782,8 +1787,8 @@
       "url": "https://www.amazon.ca/dp/B0FQ9ZSLPD",
       "imageUrl": "https://m.media-amazon.com/images/I/51tLLvv212L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0FY64JKFV",
@@ -1825,8 +1830,8 @@
       "url": "https://www.amazon.ca/dp/B0FY7316FN",
       "imageUrl": "https://m.media-amazon.com/images/I/81A5spoVr3L._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0FY737Y7W",
@@ -1848,8 +1853,8 @@
       "url": "https://www.amazon.ca/dp/B0FY737Y7W",
       "imageUrl": "https://m.media-amazon.com/images/I/71Oi0-QsATL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0G2SWB8D5",
@@ -1891,8 +1896,8 @@
       "url": "https://www.amazon.ca/dp/B0G2T39WXZ",
       "imageUrl": "https://m.media-amazon.com/images/I/71ijBrHX2UL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0G2T3XT9B",
@@ -1913,8 +1918,8 @@
       "url": "https://www.amazon.ca/dp/B0G2T3XT9B",
       "imageUrl": "https://m.media-amazon.com/images/I/711CzJ5YWoL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0G7KXGVSR",
@@ -1953,10 +1958,10 @@
         "Z9-80WW"
       ],
       "cxMode": true,
-      "url": "https://www.amazon.ca/Beyblade-CX-12-Booster-Phoenix-Z9-80WW/dp/B0GG8V3N79",
-      "imageUrl": "https://m.media-amazon.com/images/I/616LLncUykL._AC_SY300_SX300_QL70_ML2_.jpg",
+      "url": "https://www.amazon.ca/dp/B0GG8V3N79",
+      "imageUrl": "https://m.media-amazon.com/images/I/616LLncUykL._AC_UL320_.jpg",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-07-30T22:06:30.881Z"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0GMRB1KLM",
@@ -2003,8 +2008,8 @@
       "url": "https://www.amazon.ca/dp/B0GP22FMHL",
       "imageUrl": "https://m.media-amazon.com/images/I/81jog5g2p9L._AC_UL320_.jpg",
       "firstSeenAt": "2026-08-01T08:35:00-07:00",
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "amazon-ca:B0GP35J9H5",
@@ -2066,11 +2071,11 @@
         "-"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Drop-Attack-Battle-Set/11D3VSD7WZAO",
+      "url": "https://www.walmart.ca/en/ip/11D3VSD7WZAO",
       "imageUrl": "https://i5.walmartimages.ca/asr/7be41342-15a5-4a4b-a53d-6c73e1130dc6.ee3a9bde5a4e9a8c247bd373ac58eda3.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:19A6UM9EBFXS",
@@ -2088,11 +2093,11 @@
         "Antler Stag B2-60HN"
       ],
       "cxMode": true,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Antler-Stag-B-2-60HN-CX-Starter-Pack-Top-and-Launcher/19A6UM9EBFXS",
+      "url": "https://www.walmart.ca/en/ip/19A6UM9EBFXS",
       "imageUrl": "https://i5.walmartimages.ca/asr/0c7da214-3836-435d-85ab-1f64fbe17865.de5e775584e30cda2f007778626971fd.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:1EWS66EIFYQN",
@@ -2110,11 +2115,11 @@
         "Arrow Wizard 4-80O"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Arrow-Wizard-4-80O-Booster-Pack-Set/1EWS66EIFYQN",
+      "url": "https://www.walmart.ca/en/ip/1EWS66EIFYQN",
       "imageUrl": "https://i5.walmartimages.ca/asr/c91ed54a-1ec6-4f0d-8e3f-78dc2afe264c.90f92ad8487f89b33cbf3832dd9ea518.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:1FN9ZDK9FB1W",
@@ -2155,11 +2160,11 @@
         "Cutter Shinobi LF"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Sneak-Attack-Battling-Top-Set-with-Green-Beystadium-Arena-2-Right-Spinning-Battling-Tops-2-Launchers-Ages-8-and-up/1JBTPDAF4K0E",
+      "url": "https://www.walmart.ca/en/ip/1JBTPDAF4K0E",
       "imageUrl": "https://i5.walmartimages.ca/asr/a5f323c4-50a8-4cc3-a848-e5705be5e48f.973d35b86644b687783f01a4410a7b95.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": "2026-08-01T08:27:51-07:00",
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:218F8UFBOWUS",
@@ -2168,8 +2173,8 @@
       "name": "CX-01 Starter Drave S6-60V",
       "price": 161.85,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Starter with launcher",
       "includedBeys": "-",
@@ -2177,11 +2182,11 @@
         "S6-60V"
       ],
       "cxMode": true,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Beyblade-X-CX-01-Starter-Drave-S6-60V/218F8UFBOWUS",
+      "url": "https://www.walmart.ca/en/ip/218F8UFBOWUS",
       "imageUrl": "https://i5.walmartimages.ca/asr/8af71e55-34ef-44da-a987-368c9bcb1808.e7ee5637d0426eb3fe218eab9ae0b5cc.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:2FIEM7PEMDUH",
@@ -2199,11 +2204,11 @@
         "4-80P"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-X-Over-Project-Driger-Slash-4-80P-Starter-Pack-Top-and-Launcher/2FIEM7PEMDUH",
+      "url": "https://www.walmart.ca/en/ip/2FIEM7PEMDUH",
       "imageUrl": "https://i5.walmartimages.ca/asr/93cf088c-e89f-4157-84fe-b63352bebd1c.ee9a3245f75f92e15b5f6780d55e834f.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:2K3W3YMY588R",
@@ -2221,11 +2226,11 @@
         "Dranzer Spiral 3-80T"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-X-Over-Project-Dranzer-Spiral-3-80T-Starter-Pack-Top-and-Launcher/2K3W3YMY588R",
+      "url": "https://www.walmart.ca/en/ip/2K3W3YMY588R",
       "imageUrl": "https://i5.walmartimages.ca/asr/36822dbb-a919-4405-9b09-9b8237f74ff4.5e58ef38169d0bdaf80e1471c07f2d77.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:2L4NK9YDFMPG",
@@ -2244,11 +2249,11 @@
         "Pearl Tiger 3-60U"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Gill-Shark-4-70O-Pearl-Tiger-3-60U-Dual-Pack-Set/2L4NK9YDFMPG",
+      "url": "https://www.walmart.ca/en/ip/2L4NK9YDFMPG",
       "imageUrl": "https://i5.walmartimages.ca/asr/dcdfa532-89d5-4cd3-bb50-3c96b3407973.220274e68bbe9ce5afe52ce01d7003fa.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:2THBU8E67N89",
@@ -2266,11 +2271,11 @@
         "Courage Dran S6-60V"
       ],
       "cxMode": true,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Courage-Dran-S-6-60V-CX-Starter-Pack-Top-and-Launcher/2THBU8E67N89",
+      "url": "https://www.walmart.ca/en/ip/2THBU8E67N89",
       "imageUrl": "https://i5.walmartimages.ca/asr/9f1d2032-b0e6-42f5-a8f7-3bf56bf0c1d1.ba06eff70fce9812f5d0a6cf2e2e5350.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:3W084B3CHFHZ",
@@ -2279,8 +2284,8 @@
       "name": "Clash & Carry Beystadium Battle Arena for Beyblade",
       "price": 61.61,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Stadium / battle set",
       "includedBeys": "-",
@@ -2288,11 +2293,11 @@
         "-"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Clash-Carry-Beystadium-Battle-Arena-for-Beyblade-Spinning-Top-Toys-Kids-Gifts-Ages-8/3W084B3CHFHZ",
+      "url": "https://www.walmart.ca/en/ip/3W084B3CHFHZ",
       "imageUrl": "https://i5.walmartimages.ca/asr/fda90cc9-c67a-43cd-8dba-33b18df26825.9e8cc8f801daa077534d1ba4f3ce06d1.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:413OG6FN3L8L",
@@ -2301,8 +2306,8 @@
       "name": "Silver Wolf 3-80FB Starter",
       "price": 104.08,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Starter with launcher",
       "includedBeys": "Silver Wolf 3-80FB",
@@ -2310,11 +2315,11 @@
         "Silver Wolf 3-80FB"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Beyblade-X-UX-08-Starter-Silver-Wolf-3-80FB/413OG6FN3L8L",
+      "url": "https://www.walmart.ca/en/ip/413OG6FN3L8L",
       "imageUrl": "https://i5.walmartimages.ca/asr/faaf5952-738f-4c86-a1cd-b6a0a33e22b4.4cfcd559bc253b4aaa1ccf37ffed60f4.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:41P0NLEXWBG6",
@@ -2332,11 +2337,11 @@
         "Fang Leon T4-60U"
       ],
       "cxMode": true,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Fang-Leon-T-4-60U-CX-Starter-Pack-Top-and-Launcher/41P0NLEXWBG6",
+      "url": "https://www.walmart.ca/en/ip/41P0NLEXWBG6",
       "imageUrl": "https://i5.walmartimages.ca/asr/562ef466-d5be-4a43-8f78-a8d70265a8d1.49d96c9dc8bf64992113abbebdf6bdc0.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:446UVRZ2GX7M",
@@ -2367,8 +2372,8 @@
       "name": "BX-00 Booster Draciel Shield 7-60D",
       "price": 278.08,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Booster",
       "includedBeys": "-",
@@ -2376,11 +2381,11 @@
         "7-60D"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Beyblade-X-BX-00-Booster-Draciel-Shield-7-60D/48PD5PA0LUWY",
+      "url": "https://www.walmart.ca/en/ip/48PD5PA0LUWY",
       "imageUrl": "https://i5.walmartimages.ca/asr/7a46e30e-7c16-43da-ad34-cdd913d4f57c.e219181080bf01ec35120c8479dfd838.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:49B7CAJEVEJM",
@@ -2398,11 +2403,11 @@
         "Bite Croc 2-60Q"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Deluxe-String-Launcher-Custom-Grip-Top-Set/49B7CAJEVEJM",
+      "url": "https://www.walmart.ca/en/ip/49B7CAJEVEJM",
       "imageUrl": "https://i5.walmartimages.ca/asr/73c78635-c4f0-4aa2-8446-78d51bca9cb1.950b0a1f1e1838d168f2a2bbd73d8dc3.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:4E6JSGVIMKIT",
@@ -2486,11 +2491,11 @@
         "Wriggle Kraken S3-85O"
       ],
       "cxMode": true,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Wriggle-Kraken-S-3-85O-CX-Starter-Pack-Top-and-Launcher/5WLEWFX31X0N",
+      "url": "https://www.walmart.ca/en/ip/5WLEWFX31X0N",
       "imageUrl": "https://i5.walmartimages.ca/asr/90200c24-ece9-4ea4-8029-8677ffde5f95.a0548d7346f5d45d0ddc33119039443e.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:6000208022089",
@@ -2531,11 +2536,11 @@
         "3-80S"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Horn-Rhino-3-80S-Top-Booster-Pack-Set/6000208022607",
+      "url": "https://www.walmart.ca/en/ip/6000208022607",
       "imageUrl": "https://i5.walmartimages.ca/asr/f3cb4ed0-71eb-48ac-93ac-8a2107593417.108ed30966dfbe9a3413edf8be9e9777.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:6000208073496",
@@ -2553,11 +2558,11 @@
         "-"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Beystadium-Battle-Arena/6000208073496",
+      "url": "https://www.walmart.ca/en/ip/6000208073496",
       "imageUrl": "https://i5.walmartimages.ca/asr/3b0baca7-c35c-43f2-afc5-6b32969d7ecf.96855600f971b17af5dfcbab3e5d5780.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:62I3IFMKT5PL",
@@ -2588,8 +2593,8 @@
       "name": "UX-09 Starter Samurai Saver 2-70L",
       "price": 173.58,
       "currency": "CAD",
-      "statusLabel": "Available now",
-      "availabilityStatus": "available_now",
+      "statusLabel": "Delayed delivery",
+      "availabilityStatus": "delayed",
       "orderable": true,
       "bundleType": "Starter with launcher",
       "includedBeys": "-",
@@ -2597,11 +2602,11 @@
         "2-70L"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Beyblade-X-UX-09-Starter-Samurai-Saver-2-70L/65F0WI54EPR5",
+      "url": "https://www.walmart.ca/en/ip/65F0WI54EPR5",
       "imageUrl": "https://i5.walmartimages.ca/asr/b39eb68f-b6a4-45a9-953f-fac588da5903.29fb4d2aa48ffa6ead4680afccd68994.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:65H8NDFLKQ2S",
@@ -2619,11 +2624,11 @@
         "Shadow Shinobi 1-80MN"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Shadow-Shinobi-1-80MN-UX-Starter-Pack-Top-and-Launcher/65H8NDFLKQ2S",
+      "url": "https://www.walmart.ca/en/ip/65H8NDFLKQ2S",
       "imageUrl": "https://i5.walmartimages.ca/asr/6157ece6-6d8f-426e-b090-0d4fab68b91f.edde1409e6bc08c110349a9df9210b90.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:6DVU66SUDP34",
@@ -2662,11 +2667,11 @@
         "Scarlet Garuda 4-70TP"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Scarlet-Garuda-4-70TP-BX-Starter-Pack-Top-and-Launcher/6RUAP8E3WE2X",
+      "url": "https://www.walmart.ca/en/ip/6RUAP8E3WE2X",
       "imageUrl": "https://i5.walmartimages.ca/asr/6a0a1e39-22c0-44cc-a8e4-dc7c31660e6c.c6fe51a7aead3cdcb0d855fe6c1f86e3.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:7359KY5VY7T5",
@@ -2685,11 +2690,11 @@
         "Crest Leon 7-60GN"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Cowl-Sphinx-1-80GF-Crest-Leon-7-60GN-Dual-Pack-Set/7359KY5VY7T5",
+      "url": "https://www.walmart.ca/en/ip/7359KY5VY7T5",
       "imageUrl": "https://i5.walmartimages.ca/asr/04059b77-2f52-498e-b672-6bf76257fd76.296caae68ed357cbbbd8fe1809fd3032.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     },
     {
       "listingId": "walmart-ca:77NZT1PDJ1K3",
@@ -2707,11 +2712,11 @@
         "C; 4-55D"
       ],
       "cxMode": false,
-      "url": "https://www.walmart.ca/en/ip/Beyblade-X-Reaper-Rhino-C-4-55D-CX-Starter-Pack-Top-and-Launcher/77NZT1PDJ1K3",
+      "url": "https://www.walmart.ca/en/ip/77NZT1PDJ1K3",
       "imageUrl": "https://i5.walmartimages.ca/asr/cc5fc724-a31f-4d3a-a983-8e618b8c1b21.dd9be4c089606f4711b6e404409f9ba2.jpeg?odnHeight=580&odnWidth=580&odnBg=FFFFFF",
       "firstSeenAt": null,
-      "lastSeenAt": "2026-08-06T00:07:51-07:00",
-      "lastAvailableAt": "2026-08-06T00:07:51-07:00"
+      "lastSeenAt": "2026-08-11T15:49:29-07:00",
+      "lastAvailableAt": "2026-08-11T15:49:29-07:00"
     }
   ]
 }
