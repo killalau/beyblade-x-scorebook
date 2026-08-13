@@ -4,6 +4,7 @@ import { dirname, extname, join, resolve } from "node:path";
 import { parseConfig, scoreProduct } from "../src/scoring.js";
 import { matchesPartFilters, partFilterTokens } from "../src/wishlist-filters.js";
 import { calculateTotalSpend, purchasePaidAmount } from "../src/collection-summary.js";
+import { groupInventoryParts } from "../src/inventory-parts.js";
 import { generateWishlist, isWishlistEligible, listingIdFor, normalizeStatus } from "./wishlist-pipeline.mjs";
 import { auditNormalized } from "./normalized-audit.mjs";
 import { extractObservations, mergeObservations } from "./crawl-normalizer.mjs";
@@ -32,6 +33,17 @@ assert.equal(calculateTotalSpend({ items: [
   { pretaxPrice: 10, taxRate: 0.12 }
 ] }), 53.59);
 assert.equal(purchasePaidAmount({ pretaxPrice: 20 }), 20);
+
+const legacyGroupedParts = groupInventoryParts([
+  { category: "Assist Blade", name: "Turn", abbrev: "T", qty: 1, source: "Fang Leon T 4-60U", notes: "Mode-change assist blade." },
+  { category: "Assist Blade", name: "Turn", abbrev: "T", qty: 2, source: "Fang Leon T 4-60U; Reaper Incendio T4-70K", notes: "Second owned Turn (T) Assist Blade." }
+]);
+assert.equal(legacyGroupedParts[0].qty, 2);
+assert.equal(legacyGroupedParts[0].source, "Fang Leon T 4-60U; Reaper Incendio T4-70K");
+assert.equal(legacyGroupedParts[0].notes, "Mode-change assist blade.");
+assert.equal(groupInventoryParts([
+  { category: "Launcher", name: "Winder Launcher", abbrev: "-", qty: 2, source: "Xtreme Battle Set" }
+])[0].qty, 2);
 
 const keel = scoreProduct({
   name: "Keel Shark 3-60LF Booster",
