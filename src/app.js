@@ -577,7 +577,7 @@ function renderInventory() {
   const filteredParts = state.inventoryDetail
     .filter((part) => part.category !== "Complete Combo")
     .filter((part) => partMatchesInventoryCategory(part, category))
-    .filter((part) => !query || [part.name, part.abbrev, part.category, part.source]
+    .filter((part) => !query || [part.name, part.abbrev]
       .filter(Boolean).some((value) => String(value).toLowerCase().includes(query)));
   elements.inventoryPartSummary.textContent = `${filteredParts.length} ${inventoryPartTabLabel(category)} parts`;
   elements.inventoryPartTabs.querySelectorAll("[data-category]").forEach((tab) => {
