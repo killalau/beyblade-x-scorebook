@@ -250,6 +250,7 @@ assert.match(html, /id="rulesPage"/);
 assert.match(html, /id="clearLocalData"/);
 const appSource = readFileSync(new URL("../src/app.js", import.meta.url), "utf8");
 assert.match(appSource, /wishlist-price/);
+assert.match(appSource, /groupInventoryParts/);
 assert.match(appSource, /sortablePositiveValue/);
 assert.match(appSource, /sortableCreatedAt/);
 assert.match(appSource, /wishlist-thumbnail/);

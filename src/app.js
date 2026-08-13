@@ -574,8 +574,8 @@ function renderInventory() {
   const query = elements.inventoryPartSearch.value.trim().toLowerCase();
   const category = state.inventoryPartCategory;
   const inventoryParts = state.inventoryDetail.filter((part) => part.category !== "Complete Combo");
-  const filteredParts = state.inventoryDetail
-    .filter((part) => part.category !== "Complete Combo")
+  const groupedParts = groupInventoryParts(inventoryParts);
+  const filteredParts = groupedParts
     .filter((part) => partMatchesInventoryCategory(part, category))
     .filter((part) => !query || [part.name, part.abbrev]
       .filter(Boolean).some((value) => String(value).toLowerCase().includes(query)));
@@ -606,6 +606,26 @@ function renderInventoryPartOptions(parts) {
   const values = [...new Set(parts.flatMap((part) => [part.name, part.abbrev]).filter((value) => value && value !== "-"))]
     .sort((a, b) => String(a).localeCompare(String(b)));
   elements.inventoryPartOptions.replaceChildren(...values.map((value) => optionElement(value, value)));
+}
+
+function groupInventoryParts(parts) {
+  const grouped = new Map();
+  for (const part of parts) {
+    const key = [part.category, part.name, part.abbrev].map((value) => String(value ?? "").toLowerCase()).join("|");
+    const current = grouped.get(key);
+    if (!current) {
+      grouped.set(key, { ...part, qty: Number(part.qty) || 0 });
+      continue;
+    }
+    current.qty += Number(part.qty) || 0;
+    current.source = mergeInventoryValues(current.source, part.source);
+    current.notes = mergeInventoryValues(current.notes, part.notes, " ");
+  }
+  return [...grouped.values()];
+}
+
+function mergeInventoryValues(first, second, separator = "; ") {
+  return [...new Set([first, second].flatMap((value) => String(value ?? "").split(";").map((item) => item.trim())).filter(Boolean))].join(separator);
 }
 
 function partMatchesInventoryCategory(part, category) {
