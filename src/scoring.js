@@ -25,7 +25,7 @@ export function parseConfig(configText, options = {}) {
   const text = String(configText || "").replace(/\s+/g, " ").trim();
   const cxMode = options.cxMode === true;
   const integratedCxMatch = cxMode
-    ? text.match(/^(.+?)\s+([^\s]+)\s+([A-Z])\s+([^\s]+)$/i)
+    ? text.match(/^(.+?)\s+([^\s]+)\s+([A-Z])\s*([A-Z][a-z])$/)
     : null;
   const fusedBit = canonicalFusedBit(integratedCxMatch?.[4]);
   if (integratedCxMatch && fusedBit && isValidCxCode(integratedCxMatch[3].toUpperCase())) {
@@ -38,8 +38,8 @@ export function parseConfig(configText, options = {}) {
     ];
   }
   const ratchetMatch = cxMode
-    ? text.match(/\b([A-Z]{0,3})(\d-\d{2})([A-Z]{1,3})\b/)
-    : text.match(/\b(\d-\d{2})([A-Z]{1,3})\b/);
+    ? text.match(/\b([A-Z]{0,3})((?:\d|M)-\d{2})([A-Z]{1,3})\b/)
+    : text.match(/\b((?:\d|M)-\d{2})([A-Z]{1,3})\b/);
   if (!ratchetMatch) {
     return [{ name: normalizePartName(text), type: "blade", raw: text }];
   }

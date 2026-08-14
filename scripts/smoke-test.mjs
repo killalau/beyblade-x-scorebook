@@ -144,6 +144,18 @@ const fusedOp = scoreProduct({
 }, { cxMode: true });
 assert.equal(fusedOp.parts.some((part) => part.name === "Op" && part.type === "bit"), true);
 
+assert.deepEqual(parseConfig("Might Emperor HOp", { cxMode: true }).map(({ name, type }) => ({ name, type })), [
+  { name: "Might", type: "blade" },
+  { name: "Emperor", type: "lockChip" },
+  { name: "Heavy", type: "assistBlade" },
+  { name: "Op", type: "bit" }
+]);
+assert.deepEqual(parseConfig("Rock Golem M-85HN").map(({ name, type }) => ({ name, type })), [
+  { name: "Golem Rock", type: "blade" },
+  { name: "M-85", type: "ratchet" },
+  { name: "HN", type: "bit" }
+]);
+
 assert.equal(listingIdFor("Amazon.ca", "https://www.amazon.ca/dp/B0GP22FMHL"), "amazon-ca:B0GP22FMHL");
 assert.equal(normalizeStatus("Unavailable"), "unavailable");
 assert.equal(isWishlistEligible({ availabilityStatus: "unavailable", orderable: false }), false);
