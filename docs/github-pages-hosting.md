@@ -58,16 +58,17 @@ jobs:
 
       - name: Prepare static site
         run: |
-          mkdir -p _site
+          mkdir -p _site/data
           cp index.html _site/
           cp -R src _site/src
+          cp data/retailer-listings.json _site/data/
           touch _site/.nojekyll
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
 
       - name: Upload Pages artifact
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-pages-artifact@v5
         with:
           path: _site
 
