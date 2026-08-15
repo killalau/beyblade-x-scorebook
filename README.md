@@ -2,6 +2,8 @@
 
 A static Beyblade X scorebook for checking product value, owned inventory, wishlist items, and scoring rules.
 
+[Open the live Beyblade X Scorebook](https://killalau.github.io/beyblade-x-scorebook/)
+
 The project is designed for GitHub Pages and for Codex-managed local JSON data.
 
 ## Current Architecture
