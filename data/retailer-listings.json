@@ -1526,6 +1526,27 @@
       "lastAvailableAt": "2026-08-17T22:58:39.894Z"
     },
     {
+      "listingId": "amazon-ca:B0FH77PFD5",
+      "retailer": "Amazon.ca",
+      "productId": "B0FH77PFD5",
+      "name": "BX-00 Booster Draciel Shield 7-60D",
+      "price": 17.35,
+      "currency": "CAD",
+      "statusLabel": "Unavailable",
+      "availabilityStatus": "unavailable",
+      "orderable": false,
+      "bundleType": "Booster",
+      "includedBeys": "Draciel Shield 7-60D",
+      "configs": [
+        "Draciel Shield 7-60D"
+      ],
+      "cxMode": false,
+      "url": "https://www.amazon.ca/dp/B0FH77PFD5",
+      "imageUrl": "https://m.media-amazon.com/images/I/810n+k5OOhL._AC_UL320_.jpg",
+      "firstSeenAt": "2026-08-17T22:58:39.894Z",
+      "lastSeenAt": "2026-08-17T22:58:39.894Z"
+    },
+    {
       "listingId": "amazon-ca:B0FH7976XT",
       "retailer": "Amazon.ca",
       "productId": "B0FH7976XT",
