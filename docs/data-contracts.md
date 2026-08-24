@@ -47,6 +47,7 @@ Guidance:
 
 - Include both full names and abbreviations when useful, e.g. `Rush` and `R`, `Unite` and `U`.
 - Include complete combo names only if useful for lookup, but part scoring mainly uses individual parts.
+- When adding an inventory product or purchase, verify and store a reliable `purchases.items[].imageUrl` in the same task. Check the resulting Inventory card and do not leave a new product with a missing thumbnail unless no trustworthy image can be found; record that exception explicitly.
 
 The collection file deliberately keeps inventory and purchase history as separate sections. Purchase history records provenance; current inventory remains authoritative because gifts, trades, losses, sales, and loose parts cannot always be derived from purchases.
 
