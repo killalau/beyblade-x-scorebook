@@ -127,6 +127,9 @@ assert.deepEqual(blitzBahamut.parts.map(({ name, type }) => ({ name, type })), [
 ]);
 assert.equal(blitzBahamut.parts.find((part) => part.name === "I").displayName, "Ignition");
 
+assert.equal(parseConfig("Brace Triceratops M-85BS").find((part) => part.name === "BS").displayName, "Bound Spike");
+assert.equal(parseConfig("Shark Scale 4-50UF").find((part) => part.name === "UF").displayName, "Under Flat");
+
 const newOwnedCxBeys = [
   ["Flame Cerberus W 5-80WB", ["Flame", "Cerberus", "Wheel", "5-80", "WB"]],
   ["Rage Ragna FE4-55Y", ["Rage", "Ragna", "Flow", "Erase", "4-55", "Y"]],

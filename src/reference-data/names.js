@@ -54,6 +54,7 @@ export const fusedBitCodes = {
 
 export const bitNames = {
   B: "Ball",
+  BS: "Bound Spike",
   DB: "Disc Ball",
   E: "Elevate",
   FB: "Free Ball",
@@ -70,6 +71,7 @@ export const bitNames = {
   Tr: "Tr",
   U: "Unite",
   UN: "Under Needle",
+  UF: "Under Flat",
   WB: "Wall Ball",
   Y: "Yield"
 };
