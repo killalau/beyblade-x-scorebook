@@ -130,6 +130,17 @@ assert.equal(blitzBahamut.parts.find((part) => part.name === "I").displayName, "
 assert.equal(parseConfig("Brace Triceratops M-85BS").find((part) => part.name === "BS").displayName, "Bound Spike");
 assert.equal(parseConfig("Shark Scale 4-50UF").find((part) => part.name === "UF").displayName, "Under Flat");
 
+const expandCxBeys = [
+  ["Tiga Rage FT3-60T", ["Rage", "Tiga", "Flow", "Turn", "3-60", "T"]],
+  ["Croco Tread TQ5-50GN", ["Tread", "Croco", "Tough", "Quell", "5-50", "GN"]],
+  ["Brachio Whip OW5-70Nr", ["Whip", "Brachio", "Outer", "Wheel", "5-70", "Nr"]],
+  ["Wolf Hunt F0-60DB", ["Hunt", "Wolf", "Free", "0-60", "DB"]]
+];
+for (const [config, expectedParts] of expandCxBeys) {
+  assert.deepEqual(parseConfig(config, { cxMode: true }).map((part) => part.name), expectedParts);
+}
+assert.equal(parseConfig("Brachio Whip OW5-70Nr", { cxMode: true }).find((part) => part.name === "Nr").displayName, "Narrow");
+
 const newOwnedCxBeys = [
   ["Flame Cerberus W 5-80WB", ["Flame", "Cerberus", "Wheel", "5-80", "WB"]],
   ["Rage Ragna FE4-55Y", ["Rage", "Ragna", "Flow", "Erase", "4-55", "Y"]],

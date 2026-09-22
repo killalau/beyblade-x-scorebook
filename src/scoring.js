@@ -38,8 +38,8 @@ export function parseConfig(configText, options = {}) {
     ];
   }
   const ratchetMatch = cxMode
-    ? text.match(/\b([A-Z]{0,3})((?:\d|M)-\d{2})([A-Z]{1,3})\b/)
-    : text.match(/\b((?:\d|M)-\d{2})([A-Z]{1,3})\b/);
+    ? text.match(/\b([A-Z]{0,3})((?:\d|M)-\d{2})([A-Z][A-Za-z]{0,2})\b/)
+    : text.match(/\b((?:\d|M)-\d{2})([A-Z][A-Za-z]{0,2})\b/);
   if (!ratchetMatch) {
     return [{ name: normalizePartName(text), type: "blade", raw: text }];
   }
@@ -54,13 +54,16 @@ export function parseConfig(configText, options = {}) {
   const cxCode = tokens.at(-1);
   const cxCodeLooksSeparate = cxMode && isValidCxCode(cxCode);
   const nameTokens = cxCodeLooksSeparate ? tokens.slice(0, -1) : tokens;
-  const bladeName = inferBladeName(nameTokens, cxMode);
+  const leadingLockChip = cxMode && nameTokens.length > 1 && isLikelyLockChip(nameTokens[0]);
+  const bladeName = leadingLockChip
+    ? nameTokens.slice(1).join(" ")
+    : inferBladeName(nameTokens, cxMode);
   if (bladeName) {
     parts.push({ name: normalizePartName(bladeName), type: "blade", raw: bladeName });
   }
 
-  if (cxMode && nameTokens.length > 1 && isLikelyLockChip(nameTokens.at(-1))) {
-    const lockChip = nameTokens.at(-1);
+  if (leadingLockChip || (cxMode && nameTokens.length > 1 && isLikelyLockChip(nameTokens.at(-1)))) {
+    const lockChip = leadingLockChip ? nameTokens[0] : nameTokens.at(-1);
     parts.push({ name: normalizePartName(lockChip), type: "lockChip", raw: lockChip });
   }
 
