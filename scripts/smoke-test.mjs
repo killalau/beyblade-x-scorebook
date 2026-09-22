@@ -3,7 +3,7 @@ import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { dirname, extname, join, resolve } from "node:path";
 import { parseConfig, scoreProduct } from "../src/scoring.js";
 import { matchesPartFilters, partFilterTokens } from "../src/wishlist-filters.js";
-import { calculateTotalSpend, purchasePaidAmount } from "../src/collection-summary.js";
+import { calculateTotalSpend, purchasePaidAmount, purchaseUnitPaidAmount } from "../src/collection-summary.js";
 import { groupInventoryParts } from "../src/inventory-parts.js";
 import { generateWishlist, isWishlistEligible, listingIdFor, normalizeStatus } from "./wishlist-pipeline.mjs";
 import { auditNormalized } from "./normalized-audit.mjs";
@@ -33,6 +33,9 @@ assert.equal(calculateTotalSpend({ items: [
   { pretaxPrice: 10, taxRate: 0.12 }
 ] }), 53.59);
 assert.equal(purchasePaidAmount({ pretaxPrice: 20 }), 20);
+assert.equal(purchaseUnitPaidAmount({ estimatedTotalPaid: 60.71, quantity: 2 }), 30.36);
+assert.equal(purchaseUnitPaidAmount({ estimatedTotalPaid: 85.94, quantity: 3, perItemTotal: 28.65 }), 28.65);
+assert.equal(purchaseUnitPaidAmount({ estimatedTotalPaid: 22.39 }), 22.39);
 
 const legacyGroupedParts = groupInventoryParts([
   { category: "Assist Blade", name: "Turn", abbrev: "T", qty: 1, source: "Fang Leon T 4-60U", notes: "Mode-change assist blade." },
@@ -295,7 +298,7 @@ assert.match(appSource, /wishlist-thumbnail/);
 assert.match(appSource, /localStorage/);
 assert.match(appSource, /validateCollectionData/);
 assert.match(appSource, /findCatalogueListingForBey/);
-assert.match(appSource, /purchasePaidAmount/);
+assert.match(appSource, /purchaseUnitPaidAmount/);
 assert.match(appSource, /loadPublicCatalogue/);
 assert.match(appSource, /renderCatalogue/);
 assert.match(appSource, /compareCatalogueItems/);

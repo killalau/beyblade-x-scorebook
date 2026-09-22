@@ -6,7 +6,7 @@ import {
 } from "./reference-data/scoringConfig.js";
 import { scoreProduct, summarizeBreakdown } from "./scoring.js";
 import { matchesPartFilters, partFilterTokens } from "./wishlist-filters.js";
-import { calculateTotalSpend, purchasePaidAmount } from "./collection-summary.js";
+import { calculateTotalSpend, purchaseUnitPaidAmount } from "./collection-summary.js";
 import { groupInventoryParts } from "./inventory-parts.js";
 
 const storageKeys = {
@@ -555,7 +555,7 @@ function renderInventory() {
     const purchase = findPurchaseForBey(bey);
     const listing = findCatalogueListingForBey(bey, purchase);
     const imageUrl = purchase?.imageUrl ?? listing?.imageUrl;
-    const paid = purchase ? purchasePaidAmount(purchase) : null;
+    const paid = purchase ? purchaseUnitPaidAmount(purchase) : null;
     item.innerHTML = `
       <span class="inventory-bey-thumbnail${imageUrl ? " has-image" : ""}">
         ${imageUrl
