@@ -30,8 +30,8 @@ assert.equal(migratedCollection.purchases.items[0].name, "Test purchase");
 assert.equal(calculateTotalSpend({ items: [
   { estimatedTotalPaid: 22.39, pretaxPrice: 19.99, taxRate: 0.12 },
   { pretaxPrice: 20, taxIncluded: true },
-  { pretaxPrice: 10, taxRate: 0.12 }
-] }), 53.59);
+  { pretaxPrice: 10, taxRate: 0.12, soldItems: [{ salePrice: 5.00 }] }
+] }), 48.59);
 assert.equal(purchasePaidAmount({ pretaxPrice: 20 }), 20);
 assert.equal(purchaseUnitPaidAmount({ estimatedTotalPaid: 60.71, quantity: 2 }), 30.36);
 assert.equal(purchaseUnitPaidAmount({ estimatedTotalPaid: 85.94, quantity: 3, perItemTotal: 28.65 }), 28.65);

@@ -1,6 +1,12 @@
 export function calculateTotalSpend(purchases) {
-  const total = (purchases?.items || []).reduce((sum, item) => sum + purchasePaidAmount(item), 0);
-  return Math.round(total * 100) / 100;
+  const totalPaid = (purchases?.items || []).reduce((sum, item) => sum + purchasePaidAmount(item), 0);
+  const saleProceeds = (purchases?.items || []).reduce((sum, item) => (
+    sum + (item?.soldItems || []).reduce((itemSum, soldItem) => {
+      const salePrice = Number(soldItem?.salePrice);
+      return itemSum + (Number.isFinite(salePrice) ? salePrice : 0);
+    }, 0)
+  ), 0);
+  return Math.round((totalPaid - saleProceeds) * 100) / 100;
 }
 
 export function purchasePaidAmount(item) {
