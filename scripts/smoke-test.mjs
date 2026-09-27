@@ -4,7 +4,7 @@ import { dirname, extname, join, resolve } from "node:path";
 import { parseConfig, scoreProduct } from "../src/scoring.js";
 import { matchesPartFilters, partFilterTokens } from "../src/wishlist-filters.js";
 import { calculateTotalSpend, purchasePaidAmount, purchaseUnitPaidAmount } from "../src/collection-summary.js";
-import { groupInventoryParts } from "../src/inventory-parts.js";
+import { canonicalInventoryPartCategory, groupInventoryParts } from "../src/inventory-parts.js";
 import { generateWishlist, isWishlistEligible, listingIdFor, normalizeStatus } from "./wishlist-pipeline.mjs";
 import { auditNormalized } from "./normalized-audit.mjs";
 import { extractObservations, mergeObservations } from "./crawl-normalizer.mjs";
@@ -47,6 +47,10 @@ assert.equal(legacyGroupedParts[0].notes, "Mode-change assist blade.");
 assert.equal(groupInventoryParts([
   { category: "Launcher", name: "Winder Launcher", abbrev: "-", qty: 2, source: "Xtreme Battle Set" }
 ])[0].qty, 2);
+assert.equal(canonicalInventoryPartCategory("Metal Blade"), "Main Blade");
+assert.equal(groupInventoryParts([
+  { category: "Metal Blade", name: "Whip", abbrev: "-", qty: 1, source: "Legacy import" }
+])[0].category, "Main Blade");
 
 const keel = scoreProduct({
   name: "Keel Shark 3-60LF Booster",

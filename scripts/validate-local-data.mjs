@@ -54,7 +54,20 @@ function validateInventory(data, label) {
   assertObject(data, label);
   assertArray(data.parts, `${label}.parts`);
   assertArray(data.beys, `${label}.beys`);
-  if (data.partsDetail !== undefined) assertArray(data.partsDetail, `${label}.partsDetail`);
+  if (data.partsDetail !== undefined) {
+    assertArray(data.partsDetail, `${label}.partsDetail`);
+    for (const [index, part] of data.partsDetail.entries()) {
+      assertObject(part, `${label}.partsDetail[${index}]`);
+      if (part.category !== undefined) {
+        assertString(part.category, `${label}.partsDetail[${index}].category`);
+        assert.notEqual(
+          part.category,
+          "Metal Blade",
+          `${label}.partsDetail[${index}].category must use Main Blade instead of Metal Blade`
+        );
+      }
+    }
+  }
 }
 
 function validateCollection(data, label) {

@@ -1,13 +1,14 @@
 export function groupInventoryParts(parts) {
   const grouped = new Map();
   for (const part of parts) {
-    const key = [part.category, part.name, part.abbrev].map((value) => String(value ?? "").toLowerCase()).join("|");
+    const normalizedPart = { ...part, category: canonicalInventoryPartCategory(part.category) };
+    const key = [normalizedPart.category, normalizedPart.name, normalizedPart.abbrev].map((value) => String(value ?? "").toLowerCase()).join("|");
     const sources = splitValues(part.source);
     const quantity = Number(part.qty) || 0;
     const isLegacySummary = sources.length > 1 && quantity === sources.length;
     const quantityPerSource = isLegacySummary ? 1 : quantity;
     const current = grouped.get(key) ?? {
-      part: { ...part },
+      part: normalizedPart,
       notes: new Set(),
       sourceQuantities: new Map()
     };
@@ -25,6 +26,10 @@ export function groupInventoryParts(parts) {
     source: [...sourceQuantities.keys()].join("; "),
     notes: [...notes].join(" ")
   }));
+}
+
+export function canonicalInventoryPartCategory(category) {
+  return category === "Metal Blade" ? "Main Blade" : category;
 }
 
 function splitValues(value) {
