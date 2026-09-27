@@ -1,3 +1,19 @@
+export const inventoryPartCategories = Object.freeze([
+  "Blade",
+  "Lock Chip",
+  "Main Blade",
+  "Over Blade",
+  "Assist Blade",
+  "Ratchet",
+  "Bit",
+  "Launcher",
+  "Grip",
+  "Stadium",
+  "Battle Pass",
+  "Tool",
+  "Complete Combo"
+]);
+
 export function groupInventoryParts(parts) {
   const grouped = new Map();
   for (const part of parts) {

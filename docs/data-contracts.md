@@ -47,11 +47,12 @@ Guidance:
 
 - Include both full names and abbreviations when useful, e.g. `Rush` and `R`, `Unite` and `U`.
 - Include complete combo names only if useful for lookup, but part scoring mainly uses individual parts.
+- `inventory.partsDetail[].category` must use the fixed category list: `Blade`, `Lock Chip`, `Main Blade`, `Over Blade`, `Assist Blade`, `Ratchet`, `Bit`, `Launcher`, `Grip`, `Stadium`, `Battle Pass`, `Tool`, or `Complete Combo`. Do not invent or silently map a new persisted category; ask the user to confirm whether the category list should be expanded first.
 - When adding an inventory product or purchase, verify and store a reliable `purchases.items[].imageUrl` in the same task. Check the resulting Inventory card and do not leave a new product with a missing thumbnail unless no trustworthy image can be found; record that exception explicitly.
 
 The collection file deliberately keeps inventory and purchase history as separate sections. Purchase history records provenance; current inventory remains authoritative because gifts, trades, losses, sales, and loose parts cannot always be derived from purchases.
 
-The Inventory page displays total spend as the sum of `estimatedTotalPaid`. For legacy rows without that field, it falls back to `pretaxPrice`, applying `taxRate` when present unless `taxIncluded` is true.
+The Inventory page displays net total spend: the sum of `estimatedTotalPaid` minus `soldItems[].salePrice`. For legacy rows without `estimatedTotalPaid`, it falls back to `pretaxPrice`, applying `taxRate` when present unless `taxIncluded` is true.
 
 Migrate the former two-file format with `npm run migrate:collection`. The command refuses to overwrite an existing collection unless `--force` is explicitly supplied and preserves the legacy input files as recoverable backups.
 

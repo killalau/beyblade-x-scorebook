@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { inventoryPartCategories } from "../src/inventory-parts.js";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const failures = [];
@@ -60,10 +61,9 @@ function validateInventory(data, label) {
       assertObject(part, `${label}.partsDetail[${index}]`);
       if (part.category !== undefined) {
         assertString(part.category, `${label}.partsDetail[${index}].category`);
-        assert.notEqual(
-          part.category,
-          "Metal Blade",
-          `${label}.partsDetail[${index}].category must use Main Blade instead of Metal Blade`
+        assert.ok(
+          inventoryPartCategories.includes(part.category),
+          `${label}.partsDetail[${index}].category must be one of: ${inventoryPartCategories.join(", ")}. Confirm with the user before adding a new category.`
         );
       }
     }
