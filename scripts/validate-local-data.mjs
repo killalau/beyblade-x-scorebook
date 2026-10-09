@@ -89,6 +89,13 @@ function validatePurchases(data, label) {
     if (item.taxRate !== undefined) assertNumberLike(item.taxRate, `${label}.items[${index}].taxRate`);
     if (item.estimatedTotalPaid !== undefined) assertNumberLike(item.estimatedTotalPaid, `${label}.items[${index}].estimatedTotalPaid`);
     if (item.imageUrl !== undefined) assertString(item.imageUrl, `${label}.items[${index}].imageUrl`);
+    if (item.returnedItems !== undefined) {
+      assertArray(item.returnedItems, `${label}.items[${index}].returnedItems`);
+      for (const [returnedIndex, returnedItem] of item.returnedItems.entries()) {
+        assertObject(returnedItem, `${label}.items[${index}].returnedItems[${returnedIndex}]`);
+        assertNumberLike(returnedItem.refundAmount, `${label}.items[${index}].returnedItems[${returnedIndex}].refundAmount`);
+      }
+    }
   }
 }
 

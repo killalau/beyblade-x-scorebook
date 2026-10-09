@@ -6,7 +6,13 @@ export function calculateTotalSpend(purchases) {
       return itemSum + (Number.isFinite(salePrice) ? salePrice : 0);
     }, 0)
   ), 0);
-  return Math.round((totalPaid - saleProceeds) * 100) / 100;
+  const refunds = (purchases?.items || []).reduce((sum, item) => (
+    sum + (item?.returnedItems || []).reduce((itemSum, returnedItem) => {
+      const refundAmount = Number(returnedItem?.refundAmount);
+      return itemSum + (Number.isFinite(refundAmount) ? refundAmount : 0);
+    }, 0)
+  ), 0);
+  return Math.round((totalPaid - saleProceeds - refunds) * 100) / 100;
 }
 
 export function purchasePaidAmount(item) {

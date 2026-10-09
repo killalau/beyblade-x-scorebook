@@ -52,7 +52,7 @@ Guidance:
 
 The collection file deliberately keeps inventory and purchase history as separate sections. Purchase history records provenance; current inventory remains authoritative because gifts, trades, losses, sales, and loose parts cannot always be derived from purchases.
 
-The Inventory page displays net total spend: the sum of `estimatedTotalPaid` minus `soldItems[].salePrice`. For legacy rows without `estimatedTotalPaid`, it falls back to `pretaxPrice`, applying `taxRate` when present unless `taxIncluded` is true.
+The Inventory page displays net total spend: the sum of `estimatedTotalPaid` minus `soldItems[].salePrice` and `returnedItems[].refundAmount`. Keep returned purchases in history, record each returned product and refund under `returnedItems`, and remove returned products and parts from current inventory. For legacy rows without `estimatedTotalPaid`, the calculation falls back to `pretaxPrice`, applying `taxRate` when present unless `taxIncluded` is true.
 
 Migrate the former two-file format with `npm run migrate:collection`. The command refuses to overwrite an existing collection unless `--force` is explicitly supplied and preserves the legacy input files as recoverable backups.
 
