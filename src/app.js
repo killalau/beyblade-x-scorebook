@@ -7,6 +7,7 @@ import {
 import { scoreProduct, summarizeBreakdown } from "./scoring.js";
 import { matchesPartFilters, partFilterTokens } from "./wishlist-filters.js";
 import { calculateTotalSpend, purchaseUnitPaidAmount } from "./collection-summary.js";
+import { findPurchaseForInventoryBey, normalizeInventoryProductName } from "./inventory-products.js";
 import { groupInventoryParts } from "./inventory-parts.js";
 
 const storageKeys = {
@@ -619,13 +620,7 @@ function inventoryPartTabLabel(category) {
 }
 
 function findPurchaseForBey(bey) {
-  const exact = state.purchases.find((purchase) => purchase.name === bey);
-  if (exact) return exact;
-  const normalizedBey = normalizeInventoryText(bey);
-  return state.purchases.find((purchase) => {
-    const normalizedPurchase = normalizeInventoryText(purchase.name);
-    return normalizedPurchase.includes(normalizedBey) || normalizedBey.includes(normalizedPurchase);
-  });
+  return findPurchaseForInventoryBey(state.purchases, bey);
 }
 
 function findCatalogueListingForBey(bey, purchase) {
@@ -646,7 +641,7 @@ function findCatalogueListingForBey(bey, purchase) {
 }
 
 function normalizeInventoryText(value) {
-  return String(value ?? "").toLowerCase().replace(/\b(starter|pack|set|dual|deluxe|with launcher)\b/g, " ").replace(/[^a-z0-9]+/g, "");
+  return normalizeInventoryProductName(value);
 }
 
 function renderWishlist() {

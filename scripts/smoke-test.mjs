@@ -5,6 +5,7 @@ import { parseConfig, scoreProduct } from "../src/scoring.js";
 import { matchesPartFilters, partFilterTokens } from "../src/wishlist-filters.js";
 import { calculateTotalSpend, purchasePaidAmount, purchaseUnitPaidAmount } from "../src/collection-summary.js";
 import { canonicalInventoryPartCategory, groupInventoryParts, inventoryPartCategories } from "../src/inventory-parts.js";
+import { findPurchaseForInventoryBey, normalizeInventoryProductName } from "../src/inventory-products.js";
 import { generateWishlist, isWishlistEligible, listingIdFor, normalizeStatus } from "./wishlist-pipeline.mjs";
 import { auditNormalized } from "./normalized-audit.mjs";
 import { extractObservations, mergeObservations } from "./crawl-normalizer.mjs";
@@ -36,6 +37,12 @@ assert.equal(purchasePaidAmount({ pretaxPrice: 20 }), 20);
 assert.equal(purchaseUnitPaidAmount({ estimatedTotalPaid: 60.71, quantity: 2 }), 30.36);
 assert.equal(purchaseUnitPaidAmount({ estimatedTotalPaid: 85.94, quantity: 3, perItemTotal: 28.65 }), 28.65);
 assert.equal(purchaseUnitPaidAmount({ estimatedTotalPaid: 22.39 }), 22.39);
+assert.equal(normalizeInventoryProductName("Shark Scale 4-50UF (x2)"), normalizeInventoryProductName("Shark Scale 4-50UF (x3)"));
+assert.deepEqual(findPurchaseForInventoryBey([
+  { name: "Shark Scale 4-50UF (x3)", source: "Mactera Direct", perItemTotal: 28.65 }
+], "Shark Scale 4-50UF (x2)"), {
+  name: "Shark Scale 4-50UF (x3)", source: "Mactera Direct", perItemTotal: 28.65
+});
 
 const legacyGroupedParts = groupInventoryParts([
   { category: "Assist Blade", name: "Turn", abbrev: "T", qty: 1, source: "Fang Leon T 4-60U", notes: "Mode-change assist blade." },
