@@ -43,6 +43,10 @@ assert.deepEqual(findPurchaseForInventoryBey([
 ], "Shark Scale 4-50UF (x2)"), {
   name: "Shark Scale 4-50UF (x3)", source: "Mactera Direct", perItemTotal: 28.65
 });
+assert.equal(findPurchaseForInventoryBey([
+  { name: "Glory Valkerion LF", source: "Toy Snowman", soldItems: [{ salePrice: 40 }] },
+  { name: "Glory Valkerion LF", source: "Walmart", estimatedTotalPaid: 22.36 }
+], "Glory Valkerion LF").source, "Walmart");
 
 const legacyGroupedParts = groupInventoryParts([
   { category: "Assist Blade", name: "Turn", abbrev: "T", qty: 1, source: "Fang Leon T 4-60U", notes: "Mode-change assist blade." },
