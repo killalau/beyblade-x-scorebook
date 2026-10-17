@@ -32,9 +32,15 @@ These private files are gitignored.
 ## Pages
 
 - `Scorebook`: product/combo scoring and Cost Index lookup.
-- `Inventory`: browser-loaded private collection JSON.
+- `Inventory`: owned-parts browser loaded from private collection JSON.
+- `Purchase`: current owned-product cards and complete purchase history.
 - `Wishlist`: browser-loaded private wishlist JSON with search and sorting.
+- `Catalogue`: public sanitized retailer listings of every availability status.
 - `Rules`: scoring weights, rarity multipliers, and formulas.
+
+## React Migration
+
+The planned React and TypeScript modernization is tracked in [React Migration Plan](docs/react-migration-plan.md). That document is the canonical checklist, decision record, and progress log for the migration and should be updated in the same commit as migration work.
 
 ## Run Locally
 
@@ -146,6 +152,7 @@ Useful docs:
 - `docs/json-source-of-truth.md`
 - `docs/data-contracts.md`
 - `docs/crawl-playbook.md`
+- `docs/react-migration-plan.md`
 - `docs/roadmap.md`
 
 ## GitHub Pages Privacy Model
