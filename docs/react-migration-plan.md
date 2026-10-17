@@ -7,8 +7,8 @@ Update this file in the same commit whenever migration work changes a phase stat
 ## Current Status
 
 - Overall status: In progress
-- Current phase: Phase 6 — Inventory and Purchase pages
-- Progress: 6 of 11 phases completed
+- Current phase: Phase 7 — Catalogue and Wishlist pages
+- Progress: 7 of 11 phases completed
 - Last updated: 2026-10-17
 - Production application: Existing vanilla JavaScript version
 - Target hosting: GitHub Pages
@@ -189,15 +189,15 @@ Exit criteria: every target page is reachable through stable navigation on deskt
 
 ### Phase 6 — Inventory and Purchase Pages
 
-Status: Not started
+Status: Complete
 
-- [ ] Port the Inventory parts tabs, search, grouping, quantities, sources, notes, and line column.
-- [ ] Port current-owned product cards to the Purchase page.
-- [ ] Port the full Purchase History.
-- [ ] Preserve tax/shipping-inclusive unit prices on history cards.
-- [ ] Preserve net-spend calculations after sales and refunds.
-- [ ] Preserve sold, returned, gifted, preorder, source, quantity, date, and image information.
-- [ ] Add component tests for representative multi-quantity and disposed-item records.
+- [x] Port the Inventory parts tabs, search, grouping, quantities, sources, notes, and line column.
+- [x] Port current-owned product cards to the Purchase page.
+- [x] Port the full Purchase History.
+- [x] Preserve tax/shipping-inclusive unit prices on history cards.
+- [x] Preserve net-spend calculations after sales and refunds.
+- [x] Preserve sold, returned, gifted, preorder, source, quantity, date, and image information.
+- [x] Add component tests for representative multi-quantity and disposed-item records.
 
 Exit criteria: Inventory and Purchase match the current application for the same uploaded collection file.
 
@@ -258,9 +258,9 @@ This checklist spans multiple phases and must be complete before production cuto
 - [x] Browser upload for collection and wishlist JSON.
 - [x] Browser-local persistence and clear-data action.
 - [ ] Scorebook calculation, breakdown, CX parsing, rarity, and Cost Index.
-- [ ] Inventory part tabs, search, grouping, quantities, line, sources, and notes.
-- [ ] Current collection cards and complete purchase history.
-- [ ] Unit paid, net spend, sold, returned, and gifted purchase behavior.
+- [x] Inventory part tabs, search, grouping, quantities, line, sources, and notes.
+- [x] Current collection cards and complete purchase history.
+- [x] Unit paid, net spend, sold, returned, and gifted purchase behavior.
 - [ ] Wishlist card/list views, sorting, search, and part filters.
 - [ ] Public Catalogue auto-load, all availability statuses, filters, and sorting.
 - [ ] Rules generated from public scoring configuration.
@@ -323,3 +323,4 @@ This checklist spans multiple phases and must be complete before production cuto
 | 2026-10-17 | Completed Phase 3. | Added strict domain contracts and JS-module declarations, 13 focused Vitest parity tests, and a targeted Stryker suite with a 55.61% baseline and 50% enforcement floor while preserving Node scripts. |
 | 2026-10-17 | Completed Phase 4. | Added aligned Zod runtime contracts, useful upload errors, versioned browser-only persistence compatible with legacy envelopes, clear-data behavior, and schema/storage privacy tests. |
 | 2026-10-17 | Completed Phase 5. | Added the shared shell, six stable hash routes, active and mobile-scrollable navigation, global data controls/status, public Catalogue auto-loading, and route-level empty/error states. Browser smoke verified 125 public listings and no console errors. |
+| 2026-10-17 | Completed Phase 6. | Ported grouped Inventory tabs/search/table and the Purchase summary, current collection, complete reverse-order history, image fallback, unit-paid, net-spend, disposal, preorder, source, quantity, and provenance behavior. Added React component tests for multi-quantity and disposed records. |

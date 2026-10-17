@@ -19,7 +19,7 @@ export interface InventoryPartDetail {
   category: InventoryPartCategory | "Metal Blade";
   name: string;
   abbrev?: string;
-  qty?: number;
+  qty?: number | string;
   source?: string;
   notes?: string;
   line?: string;
@@ -33,13 +33,13 @@ export interface Inventory {
 
 export interface SoldItem {
   name?: string;
-  salePrice?: number;
+  salePrice?: number | string;
   soldAt?: string;
 }
 
 export interface ReturnedItem {
   name?: string;
-  refundAmount?: number;
+  refundAmount?: number | string;
   returnedAt?: string;
 }
 
@@ -52,14 +52,16 @@ export interface PurchaseItem {
   name: string;
   source?: string;
   purchaseDate?: string;
-  pretaxPrice?: number;
-  taxRate?: number;
+  pretaxPrice?: number | string;
+  taxRate?: number | string;
   taxIncluded?: boolean;
-  estimatedTotalPaid?: number;
-  perItemTotal?: number;
-  quantity?: number;
+  estimatedTotalPaid?: number | string;
+  perItemTotal?: number | string;
+  quantity?: number | string;
   imageUrl?: string;
   preorder?: boolean;
+  status?: string;
+  recordedFrom?: string;
   soldItems?: SoldItem[];
   returnedItems?: ReturnedItem[];
   giftedItems?: GiftedItem[];

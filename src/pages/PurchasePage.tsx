@@ -1,28 +1,192 @@
+import { DollarSign, PackageCheck, ReceiptText } from "lucide-react";
+import { useMemo } from "react";
+
+import { calculateTotalSpend } from "@/collection-summary.js";
+import { EmptyState } from "@/components/empty-state";
 import { FileUpload } from "@/components/file-upload";
+import { PageHeader } from "@/components/page-header";
+import { Card, CardContent } from "@/components/ui/card";
+import type { PurchaseItem, RetailerListing } from "@/domain/types";
+import { usePublicCatalogue } from "@/features/catalogue/use-public-catalogue";
 import { usePrivateData } from "@/features/private-data/use-private-data";
-import { PagePlaceholder } from "@/pages/page-placeholder";
+import { findCatalogueListingForProduct } from "@/features/purchases/purchase-domain";
+import {
+  OwnedProductCard,
+  PurchaseHistoryCard,
+} from "@/features/purchases/purchase-cards";
+import { findPurchaseForInventoryBey } from "@/inventory-products.js";
+import { formatCurrency } from "@/lib/format";
 
 export function PurchasePage() {
   const { collection, loadCollection } = usePrivateData();
+  const catalogue = usePublicCatalogue();
+  const listings =
+    catalogue.status === "ready"
+      ? (catalogue.data.items as unknown as RetailerListing[])
+      : [];
+
+  const purchases = useMemo(
+    () => (collection?.data.purchases.items ?? []) as unknown as PurchaseItem[],
+    [collection],
+  );
+
+  if (!collection) {
+    return (
+      <div className="grid gap-6">
+        <PageHeader
+          title="Purchase"
+          description="Review current owned products and complete purchase history."
+        />
+        <EmptyState
+          title="Load your collection"
+          description="Purchase data stays in this browser."
+          action={
+            <FileUpload label="Load collection JSON" onFile={loadCollection} />
+          }
+        />
+      </div>
+    );
+  }
+
+  const currency = collection.data.currency ?? "CAD";
+  const ownedBeys = collection.data.inventory.beys;
+  const netSpend = calculateTotalSpend({ items: purchases });
+
   return (
-    <PagePlaceholder
-      title="Purchase"
-      description="Review current owned products, full purchase history, unit prices, sales, returns, and net spend."
-      emptyTitle={
-        collection
-          ? `${collection.data.purchases.items.length} purchase records loaded`
-          : "Load your collection"
-      }
-      emptyDescription={
-        collection
-          ? "Product cards and history arrive in Phase 6."
-          : "Purchase history is stored only in your collection JSON and browser."
-      }
-      action={
-        !collection ? (
-          <FileUpload label="Load collection JSON" onFile={loadCollection} />
-        ) : undefined
-      }
-    />
+    <div className="grid gap-8">
+      <PageHeader
+        eyebrow="Collection provenance"
+        title="Purchase"
+        description="Current ownership is shown separately from immutable history. Prices are tax-and-shipping-inclusive unit amounts."
+      />
+
+      <section
+        className="grid gap-3 sm:grid-cols-3"
+        aria-label="Purchase summary"
+      >
+        <SummaryCard
+          icon={PackageCheck}
+          label="Owned products"
+          value={String(ownedBeys.length)}
+        />
+        <SummaryCard
+          icon={ReceiptText}
+          label="Purchase records"
+          value={String(purchases.length)}
+        />
+        <SummaryCard
+          icon={DollarSign}
+          label="Net spend"
+          value={formatCurrency(netSpend, currency)}
+        />
+      </section>
+
+      <section
+        className="grid gap-4"
+        aria-labelledby="current-collection-title"
+      >
+        <div>
+          <h2
+            id="current-collection-title"
+            className="text-2xl font-black tracking-tight"
+          >
+            Current Collection
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Products currently present in inventory.beys.
+          </p>
+        </div>
+        {ownedBeys.length ? (
+          <div className="grid gap-3 md:grid-cols-2">
+            {ownedBeys.map((bey, index) => {
+              const purchase = findPurchaseForInventoryBey(purchases, bey);
+              const listing = findCatalogueListingForProduct(
+                listings,
+                bey,
+                purchase,
+              );
+              return (
+                <OwnedProductCard
+                  key={`${bey}-${index}`}
+                  name={bey}
+                  purchase={purchase}
+                  imageUrl={purchase?.imageUrl ?? listing?.imageUrl}
+                  currency={currency}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <EmptyState
+            title="No currently owned products"
+            description="Purchase history remains below even when products were sold, returned, or gifted."
+          />
+        )}
+      </section>
+
+      <section className="grid gap-4" aria-labelledby="purchase-history-title">
+        <div>
+          <h2
+            id="purchase-history-title"
+            className="text-2xl font-black tracking-tight"
+          >
+            Purchase History
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {purchases.length} records · newest recorded row first
+          </p>
+        </div>
+        {purchases.length ? (
+          <div className="grid gap-3">
+            {[...purchases].reverse().map((purchase, index) => {
+              const listing = findCatalogueListingForProduct(
+                listings,
+                purchase.name,
+                purchase,
+              );
+              return (
+                <PurchaseHistoryCard
+                  key={`${purchase.name}-${purchases.length - index}`}
+                  purchase={purchase}
+                  imageUrl={purchase.imageUrl ?? listing?.imageUrl}
+                  currency={currency}
+                />
+              );
+            })}
+          </div>
+        ) : (
+          <EmptyState
+            title="No purchase records"
+            description="The collection file contains no purchase-history rows."
+          />
+        )}
+      </section>
+    </div>
+  );
+}
+
+function SummaryCard({
+  icon: Icon,
+  label,
+  value,
+}: {
+  icon: typeof DollarSign;
+  label: string;
+  value: string;
+}) {
+  return (
+    <Card>
+      <CardContent className="flex items-center gap-3 p-4">
+        <span className="grid size-10 place-items-center rounded-lg bg-secondary text-primary">
+          <Icon aria-hidden="true" className="size-5" />
+        </span>
+        <span>
+          <span className="block text-xs font-bold tracking-wide text-muted-foreground uppercase">
+            {label}
+          </span>
+          <strong className="text-lg">{value}</strong>
+        </span>
+      </CardContent>
+    </Card>
   );
 }
