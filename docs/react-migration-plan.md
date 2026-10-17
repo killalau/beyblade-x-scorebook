@@ -7,8 +7,8 @@ Update this file in the same commit whenever migration work changes a phase stat
 ## Current Status
 
 - Overall status: In progress
-- Current phase: Phase 3 — Domain logic and type migration
-- Progress: 3 of 11 phases completed
+- Current phase: Phase 4 — Schemas, storage, and private data loading
+- Progress: 4 of 11 phases completed
 - Last updated: 2026-10-17
 - Production application: Existing vanilla JavaScript version
 - Target hosting: GitHub Pages
@@ -145,20 +145,20 @@ Exit criteria: new pages can be built from a small, consistent, accessible compo
 
 ### Phase 3 — Domain Logic and Type Migration
 
-Status: Not started
+Status: Complete
 
-- [ ] Define TypeScript domain models for collection, purchases, wishlist, catalogue, and scoring.
-- [ ] Move or adapt scoring logic without changing results.
-- [ ] Move inventory grouping and line-classification logic.
-- [ ] Move purchase total and unit-price calculations.
-- [ ] Move wishlist filters and catalogue helpers.
-- [ ] Convert the existing smoke-test coverage into focused Vitest suites where appropriate.
-- [ ] Add StrykerJS core and its Vitest runner.
-- [ ] Add a targeted Stryker configuration and `test:mutation` command.
-- [ ] Initially mutate only high-value pure domain modules: scoring, purchase calculations, inventory grouping, wishlist eligibility, and filters.
-- [ ] Exclude React rendering, generated data, scripts with external side effects, and broad configuration files from the initial mutation scope.
-- [ ] Record an initial mutation-score baseline before choosing an enforcement threshold.
-- [ ] Keep Node data scripts functional during module conversion.
+- [x] Define TypeScript domain models for collection, purchases, wishlist, catalogue, and scoring.
+- [x] Move or adapt scoring logic without changing results.
+- [x] Move inventory grouping and line-classification logic.
+- [x] Move purchase total and unit-price calculations.
+- [x] Move wishlist filters and catalogue helpers.
+- [x] Convert the existing smoke-test coverage into focused Vitest suites where appropriate.
+- [x] Add StrykerJS core and its Vitest runner.
+- [x] Add a targeted Stryker configuration and `test:mutation` command.
+- [x] Initially mutate only high-value pure domain modules: scoring, purchase calculations, inventory grouping, wishlist eligibility, and filters.
+- [x] Exclude React rendering, generated data, scripts with external side effects, and broad configuration files from the initial mutation scope.
+- [x] Record an initial mutation-score baseline before choosing an enforcement threshold.
+- [x] Keep Node data scripts functional during module conversion.
 
 Exit criteria: pure domain functions have typed interfaces and parity tests against current behavior, and the targeted mutation suite produces a reviewed baseline report.
 
@@ -296,7 +296,7 @@ This checklist spans multiple phases and must be complete before production cuto
 | Migration branch strategy | Phase 0 | Decided | Use the long-lived `codex/react-migration` branch; keep `main` and the live site stable until cutover. |
 | Shared browser/Node Zod schemas | Phase 4 | Open | Prefer one source when it does not complicate Node scripts or public bundling. |
 | Dialog versus Sheet for mobile details | Phase 2 | Open | Decide from the first real product-detail interaction. |
-| Mutation score threshold and CI cadence | Phase 3 | Open | Establish a baseline first; then choose a realistic threshold and whether the full suite runs on pull requests, scheduled CI, or both. |
+| Mutation score threshold and CI cadence | Phase 3 | Decided | Baseline: 55.61% overall (59.89% covered). Enforce a 50% break threshold locally; keep the 16-second targeted suite opt-in rather than adding it to every migration CI run. |
 
 ## Risks and Mitigations
 
@@ -320,3 +320,4 @@ This checklist spans multiple phases and must be complete before production cuto
 | 2026-10-17 | Confirmed the human review policy. | Phases 1–9 proceed autonomously; user review and explicit approval are required before Phase 10 production cutover. |
 | 2026-10-17 | Completed Phase 1. | Added the React/TypeScript/Vite/HashRouter foundation, quality tooling, dual-entry production build, build privacy check, and non-deploying migration CI. |
 | 2026-10-17 | Completed Phase 2. | Added Tailwind CSS-first design tokens, minimal shadcn-compatible primitives, shared page/data states, and responsive navigation foundations. |
+| 2026-10-17 | Completed Phase 3. | Added strict domain contracts and JS-module declarations, 13 focused Vitest parity tests, and a targeted Stryker suite with a 55.61% baseline and 50% enforcement floor while preserving Node scripts. |

@@ -28,7 +28,12 @@ export default tseslint.config(
     },
   },
   {
-    files: ["vite.config.mjs", "scripts/check-public-build.mjs"],
+    files: [
+      "vite.config.mjs",
+      "vitest.config.mts",
+      "stryker.config.mjs",
+      "scripts/check-public-build.mjs",
+    ],
     extends: [eslint.configs.recommended],
     languageOptions: {
       ecmaVersion: "latest",

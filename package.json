@@ -9,10 +9,12 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint \"src/**/*.{ts,tsx}\" vite.config.mjs scripts/check-public-build.mjs",
-    "format:check": "prettier --check react.html package.json components.json tsconfig.json eslint.config.js vite.config.mjs \"src/**/*.{ts,tsx}\" \"src/app/**/*.css\" scripts/check-public-build.mjs .github/workflows/react-migration.yml",
+    "lint": "eslint \"src/**/*.{ts,tsx}\" vite.config.mjs vitest.config.mts stryker.config.mjs scripts/check-public-build.mjs",
+    "format:check": "prettier --check react.html package.json components.json tsconfig.json eslint.config.js vite.config.mjs vitest.config.mts stryker.config.mjs \"src/**/*.{ts,tsx}\" \"src/**/*.d.ts\" \"src/app/**/*.css\" scripts/check-public-build.mjs .github/workflows/react-migration.yml",
     "check:build": "node scripts/check-public-build.mjs",
-    "test": "node scripts/smoke-test.mjs && node scripts/validate-local-data.mjs",
+    "test": "npm run test:unit && node scripts/smoke-test.mjs && node scripts/validate-local-data.mjs",
+    "test:unit": "vitest run",
+    "test:mutation": "stryker run",
     "validate:data": "node scripts/validate-local-data.mjs",
     "summarize:data": "node scripts/summarize-local-data.mjs",
     "migrate:collection": "node scripts/migrate-collection.mjs",
@@ -38,6 +40,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@stryker-mutator/core": "^10.0.0",
+    "@stryker-mutator/vitest-runner": "^10.0.0",
     "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
@@ -50,6 +54,7 @@
     "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.2",
-    "vite": "^8.3.4"
+    "vite": "^8.3.4",
+    "vitest": "^4.1.12"
   }
 }
