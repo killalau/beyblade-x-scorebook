@@ -8,7 +8,7 @@ import { scoreProduct, summarizeBreakdown } from "./scoring.js";
 import { matchesPartFilters, partFilterTokens } from "./wishlist-filters.js";
 import { calculateTotalSpend, purchaseUnitPaidAmount } from "./collection-summary.js";
 import { findPurchaseForInventoryBey, normalizeInventoryProductName } from "./inventory-products.js";
-import { groupInventoryParts } from "./inventory-parts.js";
+import { annotateInventoryPartLines, groupInventoryParts } from "./inventory-parts.js";
 
 const storageKeys = {
   collection: "beybladeScorebook.collection",
@@ -575,7 +575,7 @@ function renderInventory() {
 
   const query = elements.inventoryPartSearch.value.trim().toLowerCase();
   const category = state.inventoryPartCategory;
-  const inventoryParts = state.inventoryDetail.filter((part) => part.category !== "Complete Combo");
+  const inventoryParts = annotateInventoryPartLines(state.inventoryDetail.filter((part) => part.category !== "Complete Combo"));
   const groupedParts = groupInventoryParts(inventoryParts);
   const filteredParts = groupedParts
     .filter((part) => partMatchesInventoryCategory(part, category))
@@ -593,6 +593,7 @@ function renderInventory() {
     const row = document.createElement("tr");
     row.innerHTML = `
       <td>${escapeHtml(part.category ?? "-")}</td>
+      <td>${escapeHtml(part.line ?? "-")}</td>
       <td>${escapeHtml(part.name ?? "-")}</td>
       <td>${escapeHtml(part.abbrev ?? "-")}</td>
       <td>${escapeHtml(part.qty ?? "-")}</td>
@@ -611,12 +612,13 @@ function renderInventoryPartOptions(parts) {
 }
 
 function partMatchesInventoryCategory(part, category) {
+  if (category === "Blade") return part.category === "Blade" || part.category === "Main Blade";
   if (category !== "other") return part.category === category;
   return !["Blade", "Lock Chip", "Main Blade", "Over Blade", "Assist Blade", "Ratchet", "Bit", "Complete Combo"].includes(part.category);
 }
 
 function inventoryPartTabLabel(category) {
-  return category === "other" ? "Other" : category === "Lock Chip" ? "Clip Lock" : category;
+  return category === "other" ? "Other" : category === "Lock Chip" ? "Clip Lock" : category === "Blade" ? "Blade / Main Blade" : category;
 }
 
 function findPurchaseForBey(bey) {

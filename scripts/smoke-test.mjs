@@ -4,7 +4,7 @@ import { dirname, extname, join, resolve } from "node:path";
 import { parseConfig, scoreProduct } from "../src/scoring.js";
 import { matchesPartFilters, partFilterTokens } from "../src/wishlist-filters.js";
 import { calculateTotalSpend, purchasePaidAmount, purchaseUnitPaidAmount } from "../src/collection-summary.js";
-import { canonicalInventoryPartCategory, groupInventoryParts, inventoryPartCategories } from "../src/inventory-parts.js";
+import { annotateInventoryPartLines, canonicalInventoryPartCategory, directInventoryPartLine, groupInventoryParts, inventoryPartCategories } from "../src/inventory-parts.js";
 import { findPurchaseForInventoryBey, normalizeInventoryProductName } from "../src/inventory-products.js";
 import { generateWishlist, isWishlistEligible, listingIdFor, normalizeStatus } from "./wishlist-pipeline.mjs";
 import { auditNormalized } from "./normalized-audit.mjs";
@@ -65,6 +65,18 @@ assert.equal(inventoryPartCategories.includes("Other"), false);
 assert.equal(groupInventoryParts([
   { category: "Metal Blade", name: "Whip", abbrev: "-", qty: 1, source: "Legacy import" }
 ])[0].category, "Main Blade");
+assert.equal(directInventoryPartLine({ category: "Main Blade", code: "G2750" }), "CX");
+assert.equal(directInventoryPartLine({ category: "Blade", code: "UX-20" }), "UX");
+assert.equal(directInventoryPartLine({ category: "Blade", code: "G2731", source: "Shark Scale 4-50UF" }), "UX");
+assert.equal(directInventoryPartLine({ category: "Bit", code: "-", source: "Fang Leon T 4-60U" }), "CX");
+assert.equal(annotateInventoryPartLines([
+  { category: "Blade", name: "Glory Valkerion", code: "G4568", notes: "UX Infinity starter" },
+  { category: "Bit", name: "Low Flat", code: "G4568" }
+])[1].line, "UX");
+assert.equal(groupInventoryParts([
+  { category: "Bit", name: "Low Flat", abbrev: "LF", qty: 1, source: "UX product", line: "UX" },
+  { category: "Bit", name: "Low Flat", abbrev: "LF", qty: 1, source: "BX product", line: "BX" }
+])[0].line, "UX, BX");
 
 const keel = scoreProduct({
   name: "Keel Shark 3-60LF Booster",
