@@ -13,12 +13,7 @@ export const inventoryPartCategories = Object.freeze([
   "Tool",
   "Complete Combo"
 ]);
-
-const knownInventoryProductLines = Object.freeze([
-  ["CX", /\b(fang leon)\b/i],
-  ["UX", /\b(tide whale|circle ghost|hack viking|cowl sphinx|crest leon|shark scale|cobalt dragoon|deluxe launcher 2-pack)\b/i],
-  ["BX", /\b(xtreme battle set|brace triceratops|dagger dran)\b/i]
-]);
+export const inventoryBladeLines = Object.freeze(["BX", "UX", "CX"]);
 
 export function groupInventoryParts(parts) {
   const grouped = new Map();
@@ -53,50 +48,10 @@ export function groupInventoryParts(parts) {
   }));
 }
 
-export function annotateInventoryPartLines(parts) {
-  const lineHintsByCode = new Map();
-  for (const part of parts) {
-    const code = normalizedCode(part.code);
-    const line = directInventoryPartLine(part);
-    if (!code || !line) continue;
-    const hints = lineHintsByCode.get(code) ?? new Set();
-    hints.add(line);
-    lineHintsByCode.set(code, hints);
-  }
-
-  return parts.map((part) => {
-    const directLine = directInventoryPartLine(part);
-    const codeHints = lineHintsByCode.get(normalizedCode(part.code));
-    return { ...part, line: directLine || (codeHints ? [...codeHints].join(", ") : "-") };
-  });
-}
-
-export function directInventoryPartLine(part) {
-  const explicitLine = String(part?.line ?? "").toUpperCase();
-  if (["BX", "UX", "CX"].includes(explicitLine)) return explicitLine;
-
-  const code = normalizedCode(part?.code);
-  const codeLine = code.match(/^(BX|UX|CX)(?:-|\b)/)?.[1];
-  if (codeLine) return codeLine;
-
-  const text = [part?.category, part?.name, part?.source, part?.notes]
-    .filter(Boolean).join(" ").toLowerCase();
-  if (/\b(custom line|cx)\b/.test(text) || ["Lock Chip", "Main Blade", "Over Blade", "Assist Blade"].includes(part?.category)) return "CX";
-  if (/\b(unique line|ux|infinity|expand blade|ratchet-integrated)\b/.test(text)) return "UX";
-  if (/\b(basic line|bx)\b/.test(text)) return "BX";
-  const knownLine = knownInventoryProductLines.find(([, pattern]) => pattern.test(text));
-  if (knownLine) return knownLine[0];
-  return "";
-}
-
 export function canonicalInventoryPartCategory(category) {
   return category === "Metal Blade" ? "Main Blade" : category;
 }
 
 function splitValues(value) {
   return [...new Set(String(value ?? "").split(";").map((item) => item.trim()).filter(Boolean))];
-}
-
-function normalizedCode(value) {
-  return String(value ?? "").trim().toUpperCase();
 }

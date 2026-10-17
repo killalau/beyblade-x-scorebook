@@ -8,7 +8,7 @@ import { scoreProduct, summarizeBreakdown } from "./scoring.js";
 import { matchesPartFilters, partFilterTokens } from "./wishlist-filters.js";
 import { calculateTotalSpend, purchaseUnitPaidAmount } from "./collection-summary.js";
 import { findPurchaseForInventoryBey, normalizeInventoryProductName } from "./inventory-products.js";
-import { annotateInventoryPartLines, groupInventoryParts } from "./inventory-parts.js";
+import { groupInventoryParts } from "./inventory-parts.js";
 
 const storageKeys = {
   collection: "beybladeScorebook.collection",
@@ -575,7 +575,7 @@ function renderInventory() {
 
   const query = elements.inventoryPartSearch.value.trim().toLowerCase();
   const category = state.inventoryPartCategory;
-  const inventoryParts = annotateInventoryPartLines(state.inventoryDetail.filter((part) => part.category !== "Complete Combo"));
+  const inventoryParts = state.inventoryDetail.filter((part) => part.category !== "Complete Combo");
   const groupedParts = groupInventoryParts(inventoryParts);
   const filteredParts = groupedParts
     .filter((part) => partMatchesInventoryCategory(part, category))
