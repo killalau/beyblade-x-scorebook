@@ -326,7 +326,7 @@ assert.match(appSource, /localStorage/);
 assert.match(appSource, /validateCollectionData/);
 assert.match(appSource, /findCatalogueListingForBey/);
 assert.match(appSource, /purchaseUnitPaidAmount/);
-assert.match(appSource, /purchasePaidAmount/);
+assert.match(appSource, /purchaseUnitPaidAmount\(purchase\)/);
 assert.match(appSource, /purchaseEvents/);
 assert.match(appSource, /loadPublicCatalogue/);
 assert.match(appSource, /renderCatalogue/);

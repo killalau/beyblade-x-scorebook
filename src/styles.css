@@ -482,8 +482,21 @@ th {
 }
 
 .purchase-history-price {
-  color: var(--accent-strong);
+  display: grid;
+  gap: 2px;
+  justify-items: end;
   white-space: nowrap;
+}
+
+.purchase-history-price small {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.purchase-history-price strong {
+  color: var(--accent-strong);
 }
 
 .purchase-history-events {
@@ -953,6 +966,10 @@ h3 {
   .purchase-history-price,
   .purchase-history-events {
     grid-column: 2;
+  }
+
+  .purchase-history-price {
+    justify-items: start;
   }
 
   .editor-row {

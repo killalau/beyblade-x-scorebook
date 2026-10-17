@@ -6,7 +6,7 @@ import {
 } from "./reference-data/scoringConfig.js";
 import { scoreProduct, summarizeBreakdown } from "./scoring.js";
 import { matchesPartFilters, partFilterTokens } from "./wishlist-filters.js";
-import { calculateTotalSpend, purchasePaidAmount, purchaseUnitPaidAmount } from "./collection-summary.js";
+import { calculateTotalSpend, purchaseUnitPaidAmount } from "./collection-summary.js";
 import { findPurchaseForInventoryBey, normalizeInventoryProductName } from "./inventory-products.js";
 import { groupInventoryParts } from "./inventory-parts.js";
 
@@ -594,7 +594,10 @@ function renderInventory() {
         <small>${escapeHtml(purchase.source ?? "Unknown source")}${purchase.quantity > 1 ? ` · Qty ${escapeHtml(purchase.quantity)}` : ""}</small>
         ${purchase.recordedFrom ? `<small>${escapeHtml(purchase.recordedFrom)}</small>` : ""}
       </span>
-      <strong class="purchase-history-price">${escapeHtml(formatCurrency(purchasePaidAmount(purchase), state.collectionCurrency))}</strong>
+      <span class="purchase-history-price">
+        <small>Unit paid</small>
+        <strong>${escapeHtml(formatCurrency(purchaseUnitPaidAmount(purchase), state.collectionCurrency))}</strong>
+      </span>
       <span class="purchase-history-events">
         ${events.length
           ? events.map((event) => `<span class="purchase-event ${event.kind}">${escapeHtml(event.label)}</span>`).join("")
