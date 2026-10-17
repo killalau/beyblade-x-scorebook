@@ -7,8 +7,8 @@ Update this file in the same commit whenever migration work changes a phase stat
 ## Current Status
 
 - Overall status: In progress
-- Current phase: Phase 4 — Schemas, storage, and private data loading
-- Progress: 4 of 11 phases completed
+- Current phase: Phase 5 — App shell and routing
+- Progress: 5 of 11 phases completed
 - Last updated: 2026-10-17
 - Production application: Existing vanilla JavaScript version
 - Target hosting: GitHub Pages
@@ -164,14 +164,14 @@ Exit criteria: pure domain functions have typed interfaces and parity tests agai
 
 ### Phase 4 — Schemas, Storage, and Private Data Loading
 
-Status: Not started
+Status: Complete
 
-- [ ] Define Zod schemas for collection, wishlist, and public catalogue data.
-- [ ] Reuse or align schemas with `npm run validate:data` to prevent contract drift.
-- [ ] Implement browser file upload with useful validation errors.
-- [ ] Implement browser-local persistence and clear-data behavior.
-- [ ] Handle supported data versions and future migrations explicitly.
-- [ ] Test that private JSON is absent from production build artifacts.
+- [x] Define Zod schemas for collection, wishlist, and public catalogue data.
+- [x] Reuse or align schemas with `npm run validate:data` to prevent contract drift.
+- [x] Implement browser file upload with useful validation errors.
+- [x] Implement browser-local persistence and clear-data behavior.
+- [x] Handle supported data versions and future migrations explicitly.
+- [x] Test that private JSON is absent from production build artifacts.
 
 Exit criteria: the React app can safely load, validate, persist, restore, and clear private data.
 
@@ -255,8 +255,8 @@ Exit criteria: the React application is production, the old UI is removed, and a
 
 This checklist spans multiple phases and must be complete before production cutover.
 
-- [ ] Browser upload for collection and wishlist JSON.
-- [ ] Browser-local persistence and clear-data action.
+- [x] Browser upload for collection and wishlist JSON.
+- [x] Browser-local persistence and clear-data action.
 - [ ] Scorebook calculation, breakdown, CX parsing, rarity, and Cost Index.
 - [ ] Inventory part tabs, search, grouping, quantities, line, sources, and notes.
 - [ ] Current collection cards and complete purchase history.
@@ -294,7 +294,7 @@ This checklist spans multiple phases and must be complete before production cuto
 | --- | --- | --- | --- |
 | GitHub Pages routing | Phase 1 | Decided | Use `HashRouter` for reliable static routing on GitHub Pages. |
 | Migration branch strategy | Phase 0 | Decided | Use the long-lived `codex/react-migration` branch; keep `main` and the live site stable until cutover. |
-| Shared browser/Node Zod schemas | Phase 4 | Open | Prefer one source when it does not complicate Node scripts or public bundling. |
+| Shared browser/Node Zod schemas | Phase 4 | Decided | Browser Zod schemas intentionally mirror the Node validator and preserve extension fields. Keep the dependency-free Node CLI validator stable during migration; parity fixtures cover shared rules. |
 | Dialog versus Sheet for mobile details | Phase 2 | Open | Decide from the first real product-detail interaction. |
 | Mutation score threshold and CI cadence | Phase 3 | Decided | Baseline: 55.61% overall (59.89% covered). Enforce a 50% break threshold locally; keep the 16-second targeted suite opt-in rather than adding it to every migration CI run. |
 
@@ -321,3 +321,4 @@ This checklist spans multiple phases and must be complete before production cuto
 | 2026-10-17 | Completed Phase 1. | Added the React/TypeScript/Vite/HashRouter foundation, quality tooling, dual-entry production build, build privacy check, and non-deploying migration CI. |
 | 2026-10-17 | Completed Phase 2. | Added Tailwind CSS-first design tokens, minimal shadcn-compatible primitives, shared page/data states, and responsive navigation foundations. |
 | 2026-10-17 | Completed Phase 3. | Added strict domain contracts and JS-module declarations, 13 focused Vitest parity tests, and a targeted Stryker suite with a 55.61% baseline and 50% enforcement floor while preserving Node scripts. |
+| 2026-10-17 | Completed Phase 4. | Added aligned Zod runtime contracts, useful upload errors, versioned browser-only persistence compatible with legacy envelopes, clear-data behavior, and schema/storage privacy tests. |

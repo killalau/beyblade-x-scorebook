@@ -4,6 +4,7 @@ import { HashRouter } from "react-router";
 
 import { App } from "./app/App";
 import "./app/globals.css";
+import { PrivateDataProvider } from "./features/private-data/private-data-context";
 
 const root = document.querySelector<HTMLDivElement>("#root");
 
@@ -14,7 +15,9 @@ if (!root) {
 createRoot(root).render(
   <StrictMode>
     <HashRouter>
-      <App />
+      <PrivateDataProvider>
+        <App />
+      </PrivateDataProvider>
     </HashRouter>
   </StrictMode>,
 );

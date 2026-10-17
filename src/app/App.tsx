@@ -6,6 +6,7 @@ import {
   ListChecks,
   Scale,
   ShoppingBag,
+  Trash2,
 } from "lucide-react";
 import { Navigate, Route, Routes } from "react-router";
 
@@ -16,6 +17,7 @@ import {
 import { DataStatus } from "@/components/data-status";
 import { EmptyState } from "@/components/empty-state";
 import { ErrorState } from "@/components/error-state";
+import { FileUpload } from "@/components/file-upload";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -28,6 +30,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { usePrivateData } from "@/features/private-data/use-private-data";
 
 const navigationItems: NavigationItem[] = [
   { id: "scorebook", label: "Scorebook", href: "#", icon: FlaskConical },
@@ -39,6 +42,9 @@ const navigationItems: NavigationItem[] = [
 ];
 
 function FoundationPage() {
+  const { collection, wishlist, error, loadCollection, loadWishlist, clear } =
+    usePrivateData();
+
   return (
     <main className="mx-auto grid min-h-screen w-full max-w-7xl gap-6 px-4 py-5 sm:px-6 lg:px-8 lg:py-8">
       <AppNavigation items={navigationItems} activeId="scorebook" />
@@ -56,6 +62,12 @@ function FoundationPage() {
               <ListChecks aria-hidden="true" />
               Foundation ready
             </Button>
+            {(collection || wishlist) && (
+              <Button variant="destructive" onClick={clear}>
+                <Trash2 aria-hidden="true" />
+                Clear private data
+              </Button>
+            )}
           </>
         }
       />
@@ -64,10 +76,22 @@ function FoundationPage() {
         className="flex flex-wrap gap-2"
         aria-label="Data status preview"
       >
-        <DataStatus label="Collection" value="Not loaded" />
-        <DataStatus label="Wishlist" value="Ready" state="ready" />
+        <DataStatus
+          label="Collection"
+          value={collection?.fileName ?? "Not loaded"}
+          state={collection ? "ready" : "idle"}
+        />
+        <DataStatus
+          label="Wishlist"
+          value={wishlist?.fileName ?? "Not loaded"}
+          state={wishlist ? "ready" : "idle"}
+        />
         <DataStatus label="Catalogue" value="Needs review" state="warning" />
       </section>
+
+      {error && (
+        <ErrorState title="Private data could not be loaded" message={error} />
+      )}
 
       <section className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
         <Card>
@@ -96,9 +120,19 @@ function FoundationPage() {
               </TabsList>
               <TabsContent value="parts">
                 <EmptyState
-                  title="No private collection loaded"
-                  description="Upload remains browser-only. This preview uses no private collection or wishlist data."
-                  action={<Button size="sm">Choose JSON</Button>}
+                  title={
+                    collection ? "Private data is ready" : "Load private JSON"
+                  }
+                  description="Collection and wishlist files are validated in this browser and stored only in localStorage."
+                  action={
+                    <div className="flex flex-wrap justify-center gap-2">
+                      <FileUpload
+                        label="Load collection"
+                        onFile={loadCollection}
+                      />
+                      <FileUpload label="Load wishlist" onFile={loadWishlist} />
+                    </div>
+                  }
                 />
               </TabsContent>
               <TabsContent value="products">
