@@ -1,4 +1,9 @@
 node_modules/
+dist/
+.vite/
+.vitest/
+coverage/
+reports/
 .DS_Store
 
 # Private local data. Keep these out of GitHub Pages.

@@ -1,0 +1,47 @@
+name: React migration checks
+
+on:
+  push:
+    branches: [codex/react-migration]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate local-compatible data
+        run: npm run validate:data
+
+      - name: Run tests
+        run: npm test
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Build migration preview
+        run: npm run build
+
+      - name: Verify public build privacy
+        run: npm run check:build

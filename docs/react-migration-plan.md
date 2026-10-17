@@ -7,8 +7,8 @@ Update this file in the same commit whenever migration work changes a phase stat
 ## Current Status
 
 - Overall status: In progress
-- Current phase: Phase 1 — React, TypeScript, Vite, and tooling foundation
-- Progress: 1 of 11 phases completed
+- Current phase: Phase 2 — Design system foundation
+- Progress: 2 of 11 phases completed
 - Last updated: 2026-10-17
 - Production application: Existing vanilla JavaScript version
 - Target hosting: GitHub Pages
@@ -116,15 +116,15 @@ Exit criteria: the current behavior is documented well enough to detect regressi
 
 ### Phase 1 — React, TypeScript, Vite, and Tooling Foundation
 
-Status: Not started
+Status: Complete
 
-- [ ] Add React, React DOM, TypeScript, and Vite.
-- [ ] Add ESLint and Prettier configuration.
-- [ ] Create the React entry point without deleting the existing implementation prematurely.
-- [ ] Configure Vite's GitHub Pages base path.
-- [ ] Select and document `HashRouter` or `BrowserRouter` plus fallback handling.
-- [ ] Add `dev`, `build`, `preview`, `lint`, and type-check commands.
-- [ ] Update the GitHub Pages workflow to build and publish `dist/` when the React app is ready to deploy.
+- [x] Add React, React DOM, TypeScript, and Vite.
+- [x] Add ESLint and Prettier configuration.
+- [x] Create the `/react.html` React entry point while retaining the existing application at `/`.
+- [x] Configure Vite's `/beyblade-x-scorebook/` GitHub Pages base path for production builds.
+- [x] Configure `HashRouter` with a fallback route.
+- [x] Add `dev`, `dev:legacy`, `build`, `preview`, `lint`, `format:check`, `typecheck`, and `check:build` commands.
+- [x] Add non-deploying migration-branch CI; intentionally defer the production Pages workflow switch to the approved Phase 10 cutover.
 
 Exit criteria: a minimal React application builds locally and in CI without exposing private data.
 
@@ -318,3 +318,4 @@ This checklist spans multiple phases and must be complete before production cuto
 | 2026-10-17 | Added StrykerJS mutation testing to the target stack. | Planned for high-value domain logic with a baseline-first threshold and selective execution. |
 | 2026-10-17 | Completed Phase 0 on `codex/react-migration`. | Recorded feature parity and representative outputs, verified tests/privacy boundaries, and selected HashRouter plus a long-lived migration branch. |
 | 2026-10-17 | Confirmed the human review policy. | Phases 1–9 proceed autonomously; user review and explicit approval are required before Phase 10 production cutover. |
+| 2026-10-17 | Completed Phase 1. | Added the React/TypeScript/Vite/HashRouter foundation, quality tooling, dual-entry production build, build privacy check, and non-deploying migration CI. |

@@ -332,6 +332,17 @@ assert.match(appSource, /loadPublicCatalogue/);
 assert.match(appSource, /renderCatalogue/);
 assert.match(appSource, /compareCatalogueItems/);
 
+const reactHtml = readFileSync(new URL("../react.html", import.meta.url), "utf8");
+assert.match(reactHtml, /id="root"/);
+assert.match(reactHtml, /src="\/src\/main\.tsx"/);
+const reactEntry = readFileSync(new URL("../src/main.tsx", import.meta.url), "utf8");
+assert.match(reactEntry, /HashRouter/);
+const packageJson = JSON.parse(readFileSync(new URL("../package.json", import.meta.url), "utf8"));
+assert.equal(packageJson.scripts.dev, "vite");
+assert.equal(packageJson.scripts.build, "vite build");
+assert.equal(packageJson.scripts.typecheck, "tsc --noEmit");
+assert.equal(packageJson.scripts["check:build"], "node scripts/check-public-build.mjs");
+
 checkRelativeImports(resolve(new URL("..", import.meta.url).pathname), ["src", "scripts"]);
 
 console.log("Smoke tests passed");

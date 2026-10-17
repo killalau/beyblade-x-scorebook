@@ -21,6 +21,8 @@ Public data:
 - `src/scoring.js`: parser and score/Cost Index logic.
 - `index.html`, `src/app.js`, `src/styles.css`: static app.
 
+The `codex/react-migration` branch also contains the in-progress React preview and its Vite toolchain. The existing application remains the root entry until the final production cutover.
+
 Private local data:
 
 - `data/collection.local.json` (inventory and purchase history)
@@ -54,7 +56,16 @@ Then open:
 http://localhost:5173
 ```
 
-No build step is required for GitHub Pages.
+During the migration, the current application is available at `/` and the React preview at `/react.html`. Build and verify the static output with:
+
+```bash
+npm run typecheck
+npm run lint
+npm run build
+npm run check:build
+```
+
+The live site continues to use the existing no-build deployment from `main` until the approved production cutover.
 
 See [GitHub Pages Hosting Notes](docs/github-pages-hosting.md) for the recommended Actions workflow, privacy boundary, setup steps, and deployment checklist.
 
