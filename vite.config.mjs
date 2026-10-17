@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 
+import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
@@ -25,7 +26,12 @@ function publicCataloguePlugin() {
 
 export default defineConfig(({ command }) => ({
   base: command === "build" ? "/beyblade-x-scorebook/" : "/",
-  plugins: [react(), publicCataloguePlugin()],
+  plugins: [react(), tailwindcss(), publicCataloguePlugin()],
+  resolve: {
+    alias: {
+      "@": resolve(projectRoot, "src"),
+    },
+  },
   build: {
     rollupOptions: {
       input: {

@@ -7,8 +7,8 @@ Update this file in the same commit whenever migration work changes a phase stat
 ## Current Status
 
 - Overall status: In progress
-- Current phase: Phase 2 — Design system foundation
-- Progress: 2 of 11 phases completed
+- Current phase: Phase 3 — Domain logic and type migration
+- Progress: 3 of 11 phases completed
 - Last updated: 2026-10-17
 - Production application: Existing vanilla JavaScript version
 - Target hosting: GitHub Pages
@@ -130,14 +130,14 @@ Exit criteria: a minimal React application builds locally and in CI without expo
 
 ### Phase 2 — Design System Foundation
 
-Status: Not started
+Status: Complete
 
-- [ ] Add Tailwind CSS.
-- [ ] Define color, typography, spacing, radius, elevation, and breakpoint tokens.
-- [ ] Add the `cn()` class-name helper and variant conventions.
-- [ ] Add only the initial shadcn/ui primitives required by the application.
-- [ ] Build shared `PageHeader`, `DataStatus`, `EmptyState`, and error-state components.
-- [ ] Define desktop and mobile navigation patterns.
+- [x] Add Tailwind CSS through its Vite plugin and CSS-first configuration.
+- [x] Define color, typography, spacing, radius, elevation, and responsive tokens.
+- [x] Add the `cn()` class-name helper and class-variance conventions.
+- [x] Add the initial locally owned shadcn-compatible Button, Input, Card, Badge, and accessible Radix Tabs primitives.
+- [x] Build shared `PageHeader`, `DataStatus`, `EmptyState`, and `ErrorState` components.
+- [x] Define and browser-test desktop and horizontally scrollable mobile navigation patterns.
 
 Initial shadcn/ui candidates: Button, Input, Select, Checkbox, Tabs, Card, Badge, Dialog or Sheet, Tooltip, and Toast/Sonner.
 
@@ -319,3 +319,4 @@ This checklist spans multiple phases and must be complete before production cuto
 | 2026-10-17 | Completed Phase 0 on `codex/react-migration`. | Recorded feature parity and representative outputs, verified tests/privacy boundaries, and selected HashRouter plus a long-lived migration branch. |
 | 2026-10-17 | Confirmed the human review policy. | Phases 1–9 proceed autonomously; user review and explicit approval are required before Phase 10 production cutover. |
 | 2026-10-17 | Completed Phase 1. | Added the React/TypeScript/Vite/HashRouter foundation, quality tooling, dual-entry production build, build privacy check, and non-deploying migration CI. |
+| 2026-10-17 | Completed Phase 2. | Added Tailwind CSS-first design tokens, minimal shadcn-compatible primitives, shared page/data states, and responsive navigation foundations. |

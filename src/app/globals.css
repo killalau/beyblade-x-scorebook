@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: "Inter", "Avenir Next", ui-sans-serif, system-ui, sans-serif;
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --shadow-panel: 0 18px 48px rgb(16 42 27 / 10%);
+}
+
+:root {
+  --background: oklch(0.968 0.012 151);
+  --foreground: oklch(0.245 0.035 151);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.245 0.035 151);
+  --primary: oklch(0.47 0.132 151);
+  --primary-foreground: oklch(0.985 0.004 151);
+  --secondary: oklch(0.925 0.025 151);
+  --secondary-foreground: oklch(0.31 0.06 151);
+  --muted: oklch(0.94 0.013 151);
+  --muted-foreground: oklch(0.49 0.028 151);
+  --accent: oklch(0.865 0.086 82);
+  --accent-foreground: oklch(0.31 0.055 60);
+  --destructive: oklch(0.56 0.2 27);
+  --border: oklch(0.87 0.022 151);
+  --input: oklch(0.87 0.022 151);
+  --ring: oklch(0.55 0.13 151);
+  --success: oklch(0.52 0.135 151);
+  --warning: oklch(0.6 0.15 55);
+  --radius: 0.75rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    background: var(--background);
+  }
+
+  body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    background:
+      radial-gradient(
+        circle at 8% 0%,
+        oklch(0.91 0.055 151 / 0.75),
+        transparent 32rem
+      ),
+      var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  :focus-visible {
+    outline: 3px solid color-mix(in oklab, var(--ring) 58%, transparent);
+    outline-offset: 2px;
+  }
+}

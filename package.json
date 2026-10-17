@@ -9,8 +9,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "lint": "eslint src/main.tsx src/app vite.config.mjs scripts/check-public-build.mjs",
-    "format:check": "prettier --check react.html package.json eslint.config.js vite.config.mjs \"src/**/*.{ts,tsx}\" \"src/app/**/*.css\" scripts/check-public-build.mjs .github/workflows/react-migration.yml",
+    "lint": "eslint \"src/**/*.{ts,tsx}\" vite.config.mjs scripts/check-public-build.mjs",
+    "format:check": "prettier --check react.html package.json components.json tsconfig.json eslint.config.js vite.config.mjs \"src/**/*.{ts,tsx}\" \"src/app/**/*.css\" scripts/check-public-build.mjs .github/workflows/react-migration.yml",
     "check:build": "node scripts/check-public-build.mjs",
     "test": "node scripts/smoke-test.mjs && node scripts/validate-local-data.mjs",
     "validate:data": "node scripts/validate-local-data.mjs",
@@ -26,12 +26,19 @@
     "export:catalogue": "node scripts/export-public-catalogue.mjs"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.5.0",
+    "@radix-ui/react-tabs": "^1.2.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.59.0",
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
-    "react-router": "^8.4.0"
+    "react-router": "^8.4.0",
+    "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.3.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-react": "^6.1.2",
@@ -40,6 +47,7 @@
     "eslint-plugin-react-refresh": "^0.5.7",
     "globals": "^17.13.0",
     "prettier": "^3.9.10",
+    "tailwindcss": "^4.3.3",
     "typescript": "^6.0.3",
     "typescript-eslint": "^8.71.2",
     "vite": "^8.3.4"
