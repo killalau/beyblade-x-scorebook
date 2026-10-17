@@ -7,8 +7,8 @@ Update this file in the same commit whenever migration work changes a phase stat
 ## Current Status
 
 - Overall status: In progress
-- Current phase: Phase 5 — App shell and routing
-- Progress: 5 of 11 phases completed
+- Current phase: Phase 6 — Inventory and Purchase pages
+- Progress: 6 of 11 phases completed
 - Last updated: 2026-10-17
 - Production application: Existing vanilla JavaScript version
 - Target hosting: GitHub Pages
@@ -177,13 +177,13 @@ Exit criteria: the React app can safely load, validate, persist, restore, and cl
 
 ### Phase 5 — App Shell and Routing
 
-Status: Not started
+Status: Complete
 
-- [ ] Implement the shared application shell.
-- [ ] Add routes for Scorebook, Inventory, Purchase, Wishlist, Catalogue, and Rules.
-- [ ] Add active navigation states and responsive navigation.
-- [ ] Display collection, wishlist, and catalogue load status.
-- [ ] Add route-level error and empty states.
+- [x] Implement the shared application shell.
+- [x] Add routes for Scorebook, Inventory, Purchase, Wishlist, Catalogue, and Rules.
+- [x] Add active navigation states and responsive navigation.
+- [x] Display collection, wishlist, and catalogue load status.
+- [x] Add route-level error and empty states.
 
 Exit criteria: every target page is reachable through stable navigation on desktop and mobile.
 
@@ -322,3 +322,4 @@ This checklist spans multiple phases and must be complete before production cuto
 | 2026-10-17 | Completed Phase 2. | Added Tailwind CSS-first design tokens, minimal shadcn-compatible primitives, shared page/data states, and responsive navigation foundations. |
 | 2026-10-17 | Completed Phase 3. | Added strict domain contracts and JS-module declarations, 13 focused Vitest parity tests, and a targeted Stryker suite with a 55.61% baseline and 50% enforcement floor while preserving Node scripts. |
 | 2026-10-17 | Completed Phase 4. | Added aligned Zod runtime contracts, useful upload errors, versioned browser-only persistence compatible with legacy envelopes, clear-data behavior, and schema/storage privacy tests. |
+| 2026-10-17 | Completed Phase 5. | Added the shared shell, six stable hash routes, active and mobile-scrollable navigation, global data controls/status, public Catalogue auto-loading, and route-level empty/error states. Browser smoke verified 125 public listings and no console errors. |

@@ -166,9 +166,9 @@ export const catalogueItemSchema = z.looseObject({
   includedBeys: z.string().optional(),
   cxMode: z.boolean().optional(),
   imageUrl: z.string().optional(),
-  firstSeenAt: z.string().optional(),
-  lastSeenAt: z.string().optional(),
-  lastAvailableAt: z.string().optional(),
+  firstSeenAt: z.string().nullable().optional(),
+  lastSeenAt: z.string().nullable().optional(),
+  lastAvailableAt: z.string().nullable().optional(),
 });
 
 export const publicCatalogueSchema = z

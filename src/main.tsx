@@ -4,6 +4,7 @@ import { HashRouter } from "react-router";
 
 import { App } from "./app/App";
 import "./app/globals.css";
+import { PublicCatalogueProvider } from "./features/catalogue/public-catalogue-context";
 import { PrivateDataProvider } from "./features/private-data/private-data-context";
 
 const root = document.querySelector<HTMLDivElement>("#root");
@@ -16,7 +17,9 @@ createRoot(root).render(
   <StrictMode>
     <HashRouter>
       <PrivateDataProvider>
-        <App />
+        <PublicCatalogueProvider>
+          <App />
+        </PublicCatalogueProvider>
       </PrivateDataProvider>
     </HashRouter>
   </StrictMode>,
