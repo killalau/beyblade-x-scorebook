@@ -29,6 +29,7 @@
       <nav class="page-tabs" aria-label="Pages">
         <button class="tab-button selected" type="button" data-page="scorebook">Scorebook</button>
         <button class="tab-button" type="button" data-page="inventory">Inventory</button>
+        <button class="tab-button" type="button" data-page="purchase">Purchase</button>
         <button class="tab-button" type="button" data-page="wishlist">Wishlist</button>
         <button class="tab-button" type="button" data-page="catalogue">Catalogue</button>
         <button class="tab-button" type="button" data-page="rules">Rules</button>
@@ -119,27 +120,6 @@
       <section id="inventoryPage" class="page">
         <section class="panel">
           <div class="section-heading">
-            <h2>Inventory</h2>
-            <span id="inventorySummary">No local file</span>
-          </div>
-          <div class="inventory-metrics" aria-label="Collection summary">
-            <div>
-              <span>Owned beys</span>
-              <strong id="inventoryBeyCount">0</strong>
-            </div>
-            <div>
-              <span>Purchases</span>
-              <strong id="inventoryPurchaseCount">0</strong>
-            </div>
-            <div>
-              <span>Total spent</span>
-              <strong id="inventoryTotalSpend">$0.00 CAD</strong>
-            </div>
-          </div>
-          <div id="inventoryBeys" class="data-list inventory-bey-list"></div>
-        </section>
-        <section class="panel">
-          <div class="section-heading">
             <h2>Parts</h2>
             <span id="inventoryPartSummary">0 parts</span>
           </div>
@@ -173,6 +153,37 @@
               <tbody id="inventoryPartsBody"></tbody>
             </table>
           </div>
+        </section>
+      </section>
+
+      <section id="purchasePage" class="page">
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Current Collection</h2>
+            <span id="inventorySummary">No local file</span>
+          </div>
+          <div class="inventory-metrics" aria-label="Purchase summary">
+            <div>
+              <span>Owned products</span>
+              <strong id="inventoryBeyCount">0</strong>
+            </div>
+            <div>
+              <span>Purchase records</span>
+              <strong id="inventoryPurchaseCount">0</strong>
+            </div>
+            <div>
+              <span>Net spend</span>
+              <strong id="inventoryTotalSpend">$0.00 CAD</strong>
+            </div>
+          </div>
+          <div id="inventoryBeys" class="data-list inventory-bey-list"></div>
+        </section>
+        <section class="panel">
+          <div class="section-heading">
+            <h2>Purchase History</h2>
+            <span id="purchaseHistorySummary">No local file</span>
+          </div>
+          <div id="purchaseHistory" class="purchase-history-list"></div>
         </section>
       </section>
 

@@ -41,7 +41,7 @@ Optional fields:
 
 - `currency`, `taxRegion`: collection-level purchase defaults.
 - `inventory.partsDetail`: detailed rows for the Inventory page.
-- `purchases.items[].imageUrl`: reliable image for an owned product. Inventory prefers this image, then falls back to a matching Catalogue listing.
+- `purchases.items[].imageUrl`: reliable image for an owned product. The Purchase page prefers this image, then falls back to a matching Catalogue listing.
 
 Guidance:
 
@@ -49,11 +49,11 @@ Guidance:
 - Include complete combo names only if useful for lookup, but part scoring mainly uses individual parts.
 - `inventory.partsDetail[].category` must use the fixed category list: `Blade`, `Lock Chip`, `Main Blade`, `Over Blade`, `Assist Blade`, `Ratchet`, `Bit`, `Launcher`, `Grip`, `Stadium`, `Battle Pass`, `Tool`, or `Complete Combo`. Do not invent or silently map a new persisted category; ask the user to confirm whether the category list should be expanded first.
 - `inventory.partsDetail[].line` is required only for `Blade` and `Main Blade` rows. `Blade` rows must use `BX` or `UX`; `Main Blade` rows must use `CX`. It describes the Blade/Main Blade's construction line, not the product box or source set. Lock Chip + Main Blade + Assist Blade identifies the CX system; an Over Blade identifies CX Expand/Infinity. Expand/Infinity is a separate structural system that also exists for BX and UX, so never use `Expand` or `Infinity` as a synonym for `UX`. Lock Chip, Over Blade, Assist Blade, Ratchet, Bit, launcher, and accessory rows must not store `line`. Do not infer line from a shared bundle code: mixed-line sets must record the correct line on each individual Blade/Main Blade row.
-- When adding an inventory product or purchase, verify and store a reliable `purchases.items[].imageUrl` in the same task. Check the resulting Inventory card and do not leave a new product with a missing thumbnail unless no trustworthy image can be found; record that exception explicitly.
+- When adding an inventory product or purchase, verify and store a reliable `purchases.items[].imageUrl` in the same task. Check the resulting Purchase-page card and do not leave a new product with a missing thumbnail unless no trustworthy image can be found; record that exception explicitly.
 
 The collection file deliberately keeps inventory and purchase history as separate sections. Purchase history records provenance; current inventory remains authoritative because gifts, trades, losses, sales, and loose parts cannot always be derived from purchases.
 
-The Inventory page displays net total spend: the sum of `estimatedTotalPaid` minus `soldItems[].salePrice` and `returnedItems[].refundAmount`. Keep returned purchases in history, record each returned product and refund under `returnedItems`, and remove returned products and parts from current inventory. For legacy rows without `estimatedTotalPaid`, the calculation falls back to `pretaxPrice`, applying `taxRate` when present unless `taxIncluded` is true.
+The Inventory page displays only the owned parts table. The Purchase page displays the current owned-product cards plus the complete purchase history. Its net spend is the sum of `estimatedTotalPaid` minus `soldItems[].salePrice` and `returnedItems[].refundAmount`. Keep returned purchases in history, record each returned product and refund under `returnedItems`, and remove returned products and parts from current inventory. For legacy rows without `estimatedTotalPaid`, the calculation falls back to `pretaxPrice`, applying `taxRate` when present unless `taxIncluded` is true.
 
 Migrate the former two-file format with `npm run migrate:collection`. The command refuses to overwrite an existing collection unless `--force` is explicitly supplied and preserves the legacy input files as recoverable backups.
 

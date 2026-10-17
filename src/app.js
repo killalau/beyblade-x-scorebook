@@ -6,7 +6,7 @@ import {
 } from "./reference-data/scoringConfig.js";
 import { scoreProduct, summarizeBreakdown } from "./scoring.js";
 import { matchesPartFilters, partFilterTokens } from "./wishlist-filters.js";
-import { calculateTotalSpend, purchaseUnitPaidAmount } from "./collection-summary.js";
+import { calculateTotalSpend, purchasePaidAmount, purchaseUnitPaidAmount } from "./collection-summary.js";
 import { findPurchaseForInventoryBey, normalizeInventoryProductName } from "./inventory-products.js";
 import { groupInventoryParts } from "./inventory-parts.js";
 
@@ -45,6 +45,7 @@ const elements = {
   pages: {
     scorebook: document.querySelector("#scorebookPage"),
     inventory: document.querySelector("#inventoryPage"),
+    purchase: document.querySelector("#purchasePage"),
     wishlist: document.querySelector("#wishlistPage"),
     catalogue: document.querySelector("#cataloguePage"),
     rules: document.querySelector("#rulesPage")
@@ -73,6 +74,8 @@ const elements = {
   inventoryTotalSpend: document.querySelector("#inventoryTotalSpend"),
   inventoryPartSummary: document.querySelector("#inventoryPartSummary"),
   inventoryBeys: document.querySelector("#inventoryBeys"),
+  purchaseHistorySummary: document.querySelector("#purchaseHistorySummary"),
+  purchaseHistory: document.querySelector("#purchaseHistory"),
   inventoryPartsBody: document.querySelector("#inventoryPartsBody"),
   inventoryPartSearch: document.querySelector("#inventoryPartSearch"),
   inventoryPartOptions: document.querySelector("#inventoryPartOptions"),
@@ -549,6 +552,7 @@ function renderInventory() {
   elements.inventoryBeyCount.textContent = String(state.ownedBeys.length);
   elements.inventoryPurchaseCount.textContent = String(state.purchases.length);
   elements.inventoryTotalSpend.textContent = formatCurrency(calculateTotalSpend({ items: state.purchases }), state.collectionCurrency);
+  elements.purchaseHistorySummary.textContent = `${state.purchases.length} records`;
 
   const beyItems = state.ownedBeys.map((bey) => {
     const item = document.createElement("div");
@@ -572,6 +576,34 @@ function renderInventory() {
     return item;
   });
   elements.inventoryBeys.replaceChildren(...beyItems);
+
+  const purchaseItems = [...state.purchases].reverse().map((purchase) => {
+    const item = document.createElement("article");
+    item.className = "purchase-history-item";
+    const listing = findCatalogueListingForBey(purchase.name, purchase);
+    const imageUrl = purchase.imageUrl ?? listing?.imageUrl;
+    const events = purchaseEvents(purchase);
+    item.innerHTML = `
+      <span class="purchase-history-thumbnail${imageUrl ? " has-image" : ""}">
+        ${imageUrl
+          ? `<img src="${escapeHtml(imageUrl)}" alt="" loading="lazy" referrerpolicy="no-referrer">`
+          : `<span aria-hidden="true">BX</span>`}
+      </span>
+      <span class="purchase-history-main">
+        <strong>${escapeHtml(purchase.name ?? "-")}</strong>
+        <small>${escapeHtml(purchase.source ?? "Unknown source")}${purchase.quantity > 1 ? ` · Qty ${escapeHtml(purchase.quantity)}` : ""}</small>
+        ${purchase.recordedFrom ? `<small>${escapeHtml(purchase.recordedFrom)}</small>` : ""}
+      </span>
+      <strong class="purchase-history-price">${escapeHtml(formatCurrency(purchasePaidAmount(purchase), state.collectionCurrency))}</strong>
+      <span class="purchase-history-events">
+        ${events.length
+          ? events.map((event) => `<span class="purchase-event ${event.kind}">${escapeHtml(event.label)}</span>`).join("")
+          : `<span class="purchase-event owned">Kept</span>`}
+      </span>
+    `;
+    return item;
+  });
+  elements.purchaseHistory.replaceChildren(...purchaseItems);
 
   const query = elements.inventoryPartSearch.value.trim().toLowerCase();
   const category = state.inventoryPartCategory;
@@ -603,6 +635,23 @@ function renderInventory() {
     return row;
   });
   elements.inventoryPartsBody.replaceChildren(...partRows);
+}
+
+function purchaseEvents(purchase) {
+  return [
+    ...(purchase.soldItems ?? []).map((item) => ({
+      kind: "sold",
+      label: `Sold: ${item.name ?? purchase.name}${Number.isFinite(Number(item.salePrice)) ? ` · ${formatCurrency(item.salePrice, state.collectionCurrency)}` : ""}`
+    })),
+    ...(purchase.returnedItems ?? []).map((item) => ({
+      kind: "returned",
+      label: `Returned: ${item.name ?? purchase.name}${Number.isFinite(Number(item.refundAmount)) ? ` · ${formatCurrency(item.refundAmount, state.collectionCurrency)}` : ""}`
+    })),
+    ...(purchase.giftedItems ?? []).map((item) => ({
+      kind: "gifted",
+      label: `Gifted: ${item.name ?? purchase.name}`
+    }))
+  ];
 }
 
 function renderInventoryPartOptions(parts) {
