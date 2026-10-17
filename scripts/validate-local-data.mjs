@@ -2,7 +2,7 @@ import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { inventoryBladeLines, inventoryPartCategories } from "../src/inventory-parts.js";
+import { inventoryLinesByBladeCategory, inventoryPartCategories } from "../src/inventory-parts.js";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const failures = [];
@@ -68,9 +68,10 @@ function validateInventory(data, label) {
         const isBlade = part.category === "Blade" || part.category === "Main Blade";
         if (isBlade) {
           assertString(part.line, `${label}.partsDetail[${index}].line`);
+          const allowedLines = inventoryLinesByBladeCategory[part.category];
           assert(
-            inventoryBladeLines.includes(part.line),
-            `${label}.partsDetail[${index}].line must be one of: ${inventoryBladeLines.join(", ")} for Blade and Main Blade rows.`
+            allowedLines.includes(part.line),
+            `${label}.partsDetail[${index}].line must be one of: ${allowedLines.join(", ")} for ${part.category} rows.`
           );
         } else {
           assert(

@@ -13,7 +13,10 @@ export const inventoryPartCategories = Object.freeze([
   "Tool",
   "Complete Combo"
 ]);
-export const inventoryBladeLines = Object.freeze(["BX", "UX", "CX"]);
+export const inventoryLinesByBladeCategory = Object.freeze({
+  Blade: Object.freeze(["BX", "UX"]),
+  "Main Blade": Object.freeze(["CX"])
+});
 
 export function groupInventoryParts(parts) {
   const grouped = new Map();

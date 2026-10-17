@@ -4,7 +4,7 @@ import { dirname, extname, join, resolve } from "node:path";
 import { parseConfig, scoreProduct } from "../src/scoring.js";
 import { matchesPartFilters, partFilterTokens } from "../src/wishlist-filters.js";
 import { calculateTotalSpend, purchasePaidAmount, purchaseUnitPaidAmount } from "../src/collection-summary.js";
-import { canonicalInventoryPartCategory, groupInventoryParts, inventoryBladeLines, inventoryPartCategories } from "../src/inventory-parts.js";
+import { canonicalInventoryPartCategory, groupInventoryParts, inventoryLinesByBladeCategory, inventoryPartCategories } from "../src/inventory-parts.js";
 import { findPurchaseForInventoryBey, normalizeInventoryProductName } from "../src/inventory-products.js";
 import { generateWishlist, isWishlistEligible, listingIdFor, normalizeStatus } from "./wishlist-pipeline.mjs";
 import { auditNormalized } from "./normalized-audit.mjs";
@@ -65,7 +65,8 @@ assert.equal(inventoryPartCategories.includes("Other"), false);
 assert.equal(groupInventoryParts([
   { category: "Metal Blade", name: "Whip", abbrev: "-", qty: 1, source: "Legacy import" }
 ])[0].category, "Main Blade");
-assert.deepEqual(inventoryBladeLines, ["BX", "UX", "CX"]);
+assert.deepEqual(inventoryLinesByBladeCategory.Blade, ["BX", "UX"]);
+assert.deepEqual(inventoryLinesByBladeCategory["Main Blade"], ["CX"]);
 assert.equal(groupInventoryParts([
   { category: "Bit", name: "Low Flat", abbrev: "LF", qty: 1, source: "UX product", line: "UX" },
   { category: "Bit", name: "Low Flat", abbrev: "LF", qty: 1, source: "BX product", line: "BX" }
