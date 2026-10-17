@@ -6,9 +6,9 @@ Update this file in the same commit whenever migration work changes a phase stat
 
 ## Current Status
 
-- Overall status: Planned
-- Current phase: Phase 0 — Baseline and migration preparation
-- Progress: 0 of 11 phases completed
+- Overall status: In progress
+- Current phase: Phase 1 — React, TypeScript, Vite, and tooling foundation
+- Progress: 1 of 11 phases completed
 - Last updated: 2026-10-17
 - Production application: Existing vanilla JavaScript version
 - Target hosting: GitHub Pages
@@ -104,13 +104,13 @@ This is a direction rather than a rigid requirement. Prefer feature ownership an
 
 ### Phase 0 — Baseline and Migration Preparation
 
-Status: Not started
+Status: Complete
 
-- [ ] Create a feature-parity inventory for all current pages and interactions.
-- [ ] Record representative expected results for scoring, totals, filters, grouping, and sorting.
-- [ ] Confirm all current tests pass before framework changes.
-- [ ] Confirm private-data ignore rules and public/private data boundaries.
-- [ ] Decide whether migration work occurs on one long-lived branch or small mergeable commits on `main`.
+- [x] Create a feature-parity inventory for all current pages and interactions in `docs/react-feature-parity-baseline.md`.
+- [x] Record representative expected results for scoring, totals, filters, grouping, and sorting.
+- [x] Confirm all current tests pass before framework changes.
+- [x] Confirm private-data ignore rules and public/private data boundaries.
+- [x] Use the long-lived `codex/react-migration` branch while keeping `main` deployable.
 
 Exit criteria: the current behavior is documented well enough to detect regressions.
 
@@ -284,8 +284,8 @@ This checklist spans multiple phases and must be complete before production cuto
 
 | Decision | Target phase | Status | Options or notes |
 | --- | --- | --- | --- |
-| GitHub Pages routing | Phase 1 | Open | Prefer `HashRouter` for simple static reliability, or use `BrowserRouter` with a tested fallback. |
-| Migration branch strategy | Phase 0 | Open | Long-lived migration branch versus small continuously mergeable commits. |
+| GitHub Pages routing | Phase 1 | Decided | Use `HashRouter` for reliable static routing on GitHub Pages. |
+| Migration branch strategy | Phase 0 | Decided | Use the long-lived `codex/react-migration` branch; keep `main` and the live site stable until cutover. |
 | Shared browser/Node Zod schemas | Phase 4 | Open | Prefer one source when it does not complicate Node scripts or public bundling. |
 | Dialog versus Sheet for mobile details | Phase 2 | Open | Decide from the first real product-detail interaction. |
 | Mutation score threshold and CI cadence | Phase 3 | Open | Establish a baseline first; then choose a realistic threshold and whether the full suite runs on pull requests, scheduled CI, or both. |
@@ -308,3 +308,4 @@ This checklist spans multiple phases and must be complete before production cuto
 | --- | --- | --- |
 | 2026-10-17 | Migration stack and phased plan agreed and documented. | Planning complete; implementation has not started. |
 | 2026-10-17 | Added StrykerJS mutation testing to the target stack. | Planned for high-value domain logic with a baseline-first threshold and selective execution. |
+| 2026-10-17 | Completed Phase 0 on `codex/react-migration`. | Recorded feature parity and representative outputs, verified tests/privacy boundaries, and selected HashRouter plus a long-lived migration branch. |
