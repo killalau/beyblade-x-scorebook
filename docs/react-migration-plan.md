@@ -280,6 +280,14 @@ This checklist spans multiple phases and must be complete before production cuto
 - Confirm private JSON, normalized data, and raw captures are ignored and not staged.
 - Update this tracker when progress or decisions change.
 
+## Human Review Policy
+
+- Phases 1 through 9 may proceed autonomously without intermediate visual approval.
+- Migration work must remain on `codex/react-migration`, with reviewed commits pushed regularly while `main` and the live site remain unchanged.
+- The user will perform the visual and feature review at the final stage.
+- Phase 10 production cutover is a mandatory human gate. Do not merge to `main`, replace the live GitHub Pages application, remove the vanilla UI, or activate the new deployment workflow without explicit user approval.
+- A new human decision may still be requested earlier if work encounters a material product-scope choice, privacy risk, destructive change, or requirement that cannot be resolved from the agreed defaults.
+
 ## Open Decision Gates
 
 | Decision | Target phase | Status | Options or notes |
@@ -309,3 +317,4 @@ This checklist spans multiple phases and must be complete before production cuto
 | 2026-10-17 | Migration stack and phased plan agreed and documented. | Planning complete; implementation has not started. |
 | 2026-10-17 | Added StrykerJS mutation testing to the target stack. | Planned for high-value domain logic with a baseline-first threshold and selective execution. |
 | 2026-10-17 | Completed Phase 0 on `codex/react-migration`. | Recorded feature parity and representative outputs, verified tests/privacy boundaries, and selected HashRouter plus a long-lived migration branch. |
+| 2026-10-17 | Confirmed the human review policy. | Phases 1–9 proceed autonomously; user review and explicit approval are required before Phase 10 production cutover. |
