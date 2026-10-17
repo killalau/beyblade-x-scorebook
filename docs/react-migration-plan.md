@@ -47,6 +47,7 @@ Update this file in the same commit whenever migration work changes a phase stat
 | Runtime validation | Zod | Share schemas between browser imports and Node validation where practical. |
 | Application state | React Context plus `useReducer` | Do not add Redux or Zustand unless measured complexity justifies it. |
 | Unit tests | Vitest | Domain logic and utilities. |
+| Mutation tests | StrykerJS with the Vitest runner | Measure whether high-value domain tests detect meaningful logic changes. |
 | Component tests | React Testing Library | Test user-visible behavior rather than component internals. |
 | End-to-end tests | Playwright | Cover file upload, navigation, filtering, storage restoration, and core calculations. |
 | Code quality | ESLint and Prettier | Applied to the React/TypeScript codebase and configuration. |
@@ -152,9 +153,14 @@ Status: Not started
 - [ ] Move purchase total and unit-price calculations.
 - [ ] Move wishlist filters and catalogue helpers.
 - [ ] Convert the existing smoke-test coverage into focused Vitest suites where appropriate.
+- [ ] Add StrykerJS core and its Vitest runner.
+- [ ] Add a targeted Stryker configuration and `test:mutation` command.
+- [ ] Initially mutate only high-value pure domain modules: scoring, purchase calculations, inventory grouping, wishlist eligibility, and filters.
+- [ ] Exclude React rendering, generated data, scripts with external side effects, and broad configuration files from the initial mutation scope.
+- [ ] Record an initial mutation-score baseline before choosing an enforcement threshold.
 - [ ] Keep Node data scripts functional during module conversion.
 
-Exit criteria: pure domain functions have typed interfaces and parity tests against current behavior.
+Exit criteria: pure domain functions have typed interfaces and parity tests against current behavior, and the targeted mutation suite produces a reviewed baseline report.
 
 ### Phase 4 — Schemas, Storage, and Private Data Loading
 
@@ -265,6 +271,7 @@ This checklist spans multiple phases and must be complete before production cuto
 ## Quality Gates for Every Migration Change
 
 - Run the relevant Vitest and component tests once introduced.
+- Run the targeted Stryker suite when changing mutation-scoped domain logic or its tests. It is not required for documentation-only or styling-only changes.
 - Run `npm run validate:data` after any local JSON or schema-related change.
 - Run `npm test`.
 - Run type checking and linting once those commands exist.
@@ -281,6 +288,7 @@ This checklist spans multiple phases and must be complete before production cuto
 | Migration branch strategy | Phase 0 | Open | Long-lived migration branch versus small continuously mergeable commits. |
 | Shared browser/Node Zod schemas | Phase 4 | Open | Prefer one source when it does not complicate Node scripts or public bundling. |
 | Dialog versus Sheet for mobile details | Phase 2 | Open | Decide from the first real product-detail interaction. |
+| Mutation score threshold and CI cadence | Phase 3 | Open | Establish a baseline first; then choose a realistic threshold and whether the full suite runs on pull requests, scheduled CI, or both. |
 
 ## Risks and Mitigations
 
@@ -292,10 +300,11 @@ This checklist spans multiple phases and must be complete before production cuto
 | A large rewrite blocks normal inventory work | Keep scripts and private JSON contracts stable; use small commits and keep the current UI deployable. |
 | Tailwind and shadcn produce inconsistent styling | Define tokens and variants first; add only components with an immediate use. |
 | Table abstraction becomes too generic | Extract shared behavior only after concrete Inventory, Catalogue, or Wishlist requirements demonstrate reuse. |
+| Mutation testing becomes too slow or noisy | Restrict mutation scope to pure business logic, use the Vitest runner's related-test support, and expand scope only when it adds value. |
 
 ## Progress Log
 
 | Date | Change | Result |
 | --- | --- | --- |
 | 2026-10-17 | Migration stack and phased plan agreed and documented. | Planning complete; implementation has not started. |
-
+| 2026-10-17 | Added StrykerJS mutation testing to the target stack. | Planned for high-value domain logic with a baseline-first threshold and selective execution. |
