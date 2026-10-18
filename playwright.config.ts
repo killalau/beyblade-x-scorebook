@@ -14,7 +14,7 @@ export default defineConfig({
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   webServer: {
     command: "npm run build && node scripts/serve-react-build.mjs",
-    url: "http://127.0.0.1:4173/beyblade-x-scorebook/react.html",
+    url: "http://127.0.0.1:4173/beyblade-x-scorebook/",
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
   },

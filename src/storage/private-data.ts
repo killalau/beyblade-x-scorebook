@@ -9,6 +9,8 @@ export const privateStorageKeys = {
   wishlist: "beybladeScorebook.wishlist",
 } as const;
 
+const retiredPrivateStorageKeys = ["beybladeScorebook.inventory"] as const;
+
 export type PrivateDataKind = keyof typeof privateStorageKeys;
 
 export interface StoredPrivateData<T> {
@@ -109,5 +111,7 @@ export function readPrivateData<T>(
 }
 
 export function clearPrivateData(storage: Storage): void {
-  Object.values(privateStorageKeys).forEach((key) => storage.removeItem(key));
+  [...Object.values(privateStorageKeys), ...retiredPrivateStorageKeys].forEach(
+    (key) => storage.removeItem(key),
+  );
 }

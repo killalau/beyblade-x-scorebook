@@ -8,7 +8,7 @@ const collectionFile = fileURLToPath(
 const wishlistFile = fileURLToPath(
   new URL("../fixtures/wishlist.synthetic.json", import.meta.url),
 );
-const appPath = "/beyblade-x-scorebook/react.html";
+const appPath = "/beyblade-x-scorebook/";
 
 async function open(page: Page, hash = "") {
   await page.goto(`${appPath}${hash}`);

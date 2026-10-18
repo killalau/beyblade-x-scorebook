@@ -61,6 +61,7 @@ describe("private browser storage", () => {
       expect(restored.value.fileName).toBe("collection.local.json");
       expect(restored.value.data.version).toBe(1);
     }
+    storage.setItem("beybladeScorebook.inventory", "retired data");
     clearPrivateData(storage);
     expect(storage.length).toBe(0);
   });

@@ -1,185 +1,111 @@
 # Beyblade X Scorebook
 
-A static Beyblade X scorebook for checking product value, owned inventory, wishlist items, and scoring rules.
+A static React application for Beyblade X scoring, owned parts, purchase history, wishlist decisions, and retailer catalogue browsing.
 
 [Open the live Beyblade X Scorebook](https://killalau.github.io/beyblade-x-scorebook/)
 
-The project is designed for GitHub Pages and for Codex-managed local JSON data.
+## Architecture
 
-## Current Architecture
+JSON is the source of truth. The application uses React, TypeScript, Vite, Tailwind CSS, selective shadcn-compatible/Radix primitives, TanStack Table, and Zod. It is built into `dist/` and deployed to GitHub Pages by GitHub Actions.
 
-JSON is the source of truth.
+- Public scoring and reference data live under `src/reference-data/`.
+- Public Catalogue data is the sanitized `data/retailer-listings.json` snapshot.
+- Private collection and wishlist JSON remain ignored by Git.
+- Private data enters the site only through browser file upload and stays in browser `localStorage`.
+- Retailer crawling, normalization, wishlist generation, and catalogue export remain Node scripts outside the UI.
 
-- Public app and reference data are committed.
-- Private local data is ignored by Git and managed as JSON.
-- Excel is legacy/export-only context, not primary storage.
-- Codex/new agents should read and update JSON directly.
-
-Public data:
-
-- `src/reference-data/`: scoring rules, aliases, public rankings.
-- `src/scoring.js`: parser and score/Cost Index logic.
-- `index.html`, `src/app.js`, `src/styles.css`: static app.
-
-The `codex/react-migration` branch also contains the in-progress React preview and its Vite toolchain. The existing application remains the root entry until the final production cutover.
-
-Private local data:
-
-- `data/collection.local.json` (inventory and purchase history)
-- `data/wishlist.local.json`
-- `data/raw/*.json`
-
-These private files are gitignored.
+See [React Architecture](docs/react-architecture.md) for the component, data-flow, privacy, and deployment boundaries.
 
 ## Pages
 
 - `Scorebook`: product/combo scoring and Cost Index lookup.
-- `Inventory`: owned-parts browser loaded from private collection JSON.
-- `Purchase`: current owned-product cards and complete purchase history.
-- `Wishlist`: browser-loaded private wishlist JSON with search and sorting.
+- `Inventory`: owned-parts tabs, grouping, quantities, sources, and line information.
+- `Purchase`: current owned products, purchase history, disposal events, and net spend.
+- `Wishlist`: private derived wishlist with card/list views, sorting, and part filters.
 - `Catalogue`: public sanitized retailer listings of every availability status.
 - `Rules`: scoring weights, rarity multipliers, and formulas.
 
-## React Migration
-
-The planned React and TypeScript modernization is tracked in [React Migration Plan](docs/react-migration-plan.md). That document is the canonical checklist, decision record, and progress log for the migration and should be updated in the same commit as migration work.
-
 ## Run Locally
 
+Install dependencies and start Vite:
+
 ```bash
+npm ci
 npm run dev
 ```
 
-Then open:
+Open `http://localhost:5173/`.
 
-```text
-http://localhost:5173
-```
-
-During the migration, the current application is available at `/` and the React preview at `/react.html`. Build and verify the static output with:
+Build and inspect the GitHub Pages form of the site:
 
 ```bash
-npm run typecheck
-npm run lint
 npm run build
-npm run check:build
+node scripts/serve-react-build.mjs
 ```
 
-The live site continues to use the existing no-build deployment from `main` until the approved production cutover.
+Open `http://127.0.0.1:4173/beyblade-x-scorebook/`.
 
-See [GitHub Pages Hosting Notes](docs/github-pages-hosting.md) for the recommended Actions workflow, privacy boundary, setup steps, and deployment checklist.
+## Quality Commands
+
+```bash
+npm run validate:data
+npm test
+npm run typecheck
+npm run lint
+npm run format:check
+npm run build
+npm run check:build
+npm run test:e2e
+npm run test:mutation
+```
+
+`test:e2e` requires Playwright Chromium. Install it once with `npm run test:e2e:install`. Mutation testing is targeted at high-value pure domain modules and is not required for every styling or documentation change.
 
 ## Local Private Data
 
-Copy example files if starting fresh:
+Copy the examples when starting fresh:
 
 ```bash
 cp data/collection.local.example.json data/collection.local.json
 cp data/wishlist.local.example.json data/wishlist.local.json
 ```
 
-Files matching these patterns are ignored:
+Private files include:
 
-- `data/*.local.json`
+- `data/collection.local.json`
+- `data/wishlist.local.json`
+- `data/normalized/`
 - `data/raw/`
 - `exports/`
 - `*.xlsx`
 
-The app loads private JSON through browser file upload. Uploaded data is stored in browser `localStorage` for convenience and can be cleared with `Clear local data`. It is not uploaded to a server and is not included in GitHub Pages.
+The app cannot read these files automatically. Upload collection and wishlist JSON in the browser; `Clear data` removes the saved browser copies. Nothing is uploaded to a server.
 
 ## Data Commands
 
-Validate local JSON when private files exist:
-
-```bash
-npm run validate:data
-```
-
-Print local data counts:
-
 ```bash
 npm run summarize:data
+npm run normalize:crawl -- --dry-run
+npm run audit:normalized
+npm run gate:normalized
+npm run refresh:wishlist -- --dry-run
+npm run refresh:wishlist
+npm run export:catalogue
 ```
 
-Run app smoke tests plus local data validation:
-
-```bash
-npm test
-```
-
-Missing private JSON files are allowed so public checkouts can still pass validation.
+Read [JSON Source of Truth](docs/json-source-of-truth.md), [Data Contracts](docs/data-contracts.md), and the [Crawl Playbook](docs/crawl-playbook.md) before changing data.
 
 ## Scoring Summary
 
-Rank scores:
+Part score is `Rank Score × Part Type Weight`. Cost Index is `Price ÷ SUM(Part Score × Rarity Multiplier) × 5`; lower is better. Owned parts contribute zero, normal missing parts use `1`, and rare missing parts use `1.5`.
 
-- `S`: 5
-- `A+`: 4
-- `A`: 3
-- `A-`: 2
-- `B+`: 1
-- everything else: 0
+## Deployment
 
-Part score:
+Every push to `main` runs the complete validation, test, build, privacy, and Playwright suite before deploying `dist/` to GitHub Pages. See [GitHub Pages Hosting Notes](docs/github-pages-hosting.md).
 
-```text
-Rank Score * Part Type Weight
-```
-
-Part type weights:
-
-- blade: `1.5`
-- ratchet: `1`
-- bit: `1`
-- lock chip: `1`
-- over blade: `0.5`
-- assist blade: `0.5`
-
-Cost Index:
-
-```text
-Price / SUM(Part Score * Rarity Multiplier) * 5
-```
-
-Lower Cost Index is better. Owned parts use multiplier `0`, normal missing parts use `1`, and rare missing parts use `1.5`.
-
-## Codex Workflow
-
-For a new Codex session:
-
-1. Read `AGENTS.md`.
-2. Read `docs/json-source-of-truth.md`.
-3. Read `docs/data-contracts.md`.
-4. For listing refreshes, read `docs/crawl-playbook.md`.
-5. Inspect `data/*.local.json` and `data/raw/` if available.
-6. Edit JSON directly, not Excel.
-7. Run `npm run validate:data`.
-8. Run `npm test`.
-9. Confirm private data is ignored before committing.
-
-Useful docs:
-
-- `AGENTS.md`
-- `docs/json-source-of-truth.md`
-- `docs/data-contracts.md`
-- `docs/crawl-playbook.md`
-- `docs/react-migration-plan.md`
-- `docs/roadmap.md`
-
-## GitHub Pages Privacy Model
-
-The public site contains only committed source files. It cannot and should not automatically read local private JSON from your computer.
-
-Private data becomes visible in the app only after you manually upload it in the browser. Browser `localStorage` keeps it on that device only.
-
-## Commit Safety
-
-Before committing:
+Before every commit, check that private files are still ignored and unstaged:
 
 ```bash
-npm test
 git status --short --untracked-files=all
 git check-ignore -v data/collection.local.json data/wishlist.local.json data/raw/
 ```
-
-Commit only public app, docs, scripts, and reference data.

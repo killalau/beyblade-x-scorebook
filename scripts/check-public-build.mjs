@@ -39,6 +39,20 @@ assert.ok(
   "Public Catalogue build asset must contain an items array.",
 );
 
+const productionEntry = resolve(distRoot, "index.html");
+assert.ok(existsSync(productionEntry), "React production entry is missing.");
+assert.equal(
+  files.includes("react.html"),
+  false,
+  "The retired React preview entry must not be deployed.",
+);
+const productionHtml = readFileSync(productionEntry, "utf8");
+assert.doesNotMatch(productionHtml, /src\/app\.js|src\/styles\.css/);
+assert.match(
+  productionHtml,
+  /\/beyblade-x-scorebook\/assets\/index-[^"']+\.js/,
+);
+
 console.log(`Public build privacy check passed (${files.length} files).`);
 
 function listFiles(path) {

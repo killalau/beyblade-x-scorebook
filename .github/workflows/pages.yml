@@ -22,20 +22,43 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 22
+          cache: npm
 
-      - name: Test
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate local-compatible data
+        run: npm run validate:data
+
+      - name: Run tests
         run: npm test
 
-      - name: Prepare public static site
-        run: |
-          mkdir -p _site/data
-          cp index.html _site/
-          cp -R src _site/src
-          cp data/retailer-listings.json _site/data/
-          touch _site/.nojekyll
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Check formatting
+        run: npm run format:check
+
+      - name: Build production site
+        run: npm run build
+
+      - name: Verify public build privacy
+        run: npm run check:build
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run end-to-end and accessibility tests
+        run: npm run test:e2e
+
+      - name: Mark site as non-Jekyll
+        run: touch dist/.nojekyll
 
       - name: Configure Pages
         uses: actions/configure-pages@v5
@@ -43,7 +66,7 @@ jobs:
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v5
         with:
-          path: _site
+          path: dist
 
   deploy:
     environment:

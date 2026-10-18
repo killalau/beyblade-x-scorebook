@@ -20,10 +20,10 @@ These are useful next steps after the data import UX and scoring transparency wo
 
 ## GitHub Pages Readiness
 
-- Add README deployment instructions.
-- Add a GitHub Actions smoke test.
-- Check relative paths under a GitHub Pages repository URL.
-- Keep a clear privacy note: local JSON is browser-only and not committed.
+- [x] Add README deployment instructions.
+- [x] Add GitHub Actions build, test, privacy, E2E, and deployment gates.
+- [x] Test production assets under the GitHub Pages repository base path.
+- [x] Keep a clear privacy note: local JSON is browser-only and not committed.
 
 ## Data Model Hardening
 

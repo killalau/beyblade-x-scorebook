@@ -6,11 +6,11 @@ Update this file in the same commit whenever migration work changes a phase stat
 
 ## Current Status
 
-- Overall status: Awaiting final user review
-- Current phase: Human review gate before Phase 10
+- Overall status: Production cutover in progress
+- Current phase: Phase 10 — Production cutover and cleanup
 - Progress: 10 of 11 phases completed
 - Last updated: 2026-10-17
-- Production application: Existing vanilla JavaScript version
+- Production application: React cutover approved; deployment pending
 - Target hosting: GitHub Pages
 
 ## Goals
@@ -239,9 +239,9 @@ Exit criteria: critical user journeys pass in a production-like browser build.
 
 ### Phase 10 — Production Cutover and Cleanup
 
-Status: Not started
+Status: In progress
 
-- [ ] Confirm feature parity and obtain user approval for cutover.
+- [x] Confirm feature parity and obtain user approval for cutover.
 - [ ] Deploy the React `dist/` build through GitHub Actions.
 - [ ] Verify the live GitHub Pages site, assets, routing, uploads, and local persistence.
 - [ ] Remove superseded vanilla rendering and event code.
@@ -327,3 +327,4 @@ This checklist spans multiple phases and must be complete before production cuto
 | 2026-10-17 | Completed Phase 7.                                     | Added a reusable TanStack v8 table, all-status Catalogue search/filter/sorting with responsive cards, and Wishlist card/list views with persistent view/part filters, any/all and only-missing behavior, derived metrics, dates, and image fallback.                                                          |
 | 2026-10-17 | Completed Phase 8.                                     | Ported live multi-row Scorebook editing, per-row CX mode, rare and owned parts, result selection, full score breakdown, saved public samples, and Rules rendered from shared scoring configuration. Regression coverage now explicitly spans BX, UX, CX, fused Bits, multipacks, owned parts, and rare parts. |
 | 2026-10-17 | Completed Phase 9.                                     | Added Playwright and synthetic fixtures, production-base-path browser coverage, four critical-flow E2E tests, axe accessibility checks, keyboard/focus/tab verification, responsive checks, CI browser execution, lazy route chunks, and a mobile overflow fix. The migration is paused at the required final review gate before Phase 10. |
+| 2026-10-17 | Phase 10 cutover approved.                             | User completed the final review and explicitly approved production deployment and legacy UI cleanup.                                                                                                                                                                                                        |

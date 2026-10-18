@@ -5,12 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:legacy": "node scripts/serve.mjs",
     "build": "vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "lint": "eslint \"src/**/*.{ts,tsx}\" \"tests/**/*.ts\" vite.config.mjs vitest.config.mts playwright.config.ts stryker.config.mjs scripts/check-public-build.mjs scripts/serve-react-build.mjs",
-    "format:check": "prettier --check react.html package.json components.json tsconfig.json eslint.config.js vite.config.mjs vitest.config.mts playwright.config.ts stryker.config.mjs \"src/**/*.{ts,tsx}\" \"src/**/*.d.ts\" \"src/app/**/*.css\" \"tests/**/*.{ts,json}\" scripts/check-public-build.mjs scripts/serve-react-build.mjs .github/workflows/react-migration.yml",
+    "format:check": "prettier --check index.html package.json components.json tsconfig.json eslint.config.js vite.config.mjs vitest.config.mts playwright.config.ts stryker.config.mjs \"src/**/*.{ts,tsx}\" \"src/**/*.d.ts\" \"src/app/**/*.css\" \"tests/**/*.{ts,json}\" scripts/check-public-build.mjs scripts/serve-react-build.mjs \".github/workflows/*.yml\"",
     "check:build": "node scripts/check-public-build.mjs",
     "test": "npm run test:unit && node scripts/smoke-test.mjs && node scripts/validate-local-data.mjs",
     "test:unit": "vitest run",

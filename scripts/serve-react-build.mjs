@@ -21,7 +21,7 @@ const server = createServer(async (request, response) => {
     );
     if (!requestPath.startsWith(mountPath))
       return send(response, 404, "Not found");
-    const relativePath = requestPath.slice(mountPath.length) || "react.html";
+    const relativePath = requestPath.slice(mountPath.length) || "index.html";
     const filePath = resolve(distRoot, relativePath);
     if (filePath !== distRoot && !filePath.startsWith(`${distRoot}${sep}`)) {
       return send(response, 403, "Forbidden");

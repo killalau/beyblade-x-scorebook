@@ -32,12 +32,4 @@ export default defineConfig(({ command }) => ({
       "@": resolve(projectRoot, "src"),
     },
   },
-  build: {
-    rollupOptions: {
-      input: {
-        current: resolve(projectRoot, "index.html"),
-        react: resolve(projectRoot, "react.html"),
-      },
-    },
-  },
 }));

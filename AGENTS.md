@@ -33,6 +33,9 @@ This repo is a static Beyblade X scorebook intended for GitHub Pages. JSON is th
 - Inventory part categories are fixed by `src/inventory-parts.js` and documented in `docs/data-contracts.md`. Do not introduce a new persisted category without asking the user to confirm that the category list should be expanded.
 - Keep verified retailer listings in normalized data after purchase. If the listing remains eligible, a fully owned wishlist row uses `usefulParts: "-"` and `costIndex: null`; mixed bundles continue scoring only missing ranked parts.
 - Default page is `Scorebook`; private pages are `Inventory` and `Wishlist`; `Rules` documents scoring.
+- The production UI is the React/TypeScript/Vite application rooted at `index.html` and `src/main.tsx`. Do not reintroduce the retired vanilla DOM application.
+- Production routing uses `HashRouter`, and Vite's production base is `/beyblade-x-scorebook/` for GitHub Pages.
+- `.github/workflows/pages.yml` builds and deploys only `dist/`; never copy the repository tree directly into a Pages artifact.
 - Scoring logic lives in `src/scoring.js`.
 - Reference scoring constants live under `src/reference-data/`.
 - Keep the static app dependency-light and GitHub Pages-friendly.
@@ -47,8 +50,14 @@ This repo is a static Beyblade X scorebook intended for GitHub Pages. JSON is th
 
 ## Commit Checklist
 
-- `npm test`
 - `npm run validate:data` when local JSON changed
+- `npm test`
+- `npm run typecheck`
+- `npm run lint`
+- `npm run format:check`
+- `npm run build`
+- `npm run check:build`
+- `npm run test:e2e` for UI, routing, storage, build, or deployment changes
 - `git status --short --untracked-files=all`
 - Confirm ignored private files remain ignored.
 - Commit public code/docs/reference changes only.
