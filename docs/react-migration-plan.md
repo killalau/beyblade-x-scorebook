@@ -6,11 +6,11 @@ Update this file in the same commit whenever migration work changes a phase stat
 
 ## Current Status
 
-- Overall status: Production cutover in progress
-- Current phase: Phase 10 — Production cutover and cleanup
-- Progress: 10 of 11 phases completed
-- Last updated: 2026-10-17
-- Production application: React cutover approved; deployment pending
+- Overall status: Complete
+- Current phase: Phase 10 — Complete
+- Progress: 11 of 11 phases completed
+- Last updated: 2026-10-18
+- Production application: React application deployed on GitHub Pages
 - Target hosting: GitHub Pages
 
 ## Goals
@@ -239,15 +239,15 @@ Exit criteria: critical user journeys pass in a production-like browser build.
 
 ### Phase 10 — Production Cutover and Cleanup
 
-Status: In progress
+Status: Complete
 
 - [x] Confirm feature parity and obtain user approval for cutover.
-- [ ] Deploy the React `dist/` build through GitHub Actions.
-- [ ] Verify the live GitHub Pages site, assets, routing, uploads, and local persistence.
-- [ ] Remove superseded vanilla rendering and event code.
-- [ ] Update README, AGENTS.md, hosting notes, commands, and architecture documentation.
-- [ ] Confirm crawler, normalization, catalogue export, wishlist generation, validation, and tests still pass.
-- [ ] Confirm private JSON and raw files remain ignored and unstaged.
+- [x] Deploy the React `dist/` build through GitHub Actions.
+- [x] Verify the live GitHub Pages site, assets, routing, uploads, and local persistence.
+- [x] Remove superseded vanilla rendering and event code.
+- [x] Update README, AGENTS.md, hosting notes, commands, and architecture documentation.
+- [x] Confirm crawler, normalization, catalogue export, wishlist generation, validation, and tests still pass.
+- [x] Confirm private JSON and raw files remain ignored and unstaged.
 
 Exit criteria: the React application is production, the old UI is removed, and all project workflows remain documented and operational.
 
@@ -266,7 +266,7 @@ This checklist spans multiple phases and must be complete before production cuto
 - [x] Rules generated from public scoring configuration.
 - [x] Product images and graceful image failure states.
 - [x] Responsive layouts for phone and desktop widths.
-- [ ] GitHub Pages deployment at the repository base path.
+- [x] GitHub Pages deployment at the repository base path.
 
 ## Quality Gates for Every Migration Change
 
@@ -328,3 +328,4 @@ This checklist spans multiple phases and must be complete before production cuto
 | 2026-10-17 | Completed Phase 8.                                     | Ported live multi-row Scorebook editing, per-row CX mode, rare and owned parts, result selection, full score breakdown, saved public samples, and Rules rendered from shared scoring configuration. Regression coverage now explicitly spans BX, UX, CX, fused Bits, multipacks, owned parts, and rare parts. |
 | 2026-10-17 | Completed Phase 9.                                     | Added Playwright and synthetic fixtures, production-base-path browser coverage, four critical-flow E2E tests, axe accessibility checks, keyboard/focus/tab verification, responsive checks, CI browser execution, lazy route chunks, and a mobile overflow fix. The migration is paused at the required final review gate before Phase 10. |
 | 2026-10-17 | Phase 10 cutover approved.                             | User completed the final review and explicitly approved production deployment and legacy UI cleanup.                                                                                                                                                                                                        |
+| 2026-10-18 | Completed Phase 10.                                    | Replaced the root with the React entry, removed the superseded vanilla renderer/styles/server, deployed Vite `dist/` from `main`, and verified the live Pages root, hashed assets, routes, 125-listing Catalogue, synthetic collection upload, reload persistence, and clean browser console.                 |
