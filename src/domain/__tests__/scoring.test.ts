@@ -12,6 +12,25 @@ describe("scoring parity", () => {
     ).toBe(4);
   });
 
+  it("scores a representative UX product with owned and rare parts", () => {
+    const result = scoreProduct(
+      {
+        name: "Wand Wizard 5-70DB Starter",
+        configs: ["Wand Wizard 5-70DB"],
+        price: 20,
+      },
+      { ownedParts: ["5-70"], rareParts: ["Wand Wizard"] },
+    );
+    expect(result.score).toBe(9);
+    expect(result.costIndex).toBe(9.09);
+    expect(
+      result.parts.find((part) => part.name === "Wizard Rod")?.rarity,
+    ).toBe("rare");
+    expect(result.parts.find((part) => part.name === "5-70")?.rarity).toBe(
+      "owned",
+    );
+  });
+
   it("parses CX Expand parts", () => {
     expect(
       parseConfig("Blitz Bahamut BK 1-50I", { cxMode: true }).map(
