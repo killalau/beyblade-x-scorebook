@@ -25,6 +25,7 @@ export function FileUpload({ label, onFile }: FileUploadProps) {
         id={id}
         type="file"
         accept="application/json,.json"
+        aria-label={label}
         className="sr-only"
         onChange={handleChange}
       />

@@ -1,0 +1,80 @@
+{
+  "version": 1,
+  "currency": "CAD",
+  "taxRegion": "BC",
+  "inventory": {
+    "parts": ["Turn", "T", "LR", "7-60"],
+    "beys": ["Fang Leon T 4-60U", "Shark Scale 4-50UF"],
+    "partsDetail": [
+      {
+        "category": "Main Blade",
+        "line": "CX",
+        "name": "Fang",
+        "abbrev": "-",
+        "qty": 1,
+        "source": "Fang Leon T 4-60U"
+      },
+      {
+        "category": "Assist Blade",
+        "name": "Turn",
+        "abbrev": "T",
+        "qty": 1,
+        "source": "Fang Leon T 4-60U"
+      },
+      {
+        "category": "Assist Blade",
+        "name": "Turn",
+        "abbrev": "T",
+        "qty": 1,
+        "source": "Reaper Incendio T4-70K"
+      },
+      {
+        "category": "Ratchet",
+        "name": "7-60",
+        "abbrev": "7-60",
+        "qty": 1,
+        "source": "Synthetic Set"
+      },
+      {
+        "category": "Bit",
+        "name": "Left Right",
+        "abbrev": "LR",
+        "qty": 1,
+        "source": "Synthetic Set"
+      },
+      {
+        "category": "Grip",
+        "name": "Launcher Grip",
+        "abbrev": "-",
+        "qty": 1,
+        "source": "Synthetic Set"
+      }
+    ]
+  },
+  "purchases": {
+    "items": [
+      {
+        "name": "Fang Leon T 4-60U",
+        "source": "Walmart",
+        "estimatedTotalPaid": 22.36,
+        "status": "purchased",
+        "recordedFrom": "Synthetic fixture"
+      },
+      {
+        "name": "Shark Scale 4-50UF",
+        "source": "Mactera Direct",
+        "quantity": 3,
+        "estimatedTotalPaid": 85.94,
+        "perItemTotal": 28.65
+      },
+      {
+        "name": "Disposed Set",
+        "source": "Example Shop",
+        "estimatedTotalPaid": 60,
+        "soldItems": [{ "name": "Sold Bey", "salePrice": 25 }],
+        "returnedItems": [{ "name": "Returned Bey", "refundAmount": 20 }],
+        "giftedItems": [{ "name": "Gifted Bey" }]
+      }
+    ]
+  }
+}

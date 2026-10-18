@@ -1,0 +1,53 @@
+{
+  "currency": "CAD",
+  "items": [
+    {
+      "listingId": "synthetic:1",
+      "name": "Circle Ghost 4-60LR",
+      "price": 22.98,
+      "retailer": "Example Shop",
+      "status": "Available now",
+      "configs": ["Circle Ghost 4-60LR"],
+      "parts": [
+        { "name": "LR", "type": "bit", "owned": true, "rankClass": "A" }
+      ],
+      "usefulParts": "-",
+      "score": 4,
+      "costIndex": null,
+      "createdAt": "2026-10-01T00:00:00Z",
+      "url": "https://example.com/ghost"
+    },
+    {
+      "listingId": "synthetic:2",
+      "name": "Synthetic 7-60 Set",
+      "price": 19.99,
+      "retailer": "Example Shop",
+      "status": "Preorder",
+      "configs": ["Synthetic 7-60R"],
+      "parts": [
+        { "name": "7-60", "type": "ratchet", "owned": false, "rankClass": "S" }
+      ],
+      "usefulParts": "7-60",
+      "score": 8,
+      "costIndex": 4.2,
+      "createdAt": "2026-10-17T00:00:00Z",
+      "url": "https://example.com/ratchet"
+    },
+    {
+      "listingId": "synthetic:3",
+      "name": "Budget Booster",
+      "price": 12,
+      "retailer": "Other Shop",
+      "status": "Delayed",
+      "configs": ["Budget 3-60F"],
+      "parts": [
+        { "name": "F", "type": "bit", "owned": false, "rankClass": "B" }
+      ],
+      "usefulParts": "F",
+      "score": 2,
+      "costIndex": 12,
+      "createdAt": "2026-09-01T00:00:00Z",
+      "url": "https://example.com/budget"
+    }
+  ]
+}

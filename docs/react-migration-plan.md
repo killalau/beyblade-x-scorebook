@@ -6,9 +6,9 @@ Update this file in the same commit whenever migration work changes a phase stat
 
 ## Current Status
 
-- Overall status: In progress
-- Current phase: Phase 9 — End-to-end testing and accessibility
-- Progress: 9 of 11 phases completed
+- Overall status: Awaiting final user review
+- Current phase: Human review gate before Phase 10
+- Progress: 10 of 11 phases completed
 - Last updated: 2026-10-17
 - Production application: Existing vanilla JavaScript version
 - Target hosting: GitHub Pages
@@ -227,13 +227,13 @@ Exit criteria: scoring output is identical to the current implementation for the
 
 ### Phase 9 — End-to-End Testing and Accessibility
 
-Status: Not started
+Status: Complete
 
-- [ ] Add Playwright configuration and test fixtures containing synthetic, non-private data.
-- [ ] Test upload, reload restoration, clear data, routing, filters, sorting, and responsive navigation.
-- [ ] Test the production build under the repository base path.
-- [ ] Verify keyboard navigation, focus visibility, labels, landmarks, and tab semantics.
-- [ ] Run an automated accessibility check and manually inspect critical flows.
+- [x] Add Playwright configuration and test fixtures containing synthetic, non-private data.
+- [x] Test upload, reload restoration, clear data, routing, filters, sorting, and responsive navigation.
+- [x] Test the production build under the repository base path.
+- [x] Verify keyboard navigation, focus visibility, labels, landmarks, and tab semantics.
+- [x] Run an automated accessibility check and inspect critical flows; final visual review remains with the user at the agreed gate.
 
 Exit criteria: critical user journeys pass in a production-like browser build.
 
@@ -265,7 +265,7 @@ This checklist spans multiple phases and must be complete before production cuto
 - [x] Public Catalogue auto-load, all availability statuses, filters, and sorting.
 - [x] Rules generated from public scoring configuration.
 - [x] Product images and graceful image failure states.
-- [ ] Responsive layouts for phone and desktop widths.
+- [x] Responsive layouts for phone and desktop widths.
 - [ ] GitHub Pages deployment at the repository base path.
 
 ## Quality Gates for Every Migration Change
@@ -326,3 +326,4 @@ This checklist spans multiple phases and must be complete before production cuto
 | 2026-10-17 | Completed Phase 6.                                     | Ported grouped Inventory tabs/search/table and the Purchase summary, current collection, complete reverse-order history, image fallback, unit-paid, net-spend, disposal, preorder, source, quantity, and provenance behavior. Added React component tests for multi-quantity and disposed records.            |
 | 2026-10-17 | Completed Phase 7.                                     | Added a reusable TanStack v8 table, all-status Catalogue search/filter/sorting with responsive cards, and Wishlist card/list views with persistent view/part filters, any/all and only-missing behavior, derived metrics, dates, and image fallback.                                                          |
 | 2026-10-17 | Completed Phase 8.                                     | Ported live multi-row Scorebook editing, per-row CX mode, rare and owned parts, result selection, full score breakdown, saved public samples, and Rules rendered from shared scoring configuration. Regression coverage now explicitly spans BX, UX, CX, fused Bits, multipacks, owned parts, and rare parts. |
+| 2026-10-17 | Completed Phase 9.                                     | Added Playwright and synthetic fixtures, production-base-path browser coverage, four critical-flow E2E tests, axe accessibility checks, keyboard/focus/tab verification, responsive checks, CI browser execution, lazy route chunks, and a mobile overflow fix. The migration is paused at the required final review gate before Phase 10. |

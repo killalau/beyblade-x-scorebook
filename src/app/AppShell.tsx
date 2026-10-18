@@ -85,7 +85,7 @@ export function AppShell() {
       {error && (
         <ErrorState title="Private data could not be loaded" message={error} />
       )}
-      <main id="main-content" tabIndex={-1}>
+      <main id="main-content" className="min-w-0" tabIndex={-1}>
         <Outlet />
       </main>
     </div>

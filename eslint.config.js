@@ -31,13 +31,20 @@ export default tseslint.config(
     files: [
       "vite.config.mjs",
       "vitest.config.mts",
+      "playwright.config.ts",
       "stryker.config.mjs",
       "scripts/check-public-build.mjs",
+      "scripts/serve-react-build.mjs",
     ],
     extends: [eslint.configs.recommended],
     languageOptions: {
       ecmaVersion: "latest",
       globals: globals.node,
     },
+  },
+  {
+    files: ["tests/**/*.ts"],
+    extends: [eslint.configs.recommended, ...tseslint.configs.recommended],
+    languageOptions: { ecmaVersion: "latest", globals: globals.node },
   },
 );

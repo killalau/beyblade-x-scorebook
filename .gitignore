@@ -6,6 +6,8 @@ dist/
 .vitest/
 coverage/
 reports/
+test-results/
+playwright-report/
 .DS_Store
 
 # Private local data. Keep these out of GitHub Pages.

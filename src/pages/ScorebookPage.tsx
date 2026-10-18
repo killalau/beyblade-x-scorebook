@@ -285,7 +285,7 @@ function ScoreBreakdown({
     );
   const parts = summarizeBreakdown(result);
   return (
-    <Card>
+    <Card className="min-w-0">
       <CardHeader>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>

@@ -45,3 +45,9 @@ jobs:
 
       - name: Verify public build privacy
         run: npm run check:build
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Run end-to-end and accessibility tests
+        run: npm run test:e2e
