@@ -102,16 +102,16 @@ export interface RetailerListing {
   orderable: boolean;
   normalizationStatus?: NormalizationStatus;
   productId?: string;
-  price?: number;
+  price?: number | string;
   currency?: CurrencyCode;
   statusLabel?: string;
   bundleType?: string;
   includedBeys?: string;
   cxMode?: boolean;
   imageUrl?: string;
-  firstSeenAt?: string;
-  lastSeenAt?: string;
-  lastAvailableAt?: string;
+  firstSeenAt?: string | null;
+  lastSeenAt?: string | null;
+  lastAvailableAt?: string | null;
 }
 
 export interface RetailerCatalogue {
@@ -161,7 +161,7 @@ export interface WishlistPart {
 
 export interface WishlistItem {
   name: string;
-  price?: number;
+  price?: number | string;
   retailer?: string;
   status?: string;
   bundleType?: string;
@@ -173,8 +173,8 @@ export interface WishlistItem {
   createdAt?: string;
   url?: string;
   notes?: string;
-  score?: number;
-  costIndex?: number | null;
+  score?: number | string;
+  costIndex?: number | string | null;
   parts?: WishlistPart[];
 }
 

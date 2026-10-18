@@ -7,8 +7,8 @@ Update this file in the same commit whenever migration work changes a phase stat
 ## Current Status
 
 - Overall status: In progress
-- Current phase: Phase 7 — Catalogue and Wishlist pages
-- Progress: 7 of 11 phases completed
+- Current phase: Phase 8 — Scorebook and Rules pages
+- Progress: 8 of 11 phases completed
 - Last updated: 2026-10-17
 - Production application: Existing vanilla JavaScript version
 - Target hosting: GitHub Pages
@@ -34,23 +34,23 @@ Update this file in the same commit whenever migration work changes a phase stat
 
 ## Agreed Target Stack
 
-| Area | Choice | Notes |
-| --- | --- | --- |
-| UI | React | Required foundation for the migration. |
-| Language | TypeScript | Use strict types for domain models, imported JSON, and component interfaces. |
-| Build tool | Vite | Produces the static `dist/` output deployed to GitHub Pages. |
-| Routing | React Router | Each major page becomes a route. The GitHub Pages routing strategy is a Phase 1 decision gate. |
-| Styling | Tailwind CSS | New React components use shared design tokens and utilities. |
-| Component primitives | shadcn/ui, selectively | Add only components that the application uses; do not install an entire component catalogue. |
-| Accessible primitives | Radix UI through shadcn/ui | Used where accessible interaction behavior is difficult to reproduce safely. |
-| Complex tables | TanStack Table | Headless sorting, filtering, column, and row-model behavior with custom responsive rendering. |
-| Runtime validation | Zod | Share schemas between browser imports and Node validation where practical. |
-| Application state | React Context plus `useReducer` | Do not add Redux or Zustand unless measured complexity justifies it. |
-| Unit tests | Vitest | Domain logic and utilities. |
-| Mutation tests | StrykerJS with the Vitest runner | Measure whether high-value domain tests detect meaningful logic changes. |
-| Component tests | React Testing Library | Test user-visible behavior rather than component internals. |
-| End-to-end tests | Playwright | Cover file upload, navigation, filtering, storage restoration, and core calculations. |
-| Code quality | ESLint and Prettier | Applied to the React/TypeScript codebase and configuration. |
+| Area                  | Choice                           | Notes                                                                                          |
+| --------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------- |
+| UI                    | React                            | Required foundation for the migration.                                                         |
+| Language              | TypeScript                       | Use strict types for domain models, imported JSON, and component interfaces.                   |
+| Build tool            | Vite                             | Produces the static `dist/` output deployed to GitHub Pages.                                   |
+| Routing               | React Router                     | Each major page becomes a route. The GitHub Pages routing strategy is a Phase 1 decision gate. |
+| Styling               | Tailwind CSS                     | New React components use shared design tokens and utilities.                                   |
+| Component primitives  | shadcn/ui, selectively           | Add only components that the application uses; do not install an entire component catalogue.   |
+| Accessible primitives | Radix UI through shadcn/ui       | Used where accessible interaction behavior is difficult to reproduce safely.                   |
+| Complex tables        | TanStack Table                   | Headless sorting, filtering, column, and row-model behavior with custom responsive rendering.  |
+| Runtime validation    | Zod                              | Share schemas between browser imports and Node validation where practical.                     |
+| Application state     | React Context plus `useReducer`  | Do not add Redux or Zustand unless measured complexity justifies it.                           |
+| Unit tests            | Vitest                           | Domain logic and utilities.                                                                    |
+| Mutation tests        | StrykerJS with the Vitest runner | Measure whether high-value domain tests detect meaningful logic changes.                       |
+| Component tests       | React Testing Library            | Test user-visible behavior rather than component internals.                                    |
+| End-to-end tests      | Playwright                       | Cover file upload, navigation, filtering, storage restoration, and core calculations.          |
+| Code quality          | ESLint and Prettier              | Applied to the React/TypeScript codebase and configuration.                                    |
 
 ## Architectural Constraints
 
@@ -203,14 +203,14 @@ Exit criteria: Inventory and Purchase match the current application for the same
 
 ### Phase 7 — Catalogue and Wishlist Pages
 
-Status: Not started
+Status: Complete
 
-- [ ] Build the reusable TanStack-based data-table foundation.
-- [ ] Port Catalogue search, retailer/status filters, sorting, availability, images, and all-status behavior.
-- [ ] Port Wishlist card and list views.
-- [ ] Port wishlist search, sorting, part filters, part-type filters, and only-missing behavior.
-- [ ] Preserve derived score, Cost Index, useful parts, availability, and ownership behavior.
-- [ ] Provide responsive card rendering for small screens.
+- [x] Build the reusable TanStack-based data-table foundation.
+- [x] Port Catalogue search, retailer/status filters, sorting, availability, images, and all-status behavior.
+- [x] Port Wishlist card and list views.
+- [x] Port wishlist search, sorting, part filters, part-type filters, and only-missing behavior.
+- [x] Preserve derived score, Cost Index, useful parts, availability, and ownership behavior.
+- [x] Provide responsive card rendering for small screens.
 
 Exit criteria: Catalogue and Wishlist results match the current application and remain usable on mobile.
 
@@ -261,10 +261,10 @@ This checklist spans multiple phases and must be complete before production cuto
 - [x] Inventory part tabs, search, grouping, quantities, line, sources, and notes.
 - [x] Current collection cards and complete purchase history.
 - [x] Unit paid, net spend, sold, returned, and gifted purchase behavior.
-- [ ] Wishlist card/list views, sorting, search, and part filters.
-- [ ] Public Catalogue auto-load, all availability statuses, filters, and sorting.
+- [x] Wishlist card/list views, sorting, search, and part filters.
+- [x] Public Catalogue auto-load, all availability statuses, filters, and sorting.
 - [ ] Rules generated from public scoring configuration.
-- [ ] Product images and graceful image failure states.
+- [x] Product images and graceful image failure states.
 - [ ] Responsive layouts for phone and desktop widths.
 - [ ] GitHub Pages deployment at the repository base path.
 
@@ -290,37 +290,38 @@ This checklist spans multiple phases and must be complete before production cuto
 
 ## Open Decision Gates
 
-| Decision | Target phase | Status | Options or notes |
-| --- | --- | --- | --- |
-| GitHub Pages routing | Phase 1 | Decided | Use `HashRouter` for reliable static routing on GitHub Pages. |
-| Migration branch strategy | Phase 0 | Decided | Use the long-lived `codex/react-migration` branch; keep `main` and the live site stable until cutover. |
-| Shared browser/Node Zod schemas | Phase 4 | Decided | Browser Zod schemas intentionally mirror the Node validator and preserve extension fields. Keep the dependency-free Node CLI validator stable during migration; parity fixtures cover shared rules. |
-| Dialog versus Sheet for mobile details | Phase 2 | Open | Decide from the first real product-detail interaction. |
-| Mutation score threshold and CI cadence | Phase 3 | Decided | Baseline: 55.61% overall (59.89% covered). Enforce a 50% break threshold locally; keep the 16-second targeted suite opt-in rather than adding it to every migration CI run. |
+| Decision                                | Target phase | Status  | Options or notes                                                                                                                                                                                    |
+| --------------------------------------- | ------------ | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| GitHub Pages routing                    | Phase 1      | Decided | Use `HashRouter` for reliable static routing on GitHub Pages.                                                                                                                                       |
+| Migration branch strategy               | Phase 0      | Decided | Use the long-lived `codex/react-migration` branch; keep `main` and the live site stable until cutover.                                                                                              |
+| Shared browser/Node Zod schemas         | Phase 4      | Decided | Browser Zod schemas intentionally mirror the Node validator and preserve extension fields. Keep the dependency-free Node CLI validator stable during migration; parity fixtures cover shared rules. |
+| Dialog versus Sheet for mobile details  | Phase 2      | Open    | Decide from the first real product-detail interaction.                                                                                                                                              |
+| Mutation score threshold and CI cadence | Phase 3      | Decided | Baseline: 55.61% overall (59.89% covered). Enforce a 50% break threshold locally; keep the 16-second targeted suite opt-in rather than adding it to every migration CI run.                         |
 
 ## Risks and Mitigations
 
-| Risk | Mitigation |
-| --- | --- |
-| Private data enters the Vite bundle | Never import local/private paths; add build-artifact checks and preserve Git ignore rules. |
-| Rewriting UI changes scoring or totals | Port pure domain functions first and lock behavior with parity tests. |
-| GitHub Pages routes or assets break | Test the production build with the repository base path before cutover. |
-| A large rewrite blocks normal inventory work | Keep scripts and private JSON contracts stable; use small commits and keep the current UI deployable. |
-| Tailwind and shadcn produce inconsistent styling | Define tokens and variants first; add only components with an immediate use. |
-| Table abstraction becomes too generic | Extract shared behavior only after concrete Inventory, Catalogue, or Wishlist requirements demonstrate reuse. |
-| Mutation testing becomes too slow or noisy | Restrict mutation scope to pure business logic, use the Vitest runner's related-test support, and expand scope only when it adds value. |
+| Risk                                             | Mitigation                                                                                                                              |
+| ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Private data enters the Vite bundle              | Never import local/private paths; add build-artifact checks and preserve Git ignore rules.                                              |
+| Rewriting UI changes scoring or totals           | Port pure domain functions first and lock behavior with parity tests.                                                                   |
+| GitHub Pages routes or assets break              | Test the production build with the repository base path before cutover.                                                                 |
+| A large rewrite blocks normal inventory work     | Keep scripts and private JSON contracts stable; use small commits and keep the current UI deployable.                                   |
+| Tailwind and shadcn produce inconsistent styling | Define tokens and variants first; add only components with an immediate use.                                                            |
+| Table abstraction becomes too generic            | Extract shared behavior only after concrete Inventory, Catalogue, or Wishlist requirements demonstrate reuse.                           |
+| Mutation testing becomes too slow or noisy       | Restrict mutation scope to pure business logic, use the Vitest runner's related-test support, and expand scope only when it adds value. |
 
 ## Progress Log
 
-| Date | Change | Result |
-| --- | --- | --- |
-| 2026-10-17 | Migration stack and phased plan agreed and documented. | Planning complete; implementation has not started. |
-| 2026-10-17 | Added StrykerJS mutation testing to the target stack. | Planned for high-value domain logic with a baseline-first threshold and selective execution. |
-| 2026-10-17 | Completed Phase 0 on `codex/react-migration`. | Recorded feature parity and representative outputs, verified tests/privacy boundaries, and selected HashRouter plus a long-lived migration branch. |
-| 2026-10-17 | Confirmed the human review policy. | Phases 1–9 proceed autonomously; user review and explicit approval are required before Phase 10 production cutover. |
-| 2026-10-17 | Completed Phase 1. | Added the React/TypeScript/Vite/HashRouter foundation, quality tooling, dual-entry production build, build privacy check, and non-deploying migration CI. |
-| 2026-10-17 | Completed Phase 2. | Added Tailwind CSS-first design tokens, minimal shadcn-compatible primitives, shared page/data states, and responsive navigation foundations. |
-| 2026-10-17 | Completed Phase 3. | Added strict domain contracts and JS-module declarations, 13 focused Vitest parity tests, and a targeted Stryker suite with a 55.61% baseline and 50% enforcement floor while preserving Node scripts. |
-| 2026-10-17 | Completed Phase 4. | Added aligned Zod runtime contracts, useful upload errors, versioned browser-only persistence compatible with legacy envelopes, clear-data behavior, and schema/storage privacy tests. |
-| 2026-10-17 | Completed Phase 5. | Added the shared shell, six stable hash routes, active and mobile-scrollable navigation, global data controls/status, public Catalogue auto-loading, and route-level empty/error states. Browser smoke verified 125 public listings and no console errors. |
-| 2026-10-17 | Completed Phase 6. | Ported grouped Inventory tabs/search/table and the Purchase summary, current collection, complete reverse-order history, image fallback, unit-paid, net-spend, disposal, preorder, source, quantity, and provenance behavior. Added React component tests for multi-quantity and disposed records. |
+| Date       | Change                                                 | Result                                                                                                                                                                                                                                                                                             |
+| ---------- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 2026-10-17 | Migration stack and phased plan agreed and documented. | Planning complete; implementation has not started.                                                                                                                                                                                                                                                 |
+| 2026-10-17 | Added StrykerJS mutation testing to the target stack.  | Planned for high-value domain logic with a baseline-first threshold and selective execution.                                                                                                                                                                                                       |
+| 2026-10-17 | Completed Phase 0 on `codex/react-migration`.          | Recorded feature parity and representative outputs, verified tests/privacy boundaries, and selected HashRouter plus a long-lived migration branch.                                                                                                                                                 |
+| 2026-10-17 | Confirmed the human review policy.                     | Phases 1–9 proceed autonomously; user review and explicit approval are required before Phase 10 production cutover.                                                                                                                                                                                |
+| 2026-10-17 | Completed Phase 1.                                     | Added the React/TypeScript/Vite/HashRouter foundation, quality tooling, dual-entry production build, build privacy check, and non-deploying migration CI.                                                                                                                                          |
+| 2026-10-17 | Completed Phase 2.                                     | Added Tailwind CSS-first design tokens, minimal shadcn-compatible primitives, shared page/data states, and responsive navigation foundations.                                                                                                                                                      |
+| 2026-10-17 | Completed Phase 3.                                     | Added strict domain contracts and JS-module declarations, 13 focused Vitest parity tests, and a targeted Stryker suite with a 55.61% baseline and 50% enforcement floor while preserving Node scripts.                                                                                             |
+| 2026-10-17 | Completed Phase 4.                                     | Added aligned Zod runtime contracts, useful upload errors, versioned browser-only persistence compatible with legacy envelopes, clear-data behavior, and schema/storage privacy tests.                                                                                                             |
+| 2026-10-17 | Completed Phase 5.                                     | Added the shared shell, six stable hash routes, active and mobile-scrollable navigation, global data controls/status, public Catalogue auto-loading, and route-level empty/error states. Browser smoke verified 125 public listings and no console errors.                                         |
+| 2026-10-17 | Completed Phase 6.                                     | Ported grouped Inventory tabs/search/table and the Purchase summary, current collection, complete reverse-order history, image fallback, unit-paid, net-spend, disposal, preorder, source, quantity, and provenance behavior. Added React component tests for multi-quantity and disposed records. |
+| 2026-10-17 | Completed Phase 7.                                     | Added a reusable TanStack v8 table, all-status Catalogue search/filter/sorting with responsive cards, and Wishlist card/list views with persistent view/part filters, any/all and only-missing behavior, derived metrics, dates, and image fallback.                                               |
