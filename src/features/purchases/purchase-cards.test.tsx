@@ -3,9 +3,45 @@
 import { render, screen } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 
-import { PurchaseHistoryCard } from "@/features/purchases/purchase-cards";
+import {
+  OwnedProductCard,
+  PurchaseHistoryCard,
+} from "@/features/purchases/purchase-cards";
+import { summarizeOwnedPurchases } from "@/features/purchases/purchase-domain";
 
 describe("PurchaseHistoryCard", () => {
+  it("shows the average paid across separate owned purchases", () => {
+    const summary = summarizeOwnedPurchases(
+      [
+        {
+          name: "Suppress Superion 0-70LP",
+          source: "Mactera Direct",
+          estimatedTotalPaid: 36.21,
+        },
+        {
+          name: "Suppress Superion 0-70LP",
+          source: "Amazon.ca",
+          estimatedTotalPaid: 22.39,
+        },
+      ],
+      "Suppress Superion 0-70LP (x2)",
+    );
+    expect(summary).toMatchObject({
+      source: "Mactera Direct; Amazon.ca",
+      unitPaid: 29.3,
+    });
+    render(
+      <OwnedProductCard
+        name="Suppress Superion 0-70LP (x2)"
+        source={summary?.source}
+        unitPaid={summary?.unitPaid}
+        currency="CAD"
+      />,
+    );
+    expect(screen.getByText("Mactera Direct; Amazon.ca")).toBeInTheDocument();
+    expect(screen.getByText(/29\.30/)).toBeInTheDocument();
+  });
+
   it("shows the tax-inclusive unit price for a multi-quantity purchase", () => {
     render(
       <PurchaseHistoryCard

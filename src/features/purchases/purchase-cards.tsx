@@ -8,12 +8,14 @@ import { formatCurrency } from "@/lib/format";
 
 export function OwnedProductCard({
   name,
-  purchase,
+  source,
+  unitPaid,
   imageUrl,
   currency,
 }: {
   name: string;
-  purchase?: PurchaseItem;
+  source?: string;
+  unitPaid?: number;
   imageUrl?: string;
   currency: string;
 }) {
@@ -24,13 +26,11 @@ export function OwnedProductCard({
         <div className="min-w-0 flex-1">
           <h2 className="font-extrabold text-pretty">{name}</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {purchase?.source ?? "Owned item"}
+            {source ?? "Owned item"}
           </p>
         </div>
         <strong className="shrink-0 text-sm">
-          {purchase
-            ? formatCurrency(purchaseUnitPaidAmount(purchase), currency)
-            : "-"}
+          {unitPaid !== undefined ? formatCurrency(unitPaid, currency) : "-"}
         </strong>
       </CardContent>
     </Card>

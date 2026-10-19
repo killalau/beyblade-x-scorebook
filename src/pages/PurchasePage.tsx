@@ -9,12 +9,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import type { PurchaseItem, RetailerListing } from "@/domain/types";
 import { usePublicCatalogue } from "@/features/catalogue/use-public-catalogue";
 import { usePrivateData } from "@/features/private-data/use-private-data";
-import { findCatalogueListingForProduct } from "@/features/purchases/purchase-domain";
+import {
+  findCatalogueListingForProduct,
+  summarizeOwnedPurchases,
+} from "@/features/purchases/purchase-domain";
 import {
   OwnedProductCard,
   PurchaseHistoryCard,
 } from "@/features/purchases/purchase-cards";
-import { findPurchaseForInventoryBey } from "@/inventory-products.js";
 import { formatCurrency } from "@/lib/format";
 
 export function PurchasePage() {
@@ -99,18 +101,19 @@ export function PurchasePage() {
         {ownedBeys.length ? (
           <div className="grid gap-3 md:grid-cols-2">
             {ownedBeys.map((bey, index) => {
-              const purchase = findPurchaseForInventoryBey(purchases, bey);
+              const summary = summarizeOwnedPurchases(purchases, bey);
               const listing = findCatalogueListingForProduct(
                 listings,
                 bey,
-                purchase,
+                summary?.preferredPurchase,
               );
               return (
                 <OwnedProductCard
                   key={`${bey}-${index}`}
                   name={bey}
-                  purchase={purchase}
-                  imageUrl={purchase?.imageUrl ?? listing?.imageUrl}
+                  source={summary?.source}
+                  unitPaid={summary?.unitPaid}
+                  imageUrl={summary?.imageUrl ?? listing?.imageUrl}
                   currency={currency}
                 />
               );
