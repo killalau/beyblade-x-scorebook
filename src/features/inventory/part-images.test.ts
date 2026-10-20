@@ -78,6 +78,21 @@ describe("inventory part images", () => {
     );
   });
 
+  it("uses the Hasbro entry launcher for Rocket Griffon", () => {
+    expect(
+      inventoryPartImageRefs({
+        category: "Launcher",
+        name: "Entry Launcher",
+        code: "G4561",
+      }),
+    ).toEqual([
+      expect.objectContaining({
+        releaseId: "G4561",
+        url: expect.stringContaining("hasbro/G4561/G4561_06.webp"),
+      }),
+    ]);
+  });
+
   it("uses the verified product image when no isolated launcher image exists", () => {
     expect(
       inventoryPartImageRefs({

@@ -83,6 +83,9 @@ const accessoryImages: Record<string, Record<string, string[]>> = {
   G4569: {
     Launcher: [`${PHSTUDY}/hasbro/G4569/G4569_00.webp`],
   },
+  G4561: {
+    Launcher: [`${PHSTUDY}/hasbro/G4561/G4561_06.webp`],
+  },
   G3028: {
     Tool: [`${PHSTUDY}/hasbro/G3028/G3028_00.webp`],
   },
