@@ -34,6 +34,28 @@ describe("inventory parts", () => {
     });
   });
 
+  it("adds separate owned rows that share the same source", () => {
+    const grouped = groupInventoryParts([
+      {
+        category: "Launcher",
+        name: "Entry Launcher",
+        qty: 1,
+        source: "Glory Valkerion LF",
+      },
+      {
+        category: "Launcher",
+        name: "Entry Launcher",
+        qty: 1,
+        source: "Glory Valkerion LF",
+      },
+    ]);
+
+    expect(grouped[0]).toMatchObject({
+      qty: 2,
+      source: "Glory Valkerion LF",
+    });
+  });
+
   it("preserves category and blade-line rules", () => {
     expect(canonicalInventoryPartCategory("Metal Blade")).toBe("Main Blade");
     expect(inventoryPartCategories).toContain("Battle Pass");

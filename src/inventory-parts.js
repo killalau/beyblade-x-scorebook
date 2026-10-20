@@ -32,11 +32,14 @@ export function groupInventoryParts(parts) {
       notes: new Set(),
       lines: new Set(),
       imageRefs: new Map(),
-      sourceQuantities: new Map()
+      sourceQuantities: new Map(),
+      legacySourceQuantities: new Map()
     };
 
     for (const source of sources) {
-      current.sourceQuantities.set(source, Math.max(current.sourceQuantities.get(source) ?? 0, quantityPerSource));
+      const quantities = isLegacySummary ? current.legacySourceQuantities : current.sourceQuantities;
+      const previous = quantities.get(source) ?? 0;
+      quantities.set(source, isLegacySummary ? Math.max(previous, quantityPerSource) : previous + quantityPerSource);
     }
     if (part.notes && !isLegacySummary) current.notes.add(part.notes);
     for (const line of splitValues(part.line)) current.lines.add(line);
@@ -46,11 +49,13 @@ export function groupInventoryParts(parts) {
     grouped.set(key, current);
   }
 
-  return [...grouped.values()].map(({ part, notes, lines, imageRefs, sourceQuantities }) => ({
+  return [...grouped.values()].map(({ part, notes, lines, imageRefs, sourceQuantities, legacySourceQuantities }) => ({
     ...part,
-    qty: [...sourceQuantities.values()].reduce((sum, quantity) => sum + quantity, 0),
+    qty: [...new Set([...sourceQuantities.keys(), ...legacySourceQuantities.keys()])]
+      .map((source) => sourceQuantities.get(source) ?? legacySourceQuantities.get(source) ?? 0)
+      .reduce((sum, quantity) => sum + quantity, 0),
     line: [...lines].join(", ") || "-",
-    source: [...sourceQuantities.keys()].join("; "),
+    source: [...new Set([...sourceQuantities.keys(), ...legacySourceQuantities.keys()])].join("; "),
     imageRefs: [...imageRefs.values()],
     notes: [...notes].join(" ")
   }));
