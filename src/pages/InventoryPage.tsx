@@ -1,5 +1,6 @@
 import { Search, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useId, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 import { EmptyState } from "@/components/empty-state";
 import { FileUpload } from "@/components/file-upload";
@@ -185,19 +186,74 @@ export function InventoryPage() {
 
 function PartSources({ source }: { source?: string }) {
   const summary = summarizeSources(source);
+  const triggerRef = useRef<HTMLSpanElement>(null);
+  const tooltipId = useId();
+  const [position, setPosition] = useState<SourceTooltipPosition | null>(null);
 
   if (!summary.truncated) return summary.display;
 
+  const showTooltip = () => {
+    const rect = triggerRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    const viewportPadding = 16;
+    const gap = 8;
+    const maxWidth = Math.min(384, window.innerWidth - viewportPadding * 2);
+    const left = Math.min(
+      Math.max(viewportPadding, rect.left),
+      window.innerWidth - maxWidth - viewportPadding,
+    );
+    const above = rect.bottom + 160 > window.innerHeight;
+    setPosition({
+      above,
+      left,
+      maxWidth,
+      top: above ? rect.top - gap : rect.bottom + gap,
+    });
+  };
+
   return (
-    <span
-      className="cursor-help underline decoration-dotted underline-offset-4"
-      title={summary.full}
-      aria-label={`Full source list: ${summary.full}`}
-      tabIndex={0}
-    >
-      {summary.display}
-    </span>
+    <>
+      <span
+        ref={triggerRef}
+        className="cursor-help underline decoration-dotted underline-offset-4 outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        aria-describedby={position ? tooltipId : undefined}
+        tabIndex={0}
+        onMouseEnter={showTooltip}
+        onMouseLeave={() => setPosition(null)}
+        onFocus={showTooltip}
+        onBlur={() => setPosition(null)}
+        onKeyDown={(event) => {
+          if (event.key === "Escape") setPosition(null);
+        }}
+      >
+        {summary.display}
+      </span>
+      {position &&
+        createPortal(
+          <span
+            id={tooltipId}
+            role="tooltip"
+            className="pointer-events-none fixed z-[100] rounded-lg bg-foreground px-3 py-2 text-xs leading-relaxed font-medium text-background shadow-xl"
+            style={{
+              left: position.left,
+              maxWidth: position.maxWidth,
+              top: position.top,
+              transform: position.above ? "translateY(-100%)" : undefined,
+            }}
+          >
+            {summary.full}
+          </span>,
+          document.body,
+        )}
+    </>
   );
+}
+
+interface SourceTooltipPosition {
+  above: boolean;
+  left: number;
+  maxWidth: number;
+  top: number;
 }
 
 function PartThumbnail({ part }: { part: InventoryPartDetail }) {

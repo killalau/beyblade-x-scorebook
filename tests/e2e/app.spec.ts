@@ -37,6 +37,10 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   await expect(
     page.getByRole("cell", { name: "Fang", exact: true }),
   ).toBeVisible();
+  await page.getByText("Set One; Set Two; Set Three; ...").hover();
+  await expect(page.getByRole("tooltip")).toHaveText(
+    "Set One; Set Two; Set Three; Set Four",
+  );
   await page.getByRole("button", { name: "Clear search" }).click();
   await page.getByRole("tab", { name: "Assist Blade" }).click();
   await expect(page.getByRole("cell", { name: "Turn" })).toBeVisible();
