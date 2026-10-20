@@ -68,6 +68,8 @@ export function InventoryPage() {
           ),
       );
   }, [groupedParts, category, query]);
+  const showLineColumn = category === "Blade";
+  const showCategoryColumn = category === "other";
 
   if (!collection) {
     return (
@@ -140,8 +142,8 @@ export function InventoryPage() {
               <tr>
                 {[
                   "Image",
-                  "Category",
-                  "Line",
+                  ...(showCategoryColumn ? ["Category"] : []),
+                  ...(showLineColumn ? ["Line"] : []),
                   "Part",
                   "Abbrev.",
                   "Qty",
@@ -161,8 +163,12 @@ export function InventoryPage() {
                   <td className="px-4 py-2">
                     <PartThumbnail part={part} />
                   </td>
-                  <td className="px-4 py-3">{part.category ?? "-"}</td>
-                  <td className="px-4 py-3">{part.line ?? "-"}</td>
+                  {showCategoryColumn && (
+                    <td className="px-4 py-3">{part.category ?? "-"}</td>
+                  )}
+                  {showLineColumn && (
+                    <td className="px-4 py-3">{part.line ?? "-"}</td>
+                  )}
                   <td className="px-4 py-3 font-bold">{part.name ?? "-"}</td>
                   <td className="px-4 py-3">{part.abbrev ?? "-"}</td>
                   <td className="px-4 py-3">{part.qty ?? "-"}</td>

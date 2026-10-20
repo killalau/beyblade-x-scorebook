@@ -33,6 +33,10 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   await loadWishlist(page);
   await page.getByRole("link", { name: "Inventory" }).click();
   await expect(page).toHaveURL(/#\/inventory$/);
+  await expect(page.getByRole("columnheader", { name: "Line" })).toBeVisible();
+  await expect(
+    page.getByRole("columnheader", { name: "Category" }),
+  ).toHaveCount(0);
   await page.getByPlaceholder("Search part name or abbreviation").fill("尖牙");
   await expect(
     page.getByRole("cell", { name: "Fang", exact: true }),
@@ -43,10 +47,19 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   );
   await page.getByRole("button", { name: "Clear search" }).click();
   await page.getByRole("tab", { name: "Assist Blade" }).click();
+  await expect(page.getByRole("columnheader", { name: "Line" })).toHaveCount(0);
+  await expect(
+    page.getByRole("columnheader", { name: "Category" }),
+  ).toHaveCount(0);
   await expect(page.getByRole("cell", { name: "Turn" })).toBeVisible();
   await expect(
     page.getByRole("cell", { name: "2", exact: true }),
   ).toBeVisible();
+  await page.getByRole("tab", { name: "Others" }).click();
+  await expect(
+    page.getByRole("columnheader", { name: "Category" }),
+  ).toBeVisible();
+  await expect(page.getByRole("columnheader", { name: "Line" })).toHaveCount(0);
   await page.reload();
   await expect(page.getByText("collection.synthetic.json")).toBeVisible();
   await expect(page.getByText("wishlist.synthetic.json")).toBeVisible();
