@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { InventoryPartDetail } from "@/domain/types";
+import { inventoryPartImageRefs } from "@/features/inventory/part-images";
 import { usePrivateData } from "@/features/private-data/use-private-data";
 import { groupInventoryParts } from "@/inventory-parts.js";
 
@@ -42,7 +43,12 @@ export function InventoryPage() {
     const details = (collection.data.inventory.partsDetail ??
       []) as unknown as InventoryPartDetail[];
     return groupInventoryParts(
-      details.filter((part) => part.category !== "Complete Combo"),
+      details
+        .filter((part) => part.category !== "Complete Combo")
+        .map((part) => ({
+          ...part,
+          imageRefs: inventoryPartImageRefs(part),
+        })),
     );
   }, [collection]);
 
@@ -131,13 +137,13 @@ export function InventoryPage() {
             <thead className="bg-muted/70 text-xs tracking-wide text-muted-foreground uppercase">
               <tr>
                 {[
+                  "Image",
                   "Category",
                   "Line",
                   "Part",
                   "Abbrev.",
                   "Qty",
                   "Source",
-                  "Notes",
                 ].map((heading) => (
                   <th key={heading} className="px-4 py-3 font-extrabold">
                     {heading}
@@ -150,6 +156,9 @@ export function InventoryPage() {
                 <tr
                   key={`${part.category}-${part.name}-${part.abbrev}-${index}`}
                 >
+                  <td className="px-4 py-2">
+                    <PartThumbnail part={part} />
+                  </td>
                   <td className="px-4 py-3">{part.category ?? "-"}</td>
                   <td className="px-4 py-3">{part.line ?? "-"}</td>
                   <td className="px-4 py-3 font-bold">{part.name ?? "-"}</td>
@@ -157,9 +166,6 @@ export function InventoryPage() {
                   <td className="px-4 py-3">{part.qty ?? "-"}</td>
                   <td className="max-w-xs px-4 py-3 text-muted-foreground">
                     {part.source ?? "-"}
-                  </td>
-                  <td className="max-w-sm px-4 py-3 text-muted-foreground">
-                    {part.notes || "-"}
                   </td>
                 </tr>
               ))}
@@ -172,6 +178,51 @@ export function InventoryPage() {
           description="Try another category or clear the current part search."
         />
       )}
+    </div>
+  );
+}
+
+function PartThumbnail({ part }: { part: InventoryPartDetail }) {
+  const refs = part.imageRefs ?? [];
+  const [failed, setFailed] = useState(false);
+  if (!refs.length || failed) return <MissingPartThumbnail />;
+
+  const ref = refs[0];
+  const unknownVariant = refs.some((item) => item.variant === "unknown");
+  return (
+    <div className="relative w-fit">
+      <a
+        href="https://beyblade.phstudy.org/index.html"
+        target="_blank"
+        rel="noreferrer"
+        title="Image reference: beyblade.phstudy.org"
+      >
+        <img
+          src={ref.url}
+          alt={`${part.name} part`}
+          className="size-12 rounded-lg bg-white object-contain shadow-sm ring-1 ring-border transition hover:scale-105"
+          loading="lazy"
+          referrerPolicy="no-referrer"
+          onError={() => setFailed(true)}
+        />
+      </a>
+      {unknownVariant && (
+        <span
+          className="absolute -top-1 -right-1 flex size-5 items-center justify-center rounded-full bg-amber-500 text-[10px] font-black text-white shadow"
+          title="Colour variant is not recorded; showing one candidate image"
+          aria-label="Colour variant unknown"
+        >
+          ?
+        </span>
+      )}
+    </div>
+  );
+}
+
+function MissingPartThumbnail() {
+  return (
+    <div className="flex size-12 items-center justify-center rounded-lg bg-muted text-xs font-bold text-muted-foreground">
+      —
     </div>
   );
 }

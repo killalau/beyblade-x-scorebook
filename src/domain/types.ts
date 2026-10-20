@@ -19,10 +19,20 @@ export interface InventoryPartDetail {
   category: InventoryPartCategory | "Metal Blade";
   name: string;
   abbrev?: string;
+  code?: string;
   qty?: number | string;
   source?: string;
+  sourceUrl?: string;
   notes?: string;
   line?: string;
+  imageRefs?: InventoryPartImageRef[];
+}
+
+export interface InventoryPartImageRef {
+  url: string;
+  source: "beyblade.phstudy.org";
+  variant: "exact" | "unknown";
+  releaseId: string;
 }
 
 export interface Inventory {

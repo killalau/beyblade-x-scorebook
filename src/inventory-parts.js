@@ -31,6 +31,7 @@ export function groupInventoryParts(parts) {
       part: normalizedPart,
       notes: new Set(),
       lines: new Set(),
+      imageRefs: new Map(),
       sourceQuantities: new Map()
     };
 
@@ -39,14 +40,18 @@ export function groupInventoryParts(parts) {
     }
     if (part.notes && !isLegacySummary) current.notes.add(part.notes);
     for (const line of splitValues(part.line)) current.lines.add(line);
+    for (const imageRef of part.imageRefs ?? []) {
+      current.imageRefs.set(imageRef.url, imageRef);
+    }
     grouped.set(key, current);
   }
 
-  return [...grouped.values()].map(({ part, notes, lines, sourceQuantities }) => ({
+  return [...grouped.values()].map(({ part, notes, lines, imageRefs, sourceQuantities }) => ({
     ...part,
     qty: [...sourceQuantities.values()].reduce((sum, quantity) => sum + quantity, 0),
     line: [...lines].join(", ") || "-",
     source: [...sourceQuantities.keys()].join("; "),
+    imageRefs: [...imageRefs.values()],
     notes: [...notes].join(" ")
   }));
 }

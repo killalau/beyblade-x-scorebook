@@ -32,8 +32,10 @@ export const inventoryPartDetailSchema = z
     category: inventoryPartCategorySchema,
     name: z.string(),
     abbrev: z.string().optional(),
+    code: z.string().optional(),
     qty: optionalNumberLike,
     source: z.string().optional(),
+    sourceUrl: z.string().optional(),
     notes: z.string().optional(),
     line: z.string().optional(),
   })
