@@ -7,7 +7,7 @@ This document records useful external databases that may support future normaliz
 - URL: [https://beyblade.phstudy.org/index.html](https://beyblade.phstudy.org/index.html)
 - Added to this project: 2026-08-04
 - Intended future use: trace a Blade, Ratchet, Bit, Lock Chip, Main Blade, Assist Blade, or other part back to the product or products that supplied it.
-- Current integration status: documented only; not imported, crawled, or used automatically by scoring/wishlist generation.
+- Current integration status: used by the committed part-image registry for thumbnail and direct-detail links. Its catalogue is not bulk-imported and is not used automatically by scoring/wishlist generation.
 
 ### Observed capabilities
 
@@ -39,6 +39,30 @@ The site presents a searchable Beyblade X catalogue and parts database with:
 - When it supplies a material normalization fact, record the page URL, lookup date, queried part/product, result, and any uncertainty in notes or a dated raw research capture.
 - Do not bulk scrape or mirror the database without first checking site behavior, terms, and technical impact. Prefer focused manual/browser lookups.
 - Do not automatically overwrite existing normalized configurations from a single external match; compare product number, region, brand, and edition first.
+
+### Direct links and identifier scope
+
+The site publishes localized static detail pages for component parts using this shape:
+
+```text
+https://beyblade.phstudy.org/p/{locale}/{category}/{component-id}.html
+```
+
+The Inventory UI currently uses `zh-HK`. Examples include:
+
+- Hasbro Blade: `HB-G4568-BLADE`
+- Takara Tomy Main Blade: `MB-PRD-096177-02`
+- Takara Tomy Metal Blade uses the `ME-PRD` prefix, not `MT-PRD`.
+
+These full component IDs are phstudy identifiers, not universal SKUs:
+
+- In a Hasbro ID, `G4568` is the manufacturer-specific product/SKU/MPN used for that release. The `HB-` namespace and component suffix such as `-BLADE` are added to identify a phstudy component record.
+- On Takara Tomy pages, the official release code (for example `BXG-24`) is separate from the site's `SR/BL/RC/BT-PRD-...` record IDs. A numeric `PRD` core may correspond closely to digits from a JAN for some products, but the prefixed component ID and its variant suffix are not themselves a JAN/GTIN.
+- A SKU or manufacturer part number is brand-specific. A GTIN/UPC/EAN/JAN is the appropriate product-level identifier when cross-retailer barcode identity is required.
+
+Accordingly, private inventory should keep the verified brand and useful release/variant code, but should not duplicate phstudy component IDs or detail URLs. The committed image registry derives those source-specific values. If a future provenance registry needs to retain them, store them explicitly as `source: "beyblade.phstudy.org"` plus `externalId`, alongside—not instead of—official product codes and any verified GTIN.
+
+The static sitemap currently exposes component-detail pages for Blade, Ratchet, Bit, Lock Chip, Main Blade, Over Blade, Metal Blade, and Assist Blade. Accessories such as launchers, stadiums, and grips should link to their exact source-product `Series` page where possible; if no unambiguous source-product page exists, use a search URL prefilled with the release ID rather than the unfiltered index.
 
 ### Possible future integration
 
