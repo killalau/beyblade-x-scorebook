@@ -70,6 +70,20 @@ export function canonicalInventoryPartCategory(category) {
   return category === "Metal Blade" ? "Main Blade" : category;
 }
 
+export function canonicalPartName(value, category) {
+  let name = String(value ?? "").trim();
+  if ((category === "Main Blade" || category === "MainBlade") && name.includes("/")) {
+    name = name.split("/").at(-1).trim();
+  }
+
+  return name
+    .replace(/\s+Metallic Coat\s*:\s*.+$/i, "")
+    .replace(/\s+(?:Red|Blue|Black|White|Yellow|Gold|Silver|Green|Purple|Orange|Clear)\s+Ver\.$/i, "")
+    .replace(/\s+金屬塗層\s*[:：]\s*.+$/u, "")
+    .replace(/\s+(?:火紅|紅色)版$/u, "")
+    .trim();
+}
+
 function splitValues(value) {
   return [...new Set(String(value ?? "").split(";").map((item) => item.trim()).filter(Boolean))];
 }

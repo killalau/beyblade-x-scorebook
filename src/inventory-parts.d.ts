@@ -11,3 +11,4 @@ export function groupInventoryParts(
   parts: InventoryPartDetail[],
 ): InventoryPartDetail[];
 export function canonicalInventoryPartCategory(category: string): string;
+export function canonicalPartName(value: unknown, category: string): string;

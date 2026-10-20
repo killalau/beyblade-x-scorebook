@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   canonicalInventoryPartCategory,
+  canonicalPartName,
   groupInventoryParts,
   inventoryLinesByBladeCategory,
   inventoryPartCategories,
@@ -82,6 +83,44 @@ describe("inventory parts", () => {
         "巫師幻棍",
       ]),
     );
+  });
+
+  it("uses component identity instead of cosmetic release labels", () => {
+    expect(canonicalPartName("Blitz Metallic Coat: Yellow", "MainBlade")).toBe(
+      "Blitz",
+    );
+    expect(canonicalPartName("Rage Metallic Coat: Gold", "Main Blade")).toBe(
+      "Rage",
+    );
+    expect(canonicalPartName("狂怒 金屬塗層:燦金", "Main Blade")).toBe("狂怒");
+    expect(canonicalPartName("Fang Red Ver.", "Main Blade")).toBe("Fang");
+    expect(canonicalPartName("O/Whip", "MainBlade")).toBe("Whip");
+  });
+
+  it("groups alternate-colour releases under the same component", () => {
+    const grouped = groupInventoryParts([
+      {
+        category: "Main Blade",
+        line: "CX",
+        name: "Rage",
+        qty: 1,
+        source: "Rage Ragna FE4-55Y",
+      },
+      {
+        category: "Main Blade",
+        line: "CX",
+        name: "Rage",
+        qty: 1,
+        source: "Tiga Rage FT3-60T",
+      },
+    ]);
+
+    expect(grouped).toHaveLength(1);
+    expect(grouped[0]).toMatchObject({
+      name: "Rage",
+      qty: 2,
+      source: "Rage Ragna FE4-55Y; Tiga Rage FT3-60T",
+    });
   });
 
   it("preserves category and blade-line rules", () => {

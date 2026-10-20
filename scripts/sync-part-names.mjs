@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
+import { canonicalPartName } from "../src/inventory-parts.js";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const collectionPath = fileURLToPath(
@@ -230,8 +231,7 @@ function localizedRecordName(record, locale, category) {
 }
 
 function normalizeComponentName(value, category) {
-  if (category !== "MainBlade" || !value.includes("/")) return value;
-  return value.split("/").at(-1).trim();
+  return canonicalPartName(value, category);
 }
 
 function fallbackNames(part) {

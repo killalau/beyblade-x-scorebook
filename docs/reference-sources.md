@@ -73,7 +73,7 @@ The site publishes locale-specific static JSON for `main`, `hardcoded`, and `has
 - Taiwan and Hong Kong values are stored independently as `names["zh-TW"]` and `names["zh-HK"]`.
 - Some Hong Kong component records intentionally expose only the international abbreviation, such as `LF`, rather than a translated phrase. Preserve that source value instead of substituting the Taiwan term.
 - Missing equivalents remain `null`; do not manufacture regional translations.
-- Exact release/image mappings select colour variants. For a CX Main Blade record whose database label combines the Over Blade and Main Blade as `O/Whip`, persist the Main Blade portion (`Whip`) because the inventory stores those components separately.
+- Exact release/image mappings select colour variants. Localized `names` store component identity rather than cosmetic release labels, so suffixes such as `Metallic Coat: Gold` and `Red Ver.` are removed; `code`, `source`, and the exact image continue to distinguish the physical release. This also prevents a Hasbro normal-colour part from inheriting a cosmetic suffix merely because its linked TT counterpart is a special colour. For a CX Main Blade record whose database label combines the Over Blade and Main Blade as `O/Whip`, persist the Main Blade portion (`Whip`) because the inventory stores those components separately.
 
 The canonical display name is TT English first, then Hasbro English. The other regional names remain searchable without being joined into a slash-delimited display label.
 
