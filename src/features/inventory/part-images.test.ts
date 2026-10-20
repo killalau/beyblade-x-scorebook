@@ -47,6 +47,52 @@ describe("inventory part images", () => {
     ]);
   });
 
+  it.each([
+    ["Lock Chip", "Emperor", "G3028-03", "LOCKCHIP"],
+    ["Blade", "Rock Golem", "G3028-01", "BLADE"],
+    ["Blade", "Gill Shark", "G3028-02", "BLADE"],
+  ] as const)(
+    "keeps the exact multipack child id for %s %s",
+    (category, name, code, suffix) => {
+      expect(inventoryPartImageRefs({ category, name, code })[0]).toEqual(
+        expect.objectContaining({
+          releaseId: code,
+          url: expect.stringContaining(`HB-${code}-${suffix}.webp`),
+        }),
+      );
+    },
+  );
+
+  it("maps Infinity metal blades stored in the Main Blade UI category", () => {
+    expect(
+      inventoryPartImageRefs({
+        category: "Main Blade",
+        name: "Hurricane",
+        code: "G2750",
+      })[0],
+    ).toEqual(
+      expect.objectContaining({
+        releaseId: "G2750",
+        url: expect.stringContaining("HB-G2750-METALBLADE.webp"),
+      }),
+    );
+  });
+
+  it("uses the verified product image when no isolated launcher image exists", () => {
+    expect(
+      inventoryPartImageRefs({
+        category: "Launcher",
+        name: "Right-spin Winder Launcher",
+        code: "G4569",
+      })[0],
+    ).toEqual(
+      expect.objectContaining({
+        releaseId: "G4569",
+        url: expect.stringContaining("hasbro/G4569/G4569_00.webp"),
+      }),
+    );
+  });
+
   it("uses the exact product half for battle-set parts", () => {
     expect(
       inventoryPartImageRefs({

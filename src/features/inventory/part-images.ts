@@ -80,6 +80,9 @@ const accessoryImages: Record<string, Record<string, string[]>> = {
   G2750: {
     Launcher: [`${PHSTUDY}/hasbro/G2750/G2750_05.webp`],
   },
+  G4569: {
+    Launcher: [`${PHSTUDY}/hasbro/G4569/G4569_00.webp`],
+  },
   G3028: {
     Tool: [`${PHSTUDY}/hasbro/G3028/G3028_00.webp`],
   },
@@ -108,6 +111,9 @@ export function inventoryPartImageRefs(
   if (releaseId) {
     const accessory = accessoryImages[releaseId]?.[part.category];
     if (accessory) return accessory.map((url) => exactRef(url, releaseId));
+
+    const override = hasbroPartImageOverride(part, releaseId);
+    if (override) return [exactRef(override, releaseId)];
 
     const type = partImageType[part.category as keyof typeof partImageType];
     if (type) {
@@ -139,6 +145,16 @@ export function inventoryPartImageRefs(
     variant,
     releaseId: id,
   }));
+}
+
+function hasbroPartImageOverride(
+  part: InventoryPartDetail,
+  releaseId: string,
+): string | undefined {
+  if (releaseId === "G2750" && part.category === "Main Blade") {
+    return `${PHSTUDY}/site/MetalBlade/HB-G2750-METALBLADE.webp`;
+  }
+  return undefined;
 }
 
 function releaseIdForPart(part: InventoryPartDetail): string | undefined {
