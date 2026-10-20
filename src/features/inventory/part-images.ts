@@ -199,15 +199,22 @@ function hasbroPartImageOverride(
 }
 
 function releaseIdForPart(part: InventoryPartDetail): string | undefined {
+  const codedReleaseId = part.code
+    ?.match(/\b[FG]\d{4}(?:-\d{2})?\b/i)?.[0]
+    .toUpperCase();
+
   if (part.source === "Xtreme Battle Set") {
-    if (/Dagger Dran|4-60|Rush/.test(`${part.name} ${part.abbrev}`))
+    if (codedReleaseId?.startsWith("F9588-")) return codedReleaseId;
+    if (/Dagger Dran|Dran Dagger|4-60|Rush/.test(`${part.name} ${part.abbrev}`))
       return "F9588-01";
-    if (/Tusk Mammoth|3-60|Taper/.test(`${part.name} ${part.abbrev}`))
+    if (
+      /Tusk Mammoth|Mammoth Tusk|3-60|Taper/.test(`${part.name} ${part.abbrev}`)
+    )
       return "F9588-02";
     return "F9588";
   }
 
-  return part.code?.match(/\b[FG]\d{4}(?:-\d{2})?\b/i)?.[0].toUpperCase();
+  return codedReleaseId;
 }
 
 function accessoryFallback(

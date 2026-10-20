@@ -35,6 +35,8 @@ export default tseslint.config(
       "stryker.config.mjs",
       "scripts/check-public-build.mjs",
       "scripts/serve-react-build.mjs",
+      "scripts/sync-part-names.mjs",
+      "scripts/audit-part-images.mjs",
     ],
     extends: [eslint.configs.recommended],
     languageOptions: {

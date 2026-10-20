@@ -176,4 +176,26 @@ describe("inventory part images", () => {
       }),
     );
   });
+
+  it.each([
+    ["Dran Dagger", "F9588-01", "HB-F9588-01-BLADE.webp"],
+    ["Mammoth Tusk", "F9588-02", "HB-F9588-02-BLADE.webp"],
+  ])(
+    "keeps the battle-set image after TT-first rename to %s",
+    (name, releaseId, image) => {
+      expect(
+        inventoryPartImageRefs({
+          category: "Blade",
+          name,
+          code: releaseId,
+          source: "Xtreme Battle Set",
+        })[0],
+      ).toEqual(
+        expect.objectContaining({
+          releaseId,
+          url: expect.stringContaining(image),
+        }),
+      );
+    },
+  );
 });
