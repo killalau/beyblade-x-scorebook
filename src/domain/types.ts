@@ -1,4 +1,5 @@
 export type CurrencyCode = "CAD" | "HKD" | (string & {});
+export type BeybladeBrand = "Hasbro" | "Takara Tomy";
 
 export type InventoryPartCategory =
   | "Blade"
@@ -18,6 +19,7 @@ export type InventoryPartCategory =
 export interface InventoryPartDetail {
   category: InventoryPartCategory | "Metal Blade";
   name: string;
+  brand?: BeybladeBrand;
   abbrev?: string;
   code?: string;
   qty?: number | string;
@@ -60,6 +62,7 @@ export interface GiftedItem {
 
 export interface PurchaseItem {
   name: string;
+  brand?: BeybladeBrand;
   source?: string;
   purchaseDate?: string;
   pretaxPrice?: number | string;

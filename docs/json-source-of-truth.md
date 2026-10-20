@@ -64,6 +64,7 @@ npm run export:catalogue
 6. When ownership or purchase history changes, treat collection and wishlist as one transaction:
    - Add or remove the requested row under `collection.purchases.items`.
    - Add or remove the complete bey and all parts supplied by it under `collection.inventory`. Preserve quantities or shared parts that are still owned from another source.
+   - Record the verified release `brand` (`Hasbro` or `Takara Tomy`) on the purchase and every owned `partsDetail` row; do not rely only on the collection default.
    - Recalculate affected wishlist `usefulParts`, `helpsInventory`, `score`, and `costIndex` against the updated inventory.
    - Keep verified retailer listings after purchase. Fully owned listings use `usefulParts: "-"` and `costIndex: null`; mixed bundles continue scoring only missing useful parts.
 7. Run `npm run validate:data`.

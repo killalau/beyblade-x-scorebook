@@ -25,6 +25,7 @@ JSON is the source of truth for this project. Excel workbooks are legacy exports
     "items": [
       {
         "name": "Wand Wizard 5-70DB Starter",
+        "brand": "Hasbro",
         "source": "Private purchase",
         "pretaxPrice": 20,
         "taxRate": 0,
@@ -41,6 +42,8 @@ Required fields:
 - `inventory.parts`: array of owned part names and useful abbreviations.
 - `inventory.beys`: array of owned complete beys/products.
 - `purchases.items`: purchase-history array.
+- `purchases.items[].brand`: verified product/release brand, either `Hasbro` or `Takara Tomy`.
+- `inventory.partsDetail[].brand`: verified brand of the physical part, either `Hasbro` or `Takara Tomy`.
 
 Optional fields:
 
@@ -52,6 +55,7 @@ Optional fields:
 Guidance:
 
 - Include both full names and abbreviations when useful, e.g. `Rush` and `R`, `Unite` and `U`.
+- Store `brand` on every purchase and every raw `partsDetail` row even though the current UI does not display it. The collection-level `defaultBrand` is an inference preference, not persisted evidence for an individual record. A retailer or purchase country does not by itself establish the brand; verify the release or use the user's explicit identification. Runtime loading remains tolerant of older version-one uploads without `brand`, but `npm run validate:data` requires it for the authoritative local collection.
 - Include complete combo names only if useful for lookup, but part scoring mainly uses individual parts.
 - `inventory.partsDetail[].category` must use the fixed category list: `Blade`, `Lock Chip`, `Main Blade`, `Over Blade`, `Assist Blade`, `Ratchet`, `Bit`, `Launcher`, `Grip`, `Stadium`, `Battle Pass`, `Tool`, or `Complete Combo`. Do not invent or silently map a new persisted category; ask the user to confirm whether the category list should be expanded first.
 - `inventory.partsDetail[].line` is required only for `Blade` and `Main Blade` rows. `Blade` rows must use `BX` or `UX`; `Main Blade` rows must use `CX`. It describes the Blade/Main Blade's construction line, not the product box or source set. Lock Chip + Main Blade + Assist Blade identifies the CX system; an Over Blade identifies CX Expand/Infinity. Expand/Infinity is a separate structural system that also exists for BX and UX, so never use `Expand` or `Infinity` as a synonym for `UX`. Lock Chip, Over Blade, Assist Blade, Ratchet, Bit, launcher, and accessory rows must not store `line`. Do not infer line from a shared bundle code: mixed-line sets must record the correct line on each individual Blade/Main Blade row.

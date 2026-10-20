@@ -11,6 +11,8 @@ const numberLike = z.union([
 ]);
 const optionalNumberLike = numberLike.optional();
 
+export const beybladeBrandSchema = z.enum(["Hasbro", "Takara Tomy"]);
+
 export const inventoryPartCategorySchema = z.enum([
   "Blade",
   "Lock Chip",
@@ -31,6 +33,7 @@ export const inventoryPartDetailSchema = z
   .looseObject({
     category: inventoryPartCategorySchema,
     name: z.string(),
+    brand: beybladeBrandSchema.optional(),
     abbrev: z.string().optional(),
     code: z.string().optional(),
     qty: optionalNumberLike,
@@ -83,6 +86,7 @@ const giftedItemSchema = z.looseObject({
 
 export const purchaseItemSchema = z.looseObject({
   name: z.string(),
+  brand: beybladeBrandSchema.optional(),
   source: z.string().optional(),
   purchaseDate: z.string().optional(),
   pretaxPrice: optionalNumberLike,

@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { inventoryLinesByBladeCategory, inventoryPartCategories } from "../src/inventory-parts.js";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
+const beybladeBrands = Object.freeze(["Hasbro", "Takara Tomy"]);
 const failures = [];
 const checked = [];
 
@@ -59,6 +60,7 @@ function validateInventory(data, label) {
     assertArray(data.partsDetail, `${label}.partsDetail`);
     for (const [index, part] of data.partsDetail.entries()) {
       assertObject(part, `${label}.partsDetail[${index}]`);
+      assertBrand(part.brand, `${label}.partsDetail[${index}].brand`);
       if (part.category !== undefined) {
         assertString(part.category, `${label}.partsDetail[${index}].category`);
         assert.ok(
@@ -98,6 +100,7 @@ function validatePurchases(data, label) {
   assertArray(data.items, `${label}.items`);
   for (const [index, item] of data.items.entries()) {
     assertObject(item, `${label}.items[${index}]`);
+    assertBrand(item.brand, `${label}.items[${index}].brand`);
     if (item.name !== undefined) assertString(item.name, `${label}.items[${index}].name`);
     if (item.pretaxPrice !== undefined) assertNumberLike(item.pretaxPrice, `${label}.items[${index}].pretaxPrice`);
     if (item.taxRate !== undefined) assertNumberLike(item.taxRate, `${label}.items[${index}].taxRate`);
@@ -189,6 +192,14 @@ function assertArray(value, label) {
 
 function assertString(value, label) {
   assert.equal(typeof value, "string", `${label} must be a string`);
+}
+
+function assertBrand(value, label) {
+  assertString(value, label);
+  assert.ok(
+    beybladeBrands.includes(value),
+    `${label} must be one of: ${beybladeBrands.join(", ")}`
+  );
 }
 
 function assertNumberLike(value, label) {

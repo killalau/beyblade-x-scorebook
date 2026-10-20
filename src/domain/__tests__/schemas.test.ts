@@ -16,12 +16,37 @@ describe("runtime data contracts", () => {
         defaultBrand: "Hasbro",
         explicitTakaraTomyProducts: ["Aero Pegasus"],
       },
-      inventory: { parts: ["R"], beys: ["Example 3-60R"], custom: true },
-      purchases: { items: [{ name: "Example", recordedFrom: "test" }] },
+      inventory: {
+        parts: ["R"],
+        beys: ["Example 3-60R"],
+        partsDetail: [{ category: "Bit", name: "Rush", brand: "Hasbro" }],
+        custom: true,
+      },
+      purchases: {
+        items: [{ name: "Example", brand: "Hasbro", recordedFrom: "test" }],
+      },
     });
     expect(result.inventory.custom).toBe(true);
     expect(result.purchases.items[0].recordedFrom).toBe("test");
+    expect(result.purchases.items[0].brand).toBe("Hasbro");
+    expect(result.inventory.partsDetail?.[0].brand).toBe("Hasbro");
     expect(result.sourcePreferences?.defaultBrand).toBe("Hasbro");
+  });
+
+  it("rejects unsupported purchase and part brands", () => {
+    expect(() =>
+      collectionSchema.parse({
+        version: 1,
+        inventory: {
+          parts: [],
+          beys: [],
+          partsDetail: [{ category: "Bit", name: "Rush", brand: "Unverified" }],
+        },
+        purchases: {
+          items: [{ name: "Example", brand: "Unverified" }],
+        },
+      }),
+    ).toThrow();
   });
 
   it("rejects unsupported versions and invalid inventory lines", () => {
