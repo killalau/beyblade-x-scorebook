@@ -11,11 +11,17 @@ describe("runtime data contracts", () => {
     const result = collectionSchema.parse({
       version: 1,
       currency: "CAD",
+      sourcePreferences: {
+        market: "Canada",
+        defaultBrand: "Hasbro",
+        explicitTakaraTomyProducts: ["Aero Pegasus"],
+      },
       inventory: { parts: ["R"], beys: ["Example 3-60R"], custom: true },
       purchases: { items: [{ name: "Example", recordedFrom: "test" }] },
     });
     expect(result.inventory.custom).toBe(true);
     expect(result.purchases.items[0].recordedFrom).toBe("test");
+    expect(result.sourcePreferences?.defaultBrand).toBe("Hasbro");
   });
 
   it("rejects unsupported versions and invalid inventory lines", () => {

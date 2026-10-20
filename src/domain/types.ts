@@ -86,6 +86,13 @@ export interface CollectionData {
   version: 1;
   currency?: CurrencyCode;
   taxRegion?: string;
+  sourcePreferences?: {
+    market?: string;
+    defaultBrand?: string;
+    defaultBrandCondition?: string;
+    explicitTakaraTomyProducts?: string[];
+    explicitHasbroProducts?: string[];
+  };
   inventory: Inventory;
   purchases: Purchases;
 }

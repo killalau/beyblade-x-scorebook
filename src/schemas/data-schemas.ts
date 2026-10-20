@@ -103,6 +103,15 @@ export const collectionSchema = z.looseObject({
   version: z.literal(1),
   currency: z.string().optional(),
   taxRegion: z.string().nullable().optional(),
+  sourcePreferences: z
+    .looseObject({
+      market: z.string().optional(),
+      defaultBrand: z.string().optional(),
+      defaultBrandCondition: z.string().optional(),
+      explicitTakaraTomyProducts: z.array(z.string()).optional(),
+      explicitHasbroProducts: z.array(z.string()).optional(),
+    })
+    .optional(),
   inventory: inventorySchema,
   purchases: z.looseObject({ items: z.array(purchaseItemSchema) }),
 });

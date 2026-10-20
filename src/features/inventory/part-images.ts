@@ -36,6 +36,15 @@ const ttReleaseIds: Record<string, string[]> = {
   "Aero Pegasus 3-70A Red Ver.": ["096528-00"],
 };
 
+const ttVariantReleaseIds: Record<string, string> = {
+  "CX-18-01": "096177-01",
+  "CX-18-02": "096177-02",
+  "CX-18-03": "096177-03",
+  "CX-19-01": "080626-01",
+  "CX-19-02": "080626-02",
+  "CX-19-03": "080626-03",
+};
+
 const accessoryImages: Record<string, Record<string, string[]>> = {
   F9324: {
     Launcher: [`${PHSTUDY}/hasbro/F9324/F9324_09.webp`],
@@ -112,10 +121,11 @@ export function inventoryPartImageRefs(
     }
   }
 
-  const ttIds = ttReleaseIds[part.source ?? ""];
-  const ttType = ttPartImageType[
-    part.category as keyof typeof ttPartImageType
-  ];
+  const exactTtId = part.code
+    ? ttVariantReleaseIds[part.code.toUpperCase()]
+    : undefined;
+  const ttIds = exactTtId ? [exactTtId] : ttReleaseIds[part.source ?? ""];
+  const ttType = ttPartImageType[part.category as keyof typeof ttPartImageType];
   if (!ttIds || !ttType) {
     const fallback = accessoryFallback(part);
     return fallback ? [fallback] : [];

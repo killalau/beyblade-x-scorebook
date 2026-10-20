@@ -11,6 +11,11 @@ JSON is the source of truth for this project. Excel workbooks are legacy exports
   "version": 1,
   "currency": "CAD",
   "taxRegion": "BC",
+  "sourcePreferences": {
+    "market": "Canada",
+    "defaultBrand": "Hasbro",
+    "defaultBrandCondition": "Use only when the exact product exists in the Hasbro catalogue"
+  },
   "inventory": {
     "parts": ["3-60", "Rush", "R"],
     "beys": ["Lance Knight 3-60LF"],
@@ -40,6 +45,7 @@ Required fields:
 Optional fields:
 
 - `currency`, `taxRegion`: collection-level purchase defaults.
+- `sourcePreferences`: collection-level market and brand-inference rules. For this Canadian collection, default an unspecified product to Hasbro only when the exact product/release exists in Hasbro's catalogue. Use Takara Tomy when the user explicitly identifies it or no Hasbro release exists. Explicit product evidence always wins, and an unknown random-booster colour must remain unknown.
 - `inventory.partsDetail`: detailed rows for the Inventory page.
 - `purchases.items[].imageUrl`: reliable image for an owned product. The Purchase page prefers this image, then falls back to a matching Catalogue listing.
 

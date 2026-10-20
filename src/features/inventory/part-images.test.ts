@@ -30,6 +30,23 @@ describe("inventory part images", () => {
     expect(refs.every((ref) => ref.variant === "unknown")).toBe(true);
   });
 
+  it("resolves an exact TT random-booster colour from its release code", () => {
+    expect(
+      inventoryPartImageRefs({
+        category: "Main Blade",
+        name: "Whip",
+        code: "CX-18-02",
+        source: "Brachio Whip OW5-70Nr",
+      }),
+    ).toEqual([
+      expect.objectContaining({
+        releaseId: "096177-02",
+        variant: "exact",
+        url: expect.stringContaining("MB-PRD-096177-02.webp"),
+      }),
+    ]);
+  });
+
   it("uses the exact product half for battle-set parts", () => {
     expect(
       inventoryPartImageRefs({
