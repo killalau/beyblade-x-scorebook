@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { InventoryPartDetail } from "@/domain/types";
 import { inventoryPartImageRefs } from "@/features/inventory/part-images";
+import { summarizeSources } from "@/features/inventory/source-summary";
 import { usePrivateData } from "@/features/private-data/use-private-data";
 import { groupInventoryParts } from "@/inventory-parts.js";
 
@@ -165,7 +166,7 @@ export function InventoryPage() {
                   <td className="px-4 py-3">{part.abbrev ?? "-"}</td>
                   <td className="px-4 py-3">{part.qty ?? "-"}</td>
                   <td className="max-w-xs px-4 py-3 text-muted-foreground">
-                    {part.source ?? "-"}
+                    <PartSources source={part.source} />
                   </td>
                 </tr>
               ))}
@@ -179,6 +180,23 @@ export function InventoryPage() {
         />
       )}
     </div>
+  );
+}
+
+function PartSources({ source }: { source?: string }) {
+  const summary = summarizeSources(source);
+
+  if (!summary.truncated) return summary.display;
+
+  return (
+    <span
+      className="cursor-help underline decoration-dotted underline-offset-4"
+      title={summary.full}
+      aria-label={`Full source list: ${summary.full}`}
+      tabIndex={0}
+    >
+      {summary.display}
+    </span>
   );
 }
 
