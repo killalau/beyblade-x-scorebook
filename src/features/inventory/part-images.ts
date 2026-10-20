@@ -109,7 +109,7 @@ export function inventoryPartImageRefs(
 ): InventoryPartImageRef[] {
   const releaseId = releaseIdForPart(part);
   if (releaseId) {
-    const accessory = accessoryImages[releaseId]?.[part.category];
+    const accessory = accessoryImageUrls(part, releaseId);
     if (accessory) return accessory.map((url) => exactRef(url, releaseId));
 
     const override = hasbroPartImageOverride(part, releaseId);
@@ -145,6 +145,20 @@ export function inventoryPartImageRefs(
     variant,
     releaseId: id,
   }));
+}
+
+function accessoryImageUrls(
+  part: InventoryPartDetail,
+  releaseId: string,
+): string[] | undefined {
+  const urls = accessoryImages[releaseId]?.[part.category];
+  if (releaseId !== "G2951" || part.category !== "Launcher" || !urls) {
+    return urls;
+  }
+
+  if (/Right-spin/i.test(part.name)) return [urls[1]];
+  if (/Left-spin/i.test(part.name)) return [urls[0]];
+  return urls;
 }
 
 function hasbroPartImageOverride(

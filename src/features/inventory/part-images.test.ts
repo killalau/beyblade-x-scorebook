@@ -93,6 +93,24 @@ describe("inventory part images", () => {
     );
   });
 
+  it.each([
+    ["Deluxe Left-spin String Launcher", "G2951_04.webp"],
+    ["Deluxe Right-spin String Launcher", "G2951_05.webp"],
+  ])("selects the correct G2951 launcher colour for %s", (name, image) => {
+    expect(
+      inventoryPartImageRefs({
+        category: "Launcher",
+        name,
+        code: "G2951",
+      }),
+    ).toEqual([
+      expect.objectContaining({
+        releaseId: "G2951",
+        url: expect.stringContaining(image),
+      }),
+    ]);
+  });
+
   it("uses the exact product half for battle-set parts", () => {
     expect(
       inventoryPartImageRefs({
