@@ -10,6 +10,12 @@
         "category": "Main Blade",
         "line": "CX",
         "name": "Fang",
+        "names": {
+          "en-US": "Fang",
+          "en-JP": "Fang",
+          "zh-TW": "獠牙",
+          "zh-HK": "尖牙"
+        },
         "abbrev": "-",
         "qty": 1,
         "source": "Fang Leon T 4-60U"

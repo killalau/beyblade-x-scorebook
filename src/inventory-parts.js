@@ -32,6 +32,7 @@ export function groupInventoryParts(parts) {
       notes: new Set(),
       lines: new Set(),
       imageRefs: new Map(),
+      searchNames: new Set(),
       sourceQuantities: new Map(),
       legacySourceQuantities: new Map()
     };
@@ -46,10 +47,13 @@ export function groupInventoryParts(parts) {
     for (const imageRef of part.imageRefs ?? []) {
       current.imageRefs.set(imageRef.url, imageRef);
     }
+    for (const name of [part.name, ...Object.values(part.names ?? {})]) {
+      if (name) current.searchNames.add(name);
+    }
     grouped.set(key, current);
   }
 
-  return [...grouped.values()].map(({ part, notes, lines, imageRefs, sourceQuantities, legacySourceQuantities }) => ({
+  return [...grouped.values()].map(({ part, notes, lines, imageRefs, searchNames, sourceQuantities, legacySourceQuantities }) => ({
     ...part,
     qty: [...new Set([...sourceQuantities.keys(), ...legacySourceQuantities.keys()])]
       .map((source) => sourceQuantities.get(source) ?? legacySourceQuantities.get(source) ?? 0)
@@ -57,6 +61,7 @@ export function groupInventoryParts(parts) {
     line: [...lines].join(", ") || "-",
     source: [...new Set([...sourceQuantities.keys(), ...legacySourceQuantities.keys()])].join("; "),
     imageRefs: [...imageRefs.values()],
+    searchNames: [...searchNames],
     notes: [...notes].join(" ")
   }));
 }

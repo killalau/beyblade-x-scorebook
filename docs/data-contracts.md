@@ -44,6 +44,7 @@ Required fields:
 - `purchases.items`: purchase-history array.
 - `purchases.items[].brand`: verified product/release brand, either `Hasbro` or `Takara Tomy`.
 - `inventory.partsDetail[].brand`: verified brand of the physical part, either `Hasbro` or `Takara Tomy`.
+- `inventory.partsDetail[].names`: the verified localized-name object with exactly `en-US`, `en-JP`, `zh-TW`, and `zh-HK` keys. Values may be `null` only when the reference source has no verified equivalent.
 
 Optional fields:
 
@@ -55,6 +56,9 @@ Optional fields:
 Guidance:
 
 - Include both full names and abbreviations when useful, e.g. `Rush` and `R`, `Unite` and `U`.
+- Store part names separately rather than joining aliases with `/`. In this project, `names["en-US"]` means the Hasbro English name and `names["en-JP"]` means the Takara Tomy English name (not Japanese-script text). `names["zh-TW"]` and `names["zh-HK"]` preserve the Taiwan and Hong Kong database names respectively. Keep the source spelling, colour/variant suffix, and regional convention; do not invent a translation when the public reference has none.
+- `inventory.partsDetail[].name` is the display/canonical name and must equal `names["en-JP"] || names["en-US"]`: prefer the TT English name whenever verified, otherwise fall back to the Hasbro English name. The Inventory search matches all four localized names plus `abbrev`, while displaying only this canonical name.
+- Run `npm run sync:part-names -- --dry-run` to preview a multilingual sync from the public phstudy data, then `npm run sync:part-names` to write the authoritative local collection. The sync uses the existing exact release/colour mapping, so it must follow any thumbnail-registry update for a newly added release.
 - Store `brand` on every purchase and every raw `partsDetail` row even though the current UI does not display it. The collection-level `defaultBrand` is an inference preference, not persisted evidence for an individual record. A retailer or purchase country does not by itself establish the brand; verify the release or use the user's explicit identification. Runtime loading remains tolerant of older version-one uploads without `brand`, but `npm run validate:data` requires it for the authoritative local collection.
 - Include complete combo names only if useful for lookup, but part scoring mainly uses individual parts.
 - `inventory.partsDetail[].category` must use the fixed category list: `Blade`, `Lock Chip`, `Main Blade`, `Over Blade`, `Assist Blade`, `Ratchet`, `Bit`, `Launcher`, `Grip`, `Stadium`, `Battle Pass`, `Tool`, or `Complete Combo`. Do not invent or silently map a new persisted category; ask the user to confirm whether the category list should be expanded first.

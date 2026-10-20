@@ -13,6 +13,13 @@ const optionalNumberLike = numberLike.optional();
 
 export const beybladeBrandSchema = z.enum(["Hasbro", "Takara Tomy"]);
 
+export const inventoryPartNamesSchema = z.object({
+  "en-US": z.string().nullable(),
+  "en-JP": z.string().nullable(),
+  "zh-TW": z.string().nullable(),
+  "zh-HK": z.string().nullable(),
+});
+
 export const inventoryPartCategorySchema = z.enum([
   "Blade",
   "Lock Chip",
@@ -33,6 +40,7 @@ export const inventoryPartDetailSchema = z
   .looseObject({
     category: inventoryPartCategorySchema,
     name: z.string(),
+    names: inventoryPartNamesSchema.optional(),
     brand: beybladeBrandSchema.optional(),
     abbrev: z.string().optional(),
     code: z.string().optional(),

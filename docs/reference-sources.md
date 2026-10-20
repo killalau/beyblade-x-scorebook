@@ -7,7 +7,7 @@ This document records useful external databases that may support future normaliz
 - URL: [https://beyblade.phstudy.org/index.html](https://beyblade.phstudy.org/index.html)
 - Added to this project: 2026-08-04
 - Intended future use: trace a Blade, Ratchet, Bit, Lock Chip, Main Blade, Assist Blade, or other part back to the product or products that supplied it.
-- Current integration status: used by the committed part-image registry for thumbnail and direct-detail links. Its catalogue is not bulk-imported and is not used automatically by scoring/wishlist generation.
+- Current integration status: used by the committed part-image registry for thumbnail and direct-detail links, and by the opt-in `npm run sync:part-names` command to refresh localized names in the private collection. It is not used by scoring or wishlist generation.
 
 ### Observed capabilities
 
@@ -63,6 +63,19 @@ These full component IDs are phstudy identifiers, not universal SKUs:
 Accordingly, private inventory should keep the verified brand and useful release/variant code, but should not duplicate phstudy component IDs or detail URLs. The committed image registry derives those source-specific values. If a future provenance registry needs to retain them, store them explicitly as `source: "beyblade.phstudy.org"` plus `externalId`, alongside—not instead of—official product codes and any verified GTIN.
 
 The static sitemap currently exposes component-detail pages for Blade, Ratchet, Bit, Lock Chip, Main Blade, Over Blade, Metal Blade, and Assist Blade. Accessories such as launchers, stadiums, and grips should link to their exact source-product `Series` page where possible; if no unambiguous source-product page exists, use a search URL prefilled with the release ID rather than the unfiltered index.
+
+### Localized-name data
+
+The site publishes locale-specific static JSON for `main`, `hardcoded`, and `hasbro`, plus `part_code_names.json`. The focused name-sync command reads the `en-US`, `zh-TW`, and `zh-HK` variants and joins equivalent TT/Hasbro component records by part category and `group_id`.
+
+- Hasbro English is stored as `names["en-US"]`.
+- Takara Tomy English is stored as `names["en-JP"]`; this project key means “TT English”, not Japanese-script text.
+- Taiwan and Hong Kong values are stored independently as `names["zh-TW"]` and `names["zh-HK"]`.
+- Some Hong Kong component records intentionally expose only the international abbreviation, such as `LF`, rather than a translated phrase. Preserve that source value instead of substituting the Taiwan term.
+- Missing equivalents remain `null`; do not manufacture regional translations.
+- Exact release/image mappings select colour variants. For a CX Main Blade record whose database label combines the Over Blade and Main Blade as `O/Whip`, persist the Main Blade portion (`Whip`) because the inventory stores those components separately.
+
+The canonical display name is TT English first, then Hasbro English. The other regional names remain searchable without being joined into a slash-delimited display label.
 
 ### Possible future integration
 

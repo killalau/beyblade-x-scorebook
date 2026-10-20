@@ -56,6 +56,34 @@ describe("inventory parts", () => {
     });
   });
 
+  it("collects every localized name for search when rows are grouped", () => {
+    const [grouped] = groupInventoryParts([
+      {
+        category: "Blade",
+        line: "UX",
+        name: "Wizard Rod",
+        names: {
+          "en-US": "Wand Wizard",
+          "en-JP": "Wizard Rod",
+          "zh-TW": "魔導神杖",
+          "zh-HK": "巫師幻棍",
+        },
+        abbrev: "-",
+        qty: 1,
+        source: "Wand Wizard 5-70DB",
+      },
+    ]);
+
+    expect(grouped.searchNames).toEqual(
+      expect.arrayContaining([
+        "Wand Wizard",
+        "Wizard Rod",
+        "魔導神杖",
+        "巫師幻棍",
+      ]),
+    );
+  });
+
   it("preserves category and blade-line rules", () => {
     expect(canonicalInventoryPartCategory("Metal Blade")).toBe("Main Blade");
     expect(inventoryPartCategories).toContain("Battle Pass");

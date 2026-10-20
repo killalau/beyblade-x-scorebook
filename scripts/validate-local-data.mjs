@@ -6,6 +6,7 @@ import { inventoryLinesByBladeCategory, inventoryPartCategories } from "../src/i
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const beybladeBrands = Object.freeze(["Hasbro", "Takara Tomy"]);
+const partNameLocales = Object.freeze(["en-US", "en-JP", "zh-TW", "zh-HK"]);
 const failures = [];
 const checked = [];
 
@@ -61,6 +62,7 @@ function validateInventory(data, label) {
     for (const [index, part] of data.partsDetail.entries()) {
       assertObject(part, `${label}.partsDetail[${index}]`);
       assertBrand(part.brand, `${label}.partsDetail[${index}].brand`);
+      validatePartNames(part, `${label}.partsDetail[${index}]`);
       if (part.category !== undefined) {
         assertString(part.category, `${label}.partsDetail[${index}].category`);
         assert.ok(
@@ -84,6 +86,24 @@ function validateInventory(data, label) {
       }
     }
   }
+}
+
+function validatePartNames(part, label) {
+  assertObject(part.names, `${label}.names`);
+  for (const locale of partNameLocales) {
+    const value = part.names[locale];
+    assert.ok(
+      value === null || typeof value === "string",
+      `${label}.names[${JSON.stringify(locale)}] must be a string or null`
+    );
+  }
+  const canonicalName = part.names["en-JP"] || part.names["en-US"];
+  assertString(canonicalName, `${label}.names must include en-JP or en-US`);
+  assert.equal(
+    part.name,
+    canonicalName,
+    `${label}.name must prefer names["en-JP"] and fall back to names["en-US"]`
+  );
 }
 
 function validateCollection(data, label) {

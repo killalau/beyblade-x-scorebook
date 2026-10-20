@@ -33,6 +33,11 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   await loadWishlist(page);
   await page.getByRole("link", { name: "Inventory" }).click();
   await expect(page).toHaveURL(/#\/inventory$/);
+  await page.getByPlaceholder("Search part name or abbreviation").fill("尖牙");
+  await expect(
+    page.getByRole("cell", { name: "Fang", exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Clear search" }).click();
   await page.getByRole("tab", { name: "Assist Blade" }).click();
   await expect(page.getByRole("cell", { name: "Turn" })).toBeVisible();
   await expect(

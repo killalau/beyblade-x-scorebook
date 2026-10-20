@@ -60,7 +60,7 @@ export function InventoryPage() {
       .filter(
         (part) =>
           !normalizedQuery ||
-          [part.name, part.abbrev].some((value) =>
+          [part.name, part.abbrev, ...(part.searchNames ?? [])].some((value) =>
             String(value ?? "")
               .toLowerCase()
               .includes(normalizedQuery),

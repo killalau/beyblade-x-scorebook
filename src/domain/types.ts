@@ -1,6 +1,13 @@
 export type CurrencyCode = "CAD" | "HKD" | (string & {});
 export type BeybladeBrand = "Hasbro" | "Takara Tomy";
 
+export interface InventoryPartNames {
+  "en-US": string | null;
+  "en-JP": string | null;
+  "zh-TW": string | null;
+  "zh-HK": string | null;
+}
+
 export type InventoryPartCategory =
   | "Blade"
   | "Lock Chip"
@@ -19,6 +26,8 @@ export type InventoryPartCategory =
 export interface InventoryPartDetail {
   category: InventoryPartCategory | "Metal Blade";
   name: string;
+  names?: InventoryPartNames;
+  searchNames?: string[];
   brand?: BeybladeBrand;
   abbrev?: string;
   code?: string;

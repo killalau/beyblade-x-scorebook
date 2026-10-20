@@ -19,7 +19,19 @@ describe("runtime data contracts", () => {
       inventory: {
         parts: ["R"],
         beys: ["Example 3-60R"],
-        partsDetail: [{ category: "Bit", name: "Rush", brand: "Hasbro" }],
+        partsDetail: [
+          {
+            category: "Bit",
+            name: "Rush",
+            names: {
+              "en-US": "Rush",
+              "en-JP": "Rush",
+              "zh-TW": "衝刺",
+              "zh-HK": "R",
+            },
+            brand: "Hasbro",
+          },
+        ],
         custom: true,
       },
       purchases: {
@@ -30,7 +42,33 @@ describe("runtime data contracts", () => {
     expect(result.purchases.items[0].recordedFrom).toBe("test");
     expect(result.purchases.items[0].brand).toBe("Hasbro");
     expect(result.inventory.partsDetail?.[0].brand).toBe("Hasbro");
+    expect(result.inventory.partsDetail?.[0].names?.["zh-TW"]).toBe("衝刺");
     expect(result.sourcePreferences?.defaultBrand).toBe("Hasbro");
+  });
+
+  it("rejects malformed localized part names", () => {
+    expect(() =>
+      collectionSchema.parse({
+        version: 1,
+        inventory: {
+          parts: [],
+          beys: [],
+          partsDetail: [
+            {
+              category: "Bit",
+              name: "Rush",
+              names: {
+                "en-US": "Rush",
+                "en-JP": "Rush",
+                "zh-TW": 123,
+                "zh-HK": "R",
+              },
+            },
+          ],
+        },
+        purchases: { items: [] },
+      }),
+    ).toThrow();
   });
 
   it("rejects unsupported purchase and part brands", () => {
