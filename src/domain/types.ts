@@ -32,6 +32,7 @@ export interface InventoryPartDetail {
 
 export interface InventoryPartImageRef {
   url: string;
+  detailUrl: string;
   source: "beyblade.phstudy.org";
   variant: "exact" | "unknown";
   releaseId: string;

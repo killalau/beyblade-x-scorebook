@@ -4,6 +4,8 @@ import type {
 } from "@/domain/types";
 
 const PHSTUDY = "https://beyblade.phstudy.org/images/thumb/w128";
+const PHSTUDY_SITE = "https://beyblade.phstudy.org";
+const PHSTUDY_LOCALE = "zh-HK";
 
 const partImageType = {
   Blade: ["Blade", "BLADE"],
@@ -20,7 +22,7 @@ const ttPartImageType = {
   Blade: ["Blade", "BL"],
   "Lock Chip": ["LockChip", "LC"],
   "Main Blade": ["MainBlade", "MB"],
-  "Metal Blade": ["MetalBlade", "MT"],
+  "Metal Blade": ["MetalBlade", "ME"],
   "Over Blade": ["OverBlade", "OV"],
   "Assist Blade": ["AssistBlade", "AB"],
   Ratchet: ["Ratchet", "RC"],
@@ -107,13 +109,34 @@ const accessoryImages: Record<string, Record<string, string[]>> = {
   },
 };
 
+const accessorySeriesIds: Record<string, string[]> = {
+  F9324: ["HB-F9324"],
+  G1536: ["HB-G1536"],
+  G1537: ["HB-G1537"],
+  G4568: ["HB-G4568"],
+  G2745: ["HB-G2745"],
+  G4565: ["HB-G4565"],
+  G2752: ["HB-G2752"],
+  G2951: ["HB-G2951-01", "HB-G2951-02"],
+  G2750: ["HB-G2750"],
+  G4569: ["HB-G4569"],
+  G4561: ["HB-G4561"],
+  "UX-19": ["SR-PRD-096160-00"],
+  "BXG-70": ["SR-PRD-080640-00"],
+  "CX-16": ["SR-PRD-097280-00"],
+};
+
 export function inventoryPartImageRefs(
   part: InventoryPartDetail,
 ): InventoryPartImageRef[] {
   const releaseId = releaseIdForPart(part);
   if (releaseId) {
     const accessory = accessoryImageUrls(part, releaseId);
-    if (accessory) return accessory.map((url) => exactRef(url, releaseId));
+    if (accessory) {
+      return accessory.map((url) =>
+        exactRef(url, releaseId, accessoryDetailUrl(part, releaseId, url)),
+      );
+    }
 
     const override = hasbroPartImageOverride(part, releaseId);
     if (override) return [exactRef(override, releaseId)];
@@ -142,12 +165,13 @@ export function inventoryPartImageRefs(
 
   const [directory, prefix] = ttType;
   const variant = ttIds.length === 1 ? "exact" : "unknown";
-  return ttIds.map((id) => ({
-    url: `${PHSTUDY}/site/${directory}/${prefix}-PRD-${id}.webp`,
-    source: "beyblade.phstudy.org",
-    variant,
-    releaseId: id,
-  }));
+  return ttIds.map((id) =>
+    partRef(
+      `${PHSTUDY}/site/${directory}/${prefix}-PRD-${id}.webp`,
+      id,
+      variant,
+    ),
+  );
 }
 
 function accessoryImageUrls(
@@ -190,23 +214,73 @@ function accessoryFallback(
   part: InventoryPartDetail,
 ): InventoryPartImageRef | undefined {
   if (part.source === "Tiga Rage FT3-60T" && part.category === "Launcher")
-    return exactRef(accessoryImages["BXG-70"].Launcher[0], "BXG-70");
+    return accessoryRef(part, "BXG-70", "Launcher");
   if (part.source === "CX-16 Start Dash Set C") {
-    const url = accessoryImages["CX-16"]?.[part.category]?.[0];
-    if (url) return exactRef(url, "CX-16");
+    return accessoryRef(part, "CX-16", part.category);
   }
   if (part.source === "Bullet Griffon H" && part.category === "Launcher")
-    return exactRef(accessoryImages["UX-19"].Launcher[0], "UX-19");
+    return accessoryRef(part, "UX-19", "Launcher");
   if (part.source === "BX-09 Beybattle Pass" && part.category === "Battle Pass")
-    return exactRef(accessoryImages["BX-09"]["Battle Pass"][0], "BX-09");
+    return accessoryRef(part, "BX-09", "Battle Pass");
   return undefined;
 }
 
-function exactRef(url: string, releaseId: string): InventoryPartImageRef {
+function accessoryRef(
+  part: InventoryPartDetail,
+  releaseId: string,
+  category: string,
+): InventoryPartImageRef | undefined {
+  const url = accessoryImages[releaseId]?.[category]?.[0];
+  return url
+    ? exactRef(url, releaseId, accessoryDetailUrl(part, releaseId, url))
+    : undefined;
+}
+
+function accessoryDetailUrl(
+  part: InventoryPartDetail,
+  releaseId: string,
+  imageUrl: string,
+): string {
+  const images = accessoryImages[releaseId]?.[part.category] ?? [];
+  const seriesIds = accessorySeriesIds[releaseId] ?? [];
+  const imageIndex = Math.max(0, images.indexOf(imageUrl));
+  const seriesId = seriesIds[imageIndex] ?? seriesIds[0];
+
+  return seriesId
+    ? `${PHSTUDY_SITE}/p/${PHSTUDY_LOCALE}/Series/${seriesId}.html`
+    : databaseSearchUrl(releaseId);
+}
+
+function exactRef(
+  url: string,
+  releaseId: string,
+  detailUrl?: string,
+): InventoryPartImageRef {
+  return partRef(url, releaseId, "exact", detailUrl);
+}
+
+function partRef(
+  url: string,
+  releaseId: string,
+  variant: InventoryPartImageRef["variant"],
+  detailUrl = detailUrlForPartImage(url) ?? databaseSearchUrl(releaseId),
+): InventoryPartImageRef {
   return {
     url,
+    detailUrl,
     source: "beyblade.phstudy.org",
-    variant: "exact",
+    variant,
     releaseId,
   };
+}
+
+function detailUrlForPartImage(imageUrl: string): string | undefined {
+  const match = imageUrl.match(/\/site\/([^/]+)\/([^/.]+)\.webp$/i);
+  if (!match) return undefined;
+  return `${PHSTUDY_SITE}/p/${PHSTUDY_LOCALE}/${match[1]}/${match[2]}.html`;
+}
+
+function databaseSearchUrl(releaseId: string): string {
+  const search = new URLSearchParams({ search: releaseId });
+  return `${PHSTUDY_SITE}/index.${PHSTUDY_LOCALE}.html?${search}`;
 }

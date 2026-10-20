@@ -210,10 +210,10 @@ function PartThumbnail({ part }: { part: InventoryPartDetail }) {
   return (
     <div className="relative w-fit">
       <a
-        href="https://beyblade.phstudy.org/index.html"
+        href={ref.detailUrl}
         target="_blank"
         rel="noreferrer"
-        title="Image reference: beyblade.phstudy.org"
+        title={`View ${part.name} in the Beyblade parts database`}
       >
         <img
           src={ref.url}

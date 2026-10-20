@@ -12,6 +12,8 @@ describe("inventory part images", () => {
       }),
     ).toEqual([
       expect.objectContaining({
+        detailUrl:
+          "https://beyblade.phstudy.org/p/zh-HK/Blade/HB-G4568-BLADE.html",
         releaseId: "G4568",
         variant: "exact",
         url: expect.stringContaining("HB-G4568-BLADE.webp"),
@@ -40,11 +42,29 @@ describe("inventory part images", () => {
       }),
     ).toEqual([
       expect.objectContaining({
+        detailUrl:
+          "https://beyblade.phstudy.org/p/zh-HK/MainBlade/MB-PRD-096177-02.html",
         releaseId: "096177-02",
         variant: "exact",
         url: expect.stringContaining("MB-PRD-096177-02.webp"),
       }),
     ]);
+  });
+
+  it("uses the database Metal Blade identifier for TT releases", () => {
+    expect(
+      inventoryPartImageRefs({
+        category: "Metal Blade",
+        name: "Tiga",
+        source: "Tiga Rage FT3-60T",
+      })[0],
+    ).toEqual(
+      expect.objectContaining({
+        detailUrl:
+          "https://beyblade.phstudy.org/p/zh-HK/MetalBlade/ME-PRD-080640-00.html",
+        url: expect.stringContaining("ME-PRD-080640-00.webp"),
+      }),
+    );
   });
 
   it.each([
@@ -87,6 +107,7 @@ describe("inventory part images", () => {
       }),
     ).toEqual([
       expect.objectContaining({
+        detailUrl: "https://beyblade.phstudy.org/p/zh-HK/Series/HB-G4561.html",
         releaseId: "G4561",
         url: expect.stringContaining("hasbro/G4561/G4561_06.webp"),
       }),
@@ -109,21 +130,35 @@ describe("inventory part images", () => {
   });
 
   it.each([
-    ["Deluxe Left-spin String Launcher", "G2951_04.webp"],
-    ["Deluxe Right-spin String Launcher", "G2951_05.webp"],
-  ])("selects the correct G2951 launcher colour for %s", (name, image) => {
+    ["Deluxe Left-spin String Launcher", "G2951_04.webp", "HB-G2951-01.html"],
+    ["Deluxe Right-spin String Launcher", "G2951_05.webp", "HB-G2951-02.html"],
+  ])(
+    "selects the correct G2951 launcher colour for %s",
+    (name, image, seriesPage) => {
+      expect(
+        inventoryPartImageRefs({
+          category: "Launcher",
+          name,
+          code: "G2951",
+        }),
+      ).toEqual([
+        expect.objectContaining({
+          detailUrl: expect.stringContaining(seriesPage),
+          releaseId: "G2951",
+          url: expect.stringContaining(image),
+        }),
+      ]);
+    },
+  );
+
+  it("uses a filtered database fallback when an accessory has no detail page", () => {
     expect(
       inventoryPartImageRefs({
-        category: "Launcher",
-        name,
-        code: "G2951",
-      }),
-    ).toEqual([
-      expect.objectContaining({
-        releaseId: "G2951",
-        url: expect.stringContaining(image),
-      }),
-    ]);
+        category: "Tool",
+        name: "CX Tool",
+        code: "G3028",
+      })[0].detailUrl,
+    ).toBe("https://beyblade.phstudy.org/index.zh-HK.html?search=G3028");
   });
 
   it("uses the exact product half for battle-set parts", () => {
