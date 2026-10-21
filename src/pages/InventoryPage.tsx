@@ -89,7 +89,7 @@ export function InventoryPage() {
     ...(showLineColumn ? [{ label: "Line", sortKey: "line" as const }] : []),
     { label: "Part", sortKey: "name" },
     { label: "Abbrev.", sortKey: "abbrev" },
-    ...(showTypeColumn ? [{ label: "Type" }] : []),
+    ...(showTypeColumn ? [{ label: "Type", sortKey: "type" as const }] : []),
     { label: "Qty", sortKey: "qty" },
     { label: "Source" },
   ];

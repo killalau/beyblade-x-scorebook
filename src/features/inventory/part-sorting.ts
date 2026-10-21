@@ -1,7 +1,7 @@
 import type { InventoryPartDetail } from "@/domain/types";
 import { presentPartNames } from "@/features/inventory/part-name-presentation";
 
-export type InventoryPartSortKey = "line" | "name" | "abbrev" | "qty";
+export type InventoryPartSortKey = "line" | "name" | "abbrev" | "type" | "qty";
 export type SortDirection = "ascending" | "descending";
 
 export interface InventoryPartSort {

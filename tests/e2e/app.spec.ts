@@ -86,6 +86,13 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   await expect(page.getByRole("columnheader", { name: "Line" })).toHaveCount(0);
   await page.getByRole("tab", { name: "Bit", exact: true }).click();
   await expect(page.getByRole("columnheader", { name: "Type" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Sort by Type" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Sort by Type" }).click();
+  await expect(
+    page.getByRole("columnheader", { name: "Type" }),
+  ).toHaveAttribute("aria-sort", "ascending");
   await expect(page.getByRole("cell", { name: "Balance" })).toBeVisible();
   await page.reload();
   await expect(page.getByText("collection.synthetic.json")).toBeVisible();
