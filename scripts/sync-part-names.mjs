@@ -1,7 +1,10 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createServer } from "vite";
-import { canonicalPartName } from "../src/inventory-parts.js";
+import {
+  canonicalPartName,
+  supportsRegionalChineseName,
+} from "../src/inventory-parts.js";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const collectionPath = fileURLToPath(
@@ -176,15 +179,16 @@ function resolveNames(
     : ttRecord?.tt_name?.["en-US"] ||
       hasbroRecord?.tt_name?.["en-US"] ||
       localizedRecordName(ttRecord, "en-US", category);
-  const taiwanChinese =
-    codeEntry?.name?.["zh-TW"] ||
-    localizedRecordName(ttRecord, "zh-TW", category) ||
-    localizedRecordName(hasbroRecord, "zh-TW", category);
-  const hongKongChinese =
-    codeEntry?.name?.["zh-HK"] ||
-    localizedRecordName(ttRecord, "zh-HK", category) ||
-    localizedRecordName(hasbroRecord, "zh-HK", category) ||
-    taiwanChinese;
+  const hasChineseName = supportsRegionalChineseName(category);
+  const taiwanChinese = hasChineseName
+    ? localizedRecordName(ttRecord, "zh-TW", category) ||
+      localizedRecordName(hasbroRecord, "zh-TW", category)
+    : null;
+  const hongKongChinese = hasChineseName
+    ? localizedRecordName(ttRecord, "zh-HK", category) ||
+      localizedRecordName(hasbroRecord, "zh-HK", category) ||
+      taiwanChinese
+    : null;
 
   return ensureEnglishFallback(part, {
     "en-US": hasbroEnglish,

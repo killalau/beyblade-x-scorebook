@@ -70,8 +70,8 @@ The site publishes locale-specific static JSON for `main`, `hardcoded`, and `has
 
 - Hasbro English is stored as `names["en-US"]`.
 - Takara Tomy English is stored as `names["en-JP"]`; this project key means “TT English”, not Japanese-script text.
-- Taiwan and Hong Kong values are stored independently as `names["zh-TW"]` and `names["zh-HK"]`.
-- Some Hong Kong component records intentionally expose only the international abbreviation, such as `LF`, rather than a translated phrase. Preserve that source value instead of substituting the Taiwan term.
+- Taiwan and Hong Kong names are stored independently as `names["zh-TW"]` and `names["zh-HK"]` only for Blade-family and Lock Chip parts.
+- `part_code_names.json` contains descriptive Chinese translations for some Assist Blade, Over Blade, and Bit codes, while Hong Kong records often repeat the international abbreviation. These are not product part names and must not be imported into either Chinese field.
 - Missing equivalents remain `null`; do not manufacture regional translations.
 - Exact release/image mappings select colour variants. Localized `names` store component identity rather than cosmetic release labels, so suffixes such as `Metallic Coat: Gold` and `Red Ver.` are removed; `code`, `source`, and the exact image continue to distinguish the physical release. This also prevents a Hasbro normal-colour part from inheriting a cosmetic suffix merely because its linked TT counterpart is a special colour. For a CX Main Blade record whose database label combines the Over Blade and Main Blade as `O/Whip`, persist the Main Blade portion (`Whip`) because the inventory stores those components separately.
 

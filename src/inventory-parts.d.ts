@@ -12,3 +12,4 @@ export function groupInventoryParts(
 ): InventoryPartDetail[];
 export function canonicalInventoryPartCategory(category: string): string;
 export function canonicalPartName(value: unknown, category: string): string;
+export function supportsRegionalChineseName(category: string): boolean;

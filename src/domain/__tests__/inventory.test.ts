@@ -5,6 +5,7 @@ import {
   groupInventoryParts,
   inventoryLinesByBladeCategory,
   inventoryPartCategories,
+  supportsRegionalChineseName,
 } from "../../inventory-parts.js";
 import {
   findPurchaseForInventoryBey,
@@ -95,6 +96,16 @@ describe("inventory parts", () => {
     expect(canonicalPartName("狂怒 金屬塗層:燦金", "Main Blade")).toBe("狂怒");
     expect(canonicalPartName("Fang Red Ver.", "Main Blade")).toBe("Fang");
     expect(canonicalPartName("O/Whip", "MainBlade")).toBe("Whip");
+  });
+
+  it("limits regional Chinese names to blade-family and lock-chip parts", () => {
+    expect(supportsRegionalChineseName("Blade")).toBe(true);
+    expect(supportsRegionalChineseName("Main Blade")).toBe(true);
+    expect(supportsRegionalChineseName("Lock Chip")).toBe(true);
+    expect(supportsRegionalChineseName("Assist Blade")).toBe(false);
+    expect(supportsRegionalChineseName("Over Blade")).toBe(false);
+    expect(supportsRegionalChineseName("Bit")).toBe(false);
+    expect(supportsRegionalChineseName("Ratchet")).toBe(false);
   });
 
   it("groups alternate-colour releases under the same component", () => {

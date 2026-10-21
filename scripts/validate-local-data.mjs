@@ -2,7 +2,11 @@ import assert from "node:assert/strict";
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { inventoryLinesByBladeCategory, inventoryPartCategories } from "../src/inventory-parts.js";
+import {
+  inventoryLinesByBladeCategory,
+  inventoryPartCategories,
+  supportsRegionalChineseName,
+} from "../src/inventory-parts.js";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const beybladeBrands = Object.freeze(["Hasbro", "Takara Tomy"]);
@@ -12,7 +16,10 @@ const checked = [];
 
 validateOptionalJson("data/collection.local.json", validateCollection);
 validateOptionalJson("data/wishlist.local.json", validateWishlist);
-validateOptionalJson("data/normalized/retailer-listings.local.json", validateNormalizedListings);
+validateOptionalJson(
+  "data/normalized/retailer-listings.local.json",
+  validateNormalizedListings,
+);
 validateOptionalJson("data/retailer-listings.json", validatePublicCatalogue);
 validateRawDirectory("data/raw");
 
@@ -67,20 +74,21 @@ function validateInventory(data, label) {
         assertString(part.category, `${label}.partsDetail[${index}].category`);
         assert.ok(
           inventoryPartCategories.includes(part.category),
-          `${label}.partsDetail[${index}].category must be one of: ${inventoryPartCategories.join(", ")}. Confirm with the user before adding a new category.`
+          `${label}.partsDetail[${index}].category must be one of: ${inventoryPartCategories.join(", ")}. Confirm with the user before adding a new category.`,
         );
-        const isBlade = part.category === "Blade" || part.category === "Main Blade";
+        const isBlade =
+          part.category === "Blade" || part.category === "Main Blade";
         if (isBlade) {
           assertString(part.line, `${label}.partsDetail[${index}].line`);
           const allowedLines = inventoryLinesByBladeCategory[part.category];
           assert(
             allowedLines.includes(part.line),
-            `${label}.partsDetail[${index}].line must be one of: ${allowedLines.join(", ")} for ${part.category} rows.`
+            `${label}.partsDetail[${index}].line must be one of: ${allowedLines.join(", ")} for ${part.category} rows.`,
           );
         } else {
           assert(
             part.line === undefined,
-            `${label}.partsDetail[${index}].line is only valid for Blade and Main Blade rows.`
+            `${label}.partsDetail[${index}].line is only valid for Blade and Main Blade rows.`,
           );
         }
       }
@@ -94,7 +102,7 @@ function validatePartNames(part, label) {
     const value = part.names[locale];
     assert.ok(
       value === null || typeof value === "string",
-      `${label}.names[${JSON.stringify(locale)}] must be a string or null`
+      `${label}.names[${JSON.stringify(locale)}] must be a string or null`,
     );
   }
   const canonicalName = part.names["en-JP"] || part.names["en-US"];
@@ -102,15 +110,29 @@ function validatePartNames(part, label) {
   assert.equal(
     part.name,
     canonicalName,
-    `${label}.name must prefer names["en-JP"] and fall back to names["en-US"]`
+    `${label}.name must prefer names["en-JP"] and fall back to names["en-US"]`,
   );
+  if (!supportsRegionalChineseName(part.category)) {
+    assert.equal(
+      part.names["zh-TW"],
+      null,
+      `${label}.names["zh-TW"] must be null because ${part.category} has no Chinese part name`,
+    );
+    assert.equal(
+      part.names["zh-HK"],
+      null,
+      `${label}.names["zh-HK"] must be null because ${part.category} has no Chinese part name`,
+    );
+  }
 }
 
 function validateCollection(data, label) {
   assertObject(data, label);
   assert.equal(data.version, 1, `${label}.version must be 1`);
-  if (data.currency !== undefined) assertString(data.currency, `${label}.currency`);
-  if (data.taxRegion !== undefined && data.taxRegion !== null) assertString(data.taxRegion, `${label}.taxRegion`);
+  if (data.currency !== undefined)
+    assertString(data.currency, `${label}.currency`);
+  if (data.taxRegion !== undefined && data.taxRegion !== null)
+    assertString(data.taxRegion, `${label}.taxRegion`);
   validateInventory(data.inventory, `${label}.inventory`);
   validatePurchases(data.purchases, `${label}.purchases`);
 }
@@ -121,16 +143,36 @@ function validatePurchases(data, label) {
   for (const [index, item] of data.items.entries()) {
     assertObject(item, `${label}.items[${index}]`);
     assertBrand(item.brand, `${label}.items[${index}].brand`);
-    if (item.name !== undefined) assertString(item.name, `${label}.items[${index}].name`);
-    if (item.pretaxPrice !== undefined) assertNumberLike(item.pretaxPrice, `${label}.items[${index}].pretaxPrice`);
-    if (item.taxRate !== undefined) assertNumberLike(item.taxRate, `${label}.items[${index}].taxRate`);
-    if (item.estimatedTotalPaid !== undefined) assertNumberLike(item.estimatedTotalPaid, `${label}.items[${index}].estimatedTotalPaid`);
-    if (item.imageUrl !== undefined) assertString(item.imageUrl, `${label}.items[${index}].imageUrl`);
+    if (item.name !== undefined)
+      assertString(item.name, `${label}.items[${index}].name`);
+    if (item.pretaxPrice !== undefined)
+      assertNumberLike(
+        item.pretaxPrice,
+        `${label}.items[${index}].pretaxPrice`,
+      );
+    if (item.taxRate !== undefined)
+      assertNumberLike(item.taxRate, `${label}.items[${index}].taxRate`);
+    if (item.estimatedTotalPaid !== undefined)
+      assertNumberLike(
+        item.estimatedTotalPaid,
+        `${label}.items[${index}].estimatedTotalPaid`,
+      );
+    if (item.imageUrl !== undefined)
+      assertString(item.imageUrl, `${label}.items[${index}].imageUrl`);
     if (item.returnedItems !== undefined) {
       assertArray(item.returnedItems, `${label}.items[${index}].returnedItems`);
-      for (const [returnedIndex, returnedItem] of item.returnedItems.entries()) {
-        assertObject(returnedItem, `${label}.items[${index}].returnedItems[${returnedIndex}]`);
-        assertNumberLike(returnedItem.refundAmount, `${label}.items[${index}].returnedItems[${returnedIndex}].refundAmount`);
+      for (const [
+        returnedIndex,
+        returnedItem,
+      ] of item.returnedItems.entries()) {
+        assertObject(
+          returnedItem,
+          `${label}.items[${index}].returnedItems[${returnedIndex}]`,
+        );
+        assertNumberLike(
+          returnedItem.refundAmount,
+          `${label}.items[${index}].returnedItems[${returnedIndex}].refundAmount`,
+        );
       }
     }
   }
@@ -141,12 +183,18 @@ function validateWishlist(data, label) {
   assertArray(data.items, `${label}.items`);
   for (const [index, item] of data.items.entries()) {
     assertObject(item, `${label}.items[${index}]`);
-    if (item.name !== undefined) assertString(item.name, `${label}.items[${index}].name`);
-    if (item.price !== undefined) assertNumberLike(item.price, `${label}.items[${index}].price`);
-    if (item.score !== undefined) assertNumberLike(item.score, `${label}.items[${index}].score`);
-    if (item.costIndex !== undefined) assertNumberLike(item.costIndex, `${label}.items[${index}].costIndex`);
-    if (item.imageUrl !== undefined) assertString(item.imageUrl, `${label}.items[${index}].imageUrl`);
-    if (item.createdAt !== undefined) assertString(item.createdAt, `${label}.items[${index}].createdAt`);
+    if (item.name !== undefined)
+      assertString(item.name, `${label}.items[${index}].name`);
+    if (item.price !== undefined)
+      assertNumberLike(item.price, `${label}.items[${index}].price`);
+    if (item.score !== undefined)
+      assertNumberLike(item.score, `${label}.items[${index}].score`);
+    if (item.costIndex !== undefined)
+      assertNumberLike(item.costIndex, `${label}.items[${index}].costIndex`);
+    if (item.imageUrl !== undefined)
+      assertString(item.imageUrl, `${label}.items[${index}].imageUrl`);
+    if (item.createdAt !== undefined)
+      assertString(item.createdAt, `${label}.items[${index}].createdAt`);
     if (item.parts !== undefined) {
       assertArray(item.parts, `${label}.items[${index}].parts`);
       for (const [partIndex, part] of item.parts.entries()) {
@@ -154,7 +202,11 @@ function validateWishlist(data, label) {
         assertObject(part, partLabel);
         assertString(part.name, `${partLabel}.name`);
         assertString(part.type, `${partLabel}.type`);
-        assert.equal(typeof part.owned, "boolean", `${partLabel}.owned must be boolean`);
+        assert.equal(
+          typeof part.owned,
+          "boolean",
+          `${partLabel}.owned must be boolean`,
+        );
       }
     }
   }
@@ -164,19 +216,40 @@ function validateNormalizedListings(data, label) {
   assertObject(data, label);
   assertArray(data.items, `${label}.items`);
   const ids = new Set();
-  const allowedStatuses = new Set(["available_now", "preorder", "delayed", "backorder", "out_of_stock", "unavailable", "not_observed", "unknown"]);
+  const allowedStatuses = new Set([
+    "available_now",
+    "preorder",
+    "delayed",
+    "backorder",
+    "out_of_stock",
+    "unavailable",
+    "not_observed",
+    "unknown",
+  ]);
   for (const [index, item] of data.items.entries()) {
     const itemLabel = `${label}.items[${index}]`;
     assertObject(item, itemLabel);
     assertString(item.listingId, `${itemLabel}.listingId`);
-    assert.equal(ids.has(item.listingId), false, `${itemLabel}.listingId must be unique`);
+    assert.equal(
+      ids.has(item.listingId),
+      false,
+      `${itemLabel}.listingId must be unique`,
+    );
     ids.add(item.listingId);
     assertString(item.name, `${itemLabel}.name`);
     assertString(item.retailer, `${itemLabel}.retailer`);
     assertString(item.url, `${itemLabel}.url`);
     assertArray(item.configs, `${itemLabel}.configs`);
-    assert.equal(allowedStatuses.has(item.availabilityStatus), true, `${itemLabel}.availabilityStatus is invalid`);
-    assert.equal(typeof item.orderable, "boolean", `${itemLabel}.orderable must be boolean`);
+    assert.equal(
+      allowedStatuses.has(item.availabilityStatus),
+      true,
+      `${itemLabel}.availabilityStatus is invalid`,
+    );
+    assert.equal(
+      typeof item.orderable,
+      "boolean",
+      `${itemLabel}.orderable must be boolean`,
+    );
   }
 }
 
@@ -185,8 +258,16 @@ function validatePublicCatalogue(data, label) {
   assert.equal(data.version, 1, `${label}.version must be 1`);
   validateNormalizedListings(data, label);
   for (const [index, item] of data.items.entries()) {
-    assert.equal("notes" in item, false, `${label}.items[${index}] must not expose notes`);
-    assert.equal("availabilityText" in item, false, `${label}.items[${index}] must not expose availabilityText`);
+    assert.equal(
+      "notes" in item,
+      false,
+      `${label}.items[${index}] must not expose notes`,
+    );
+    assert.equal(
+      "availabilityText" in item,
+      false,
+      `${label}.items[${index}] must not expose availabilityText`,
+    );
   }
 }
 
@@ -218,7 +299,7 @@ function assertBrand(value, label) {
   assertString(value, label);
   assert.ok(
     beybladeBrands.includes(value),
-    `${label} must be one of: ${beybladeBrands.join(", ")}`
+    `${label} must be one of: ${beybladeBrands.join(", ")}`,
   );
 }
 

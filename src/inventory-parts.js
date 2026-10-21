@@ -84,6 +84,10 @@ export function canonicalPartName(value, category) {
     .trim();
 }
 
+export function supportsRegionalChineseName(category) {
+  return ["Blade", "Lock Chip", "LockChip", "Main Blade", "MainBlade", "Metal Blade", "MetalBlade"].includes(category);
+}
+
 function splitValues(value) {
   return [...new Set(String(value ?? "").split(";").map((item) => item.trim()).filter(Boolean))];
 }

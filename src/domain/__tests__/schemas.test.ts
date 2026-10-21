@@ -26,8 +26,8 @@ describe("runtime data contracts", () => {
             names: {
               "en-US": "Rush",
               "en-JP": "Rush",
-              "zh-TW": "衝刺",
-              "zh-HK": "R",
+              "zh-TW": null,
+              "zh-HK": null,
             },
             brand: "Hasbro",
           },
@@ -42,7 +42,7 @@ describe("runtime data contracts", () => {
     expect(result.purchases.items[0].recordedFrom).toBe("test");
     expect(result.purchases.items[0].brand).toBe("Hasbro");
     expect(result.inventory.partsDetail?.[0].brand).toBe("Hasbro");
-    expect(result.inventory.partsDetail?.[0].names?.["zh-TW"]).toBe("衝刺");
+    expect(result.inventory.partsDetail?.[0].names?.["zh-TW"]).toBeNull();
     expect(result.sourcePreferences?.defaultBrand).toBe("Hasbro");
   });
 
