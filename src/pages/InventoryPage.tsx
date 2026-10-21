@@ -1,4 +1,5 @@
 import { Search, X } from "lucide-react";
+import type { ReactNode } from "react";
 import { useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -10,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { InventoryPartDetail } from "@/domain/types";
 import { inventoryPartImageRefs } from "@/features/inventory/part-images";
+import { presentPartNames } from "@/features/inventory/part-name-presentation";
 import { summarizeSources } from "@/features/inventory/source-summary";
 import { usePrivateData } from "@/features/private-data/use-private-data";
 import { groupInventoryParts } from "@/inventory-parts.js";
@@ -169,7 +171,9 @@ export function InventoryPage() {
                   {showLineColumn && (
                     <td className="px-4 py-3">{part.line ?? "-"}</td>
                   )}
-                  <td className="px-4 py-3 font-bold">{part.name ?? "-"}</td>
+                  <td className="px-4 py-3">
+                    <PartName part={part} />
+                  </td>
                   <td className="px-4 py-3">{part.abbrev ?? "-"}</td>
                   <td className="px-4 py-3">{part.qty ?? "-"}</td>
                   <td className="max-w-xs px-4 py-3 text-muted-foreground">
@@ -192,11 +196,54 @@ export function InventoryPage() {
 
 function PartSources({ source }: { source?: string }) {
   const summary = summarizeSources(source);
-  const triggerRef = useRef<HTMLSpanElement>(null);
-  const tooltipId = useId();
-  const [position, setPosition] = useState<SourceTooltipPosition | null>(null);
 
   if (!summary.truncated) return summary.display;
+
+  return <HoverTooltip content={summary.full}>{summary.display}</HoverTooltip>;
+}
+
+function PartName({ part }: { part: InventoryPartDetail }) {
+  const presentation = presentPartNames(part);
+  const displayedName = (
+    <span className="grid gap-0.5 text-left">
+      <span className="font-bold">{presentation.primary}</span>
+      {presentation.secondary && (
+        <span className="text-xs font-semibold text-muted-foreground">
+          {presentation.secondary}
+        </span>
+      )}
+    </span>
+  );
+
+  if (!presentation.alternates.length) return displayedName;
+
+  return (
+    <HoverTooltip
+      content={
+        <span className="grid gap-1">
+          {presentation.alternates.map((name) => (
+            <span key={name.label} className="block">
+              <span className="font-extrabold">{name.label}:</span> {name.value}
+            </span>
+          ))}
+        </span>
+      }
+    >
+      {displayedName}
+    </HoverTooltip>
+  );
+}
+
+function HoverTooltip({
+  children,
+  content,
+}: {
+  children: ReactNode;
+  content: ReactNode;
+}) {
+  const triggerRef = useRef<HTMLSpanElement>(null);
+  const tooltipId = useId();
+  const [position, setPosition] = useState<TooltipPosition | null>(null);
 
   const showTooltip = () => {
     const rect = triggerRef.current?.getBoundingClientRect();
@@ -232,11 +279,11 @@ function PartSources({ source }: { source?: string }) {
           if (event.key === "Escape") setPosition(null);
         }}
       >
-        {summary.display}
+        {children}
       </span>
       {position &&
         createPortal(
-          <span
+          <div
             id={tooltipId}
             role="tooltip"
             className="pointer-events-none fixed z-[100] rounded-lg bg-foreground px-3 py-2 text-xs leading-relaxed font-medium text-background shadow-xl"
@@ -247,15 +294,15 @@ function PartSources({ source }: { source?: string }) {
               transform: position.above ? "translateY(-100%)" : undefined,
             }}
           >
-            {summary.full}
-          </span>,
+            {content}
+          </div>,
           document.body,
         )}
     </>
   );
 }
 
-interface SourceTooltipPosition {
+interface TooltipPosition {
   above: boolean;
   left: number;
   maxWidth: number;

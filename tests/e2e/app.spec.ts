@@ -38,9 +38,10 @@ test("uploads, restores, routes, and clears browser-only data", async ({
     page.getByRole("columnheader", { name: "Category" }),
   ).toHaveCount(0);
   await page.getByPlaceholder("Search part name or abbreviation").fill("尖牙");
-  await expect(
-    page.getByRole("cell", { name: "Fang", exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole("cell", { name: /Fang.*尖牙/ })).toBeVisible();
+  await page.getByText("尖牙", { exact: true }).hover();
+  await expect(page.getByRole("tooltip")).toContainText("EN-JP (TT): Fang");
+  await expect(page.getByRole("tooltip")).toContainText("台灣中文: 獠牙");
   await page.getByText("Set One; Set Two; Set Three; ...").hover();
   await expect(page.getByRole("tooltip")).toHaveText(
     "Set One; Set Two; Set Three; Set Four",
