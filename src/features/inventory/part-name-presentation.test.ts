@@ -43,7 +43,7 @@ describe("presentPartNames", () => {
     );
   });
 
-  it("omits unavailable regional names", () => {
+  it("uses one canonical name for parts outside the Blade and Lock Chip families", () => {
     expect(
       presentPartNames({
         category: "Bit",
@@ -58,7 +58,7 @@ describe("presentPartNames", () => {
     ).toEqual({
       primary: "Low Flat",
       secondary: null,
-      alternates: [{ label: "EN-JP (TT)", value: "Low Flat" }],
+      alternates: [],
     });
   });
 });

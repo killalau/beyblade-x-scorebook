@@ -53,6 +53,8 @@ test("uploads, restores, routes, and clears browser-only data", async ({
     page.getByRole("columnheader", { name: "Category" }),
   ).toHaveCount(0);
   await expect(page.getByRole("cell", { name: "Turn" })).toBeVisible();
+  await page.getByRole("cell", { name: "Turn", exact: true }).hover();
+  await expect(page.getByRole("tooltip")).toHaveCount(0);
   await expect(
     page.getByRole("cell", { name: "2", exact: true }),
   ).toBeVisible();
