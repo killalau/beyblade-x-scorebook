@@ -49,6 +49,7 @@ export const inventoryPartDetailSchema = z
     sourceUrl: z.string().optional(),
     notes: z.string().optional(),
     line: z.string().optional(),
+    type: z.string().optional(),
   })
   .superRefine((part, context) => {
     if (part.category === "Blade" || part.category === "Main Blade") {
@@ -65,6 +66,17 @@ export const inventoryPartDetailSchema = z
         code: "custom",
         path: ["line"],
         message: "Line is only valid for Blade and Main Blade rows",
+      });
+    }
+    if (
+      part.category === "Bit" &&
+      part.type !== undefined &&
+      !["Attack", "Defense", "Stamina", "Balance"].includes(part.type)
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["type"],
+        message: "Bit type must be Attack, Defense, Stamina, or Balance",
       });
     }
   });

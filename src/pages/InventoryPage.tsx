@@ -82,12 +82,14 @@ export function InventoryPage() {
   );
   const showLineColumn = category === "Blade";
   const showCategoryColumn = category === "other";
+  const showTypeColumn = category === "Bit";
   const headers: InventoryTableHeader[] = [
     { label: "Image" },
     ...(showCategoryColumn ? [{ label: "Category" }] : []),
     ...(showLineColumn ? [{ label: "Line", sortKey: "line" as const }] : []),
     { label: "Part", sortKey: "name" },
     { label: "Abbrev.", sortKey: "abbrev" },
+    ...(showTypeColumn ? [{ label: "Type" }] : []),
     { label: "Qty", sortKey: "qty" },
     { label: "Source" },
   ];
@@ -202,6 +204,9 @@ export function InventoryPage() {
                     <PartName part={part} />
                   </td>
                   <td className="px-4 py-3">{part.abbrev ?? "-"}</td>
+                  {showTypeColumn && (
+                    <td className="px-4 py-3">{part.type ?? "-"}</td>
+                  )}
                   <td className="px-4 py-3">{part.qty ?? "-"}</td>
                   <td className="max-w-xs px-4 py-3 text-muted-foreground">
                     <PartSources source={part.source} />

@@ -10,6 +10,7 @@ import {
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 const beybladeBrands = Object.freeze(["Hasbro", "Takara Tomy"]);
+const bitTypes = Object.freeze(["Attack", "Defense", "Stamina", "Balance"]);
 const partNameLocales = Object.freeze(["en-US", "en-JP", "zh-TW", "zh-HK"]);
 const failures = [];
 const checked = [];
@@ -89,6 +90,13 @@ function validateInventory(data, label) {
           assert(
             part.line === undefined,
             `${label}.partsDetail[${index}].line is only valid for Blade and Main Blade rows.`,
+          );
+        }
+        if (part.category === "Bit") {
+          assertString(part.type, `${label}.partsDetail[${index}].type`);
+          assert.ok(
+            bitTypes.includes(part.type),
+            `${label}.partsDetail[${index}].type must be one of: ${bitTypes.join(", ")}`,
           );
         }
       }

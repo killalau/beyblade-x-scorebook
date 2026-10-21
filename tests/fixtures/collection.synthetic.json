@@ -45,6 +45,7 @@
         "category": "Bit",
         "name": "Left Right",
         "abbrev": "LR",
+        "type": "Balance",
         "qty": 1,
         "source": "Synthetic Set"
       },

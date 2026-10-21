@@ -87,6 +87,22 @@ describe("runtime data contracts", () => {
     ).toThrow();
   });
 
+  it("rejects unsupported Bit types", () => {
+    expect(() =>
+      collectionSchema.parse({
+        version: 1,
+        inventory: {
+          parts: [],
+          beys: [],
+          partsDetail: [
+            { category: "Bit", name: "Example", type: "Endurance" },
+          ],
+        },
+        purchases: { items: [] },
+      }),
+    ).toThrow(/Bit type must be/);
+  });
+
   it("rejects unsupported versions and invalid inventory lines", () => {
     expect(() =>
       collectionSchema.parse({
