@@ -35,6 +35,27 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   await expect(page).toHaveURL(/#\/inventory$/);
   await expect(page.getByRole("columnheader", { name: "Line" })).toBeVisible();
   await expect(
+    page.getByRole("columnheader", { name: "Line" }),
+  ).toHaveAttribute("aria-sort", "none");
+  await page.getByRole("button", { name: "Sort by Line" }).click();
+  await expect(
+    page.getByRole("columnheader", { name: "Line" }),
+  ).toHaveAttribute("aria-sort", "ascending");
+  await page.getByRole("button", { name: "Sort by Line" }).click();
+  await expect(
+    page.getByRole("columnheader", { name: "Line" }),
+  ).toHaveAttribute("aria-sort", "descending");
+  await expect(
+    page.getByRole("button", { name: "Sort by Part" }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Sort by Abbrev." }),
+  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Sort by Qty" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Sort by Source" }),
+  ).toHaveCount(0);
+  await expect(
     page.getByRole("columnheader", { name: "Category" }),
   ).toHaveCount(0);
   await page.getByPlaceholder("Search part name or abbreviation").fill("尖牙");

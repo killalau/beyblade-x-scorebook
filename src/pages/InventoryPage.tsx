@@ -1,4 +1,4 @@
-import { Search, X } from "lucide-react";
+import { ArrowDown, ArrowUp, ArrowUpDown, Search, X } from "lucide-react";
 import type { ReactNode } from "react";
 import { useId, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -12,6 +12,11 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import type { InventoryPartDetail } from "@/domain/types";
 import { inventoryPartImageRefs } from "@/features/inventory/part-images";
 import { presentPartNames } from "@/features/inventory/part-name-presentation";
+import {
+  sortInventoryParts,
+  type InventoryPartSort,
+  type InventoryPartSortKey,
+} from "@/features/inventory/part-sorting";
 import { summarizeSources } from "@/features/inventory/source-summary";
 import { usePrivateData } from "@/features/private-data/use-private-data";
 import { groupInventoryParts } from "@/inventory-parts.js";
@@ -41,6 +46,7 @@ export function InventoryPage() {
   const { collection, loadCollection } = usePrivateData();
   const [category, setCategory] = useState<DisplayCategory>("Blade");
   const [query, setQuery] = useState("");
+  const [sort, setSort] = useState<InventoryPartSort | null>(null);
 
   const groupedParts = useMemo(() => {
     if (!collection) return [];
@@ -70,8 +76,31 @@ export function InventoryPage() {
           ),
       );
   }, [groupedParts, category, query]);
+  const displayedParts = useMemo(
+    () => sortInventoryParts(filteredParts, sort),
+    [filteredParts, sort],
+  );
   const showLineColumn = category === "Blade";
   const showCategoryColumn = category === "other";
+  const headers: InventoryTableHeader[] = [
+    { label: "Image" },
+    ...(showCategoryColumn ? [{ label: "Category" }] : []),
+    ...(showLineColumn ? [{ label: "Line", sortKey: "line" as const }] : []),
+    { label: "Part", sortKey: "name" },
+    { label: "Abbrev.", sortKey: "abbrev" },
+    { label: "Qty", sortKey: "qty" },
+    { label: "Source" },
+  ];
+
+  const toggleSort = (key: InventoryPartSortKey) => {
+    setSort((current) => ({
+      key,
+      direction:
+        current?.key === key && current.direction === "ascending"
+          ? "descending"
+          : "ascending",
+    }));
+  };
 
   if (!collection) {
     return (
@@ -101,7 +130,10 @@ export function InventoryPage() {
 
       <Tabs
         value={category}
-        onValueChange={(value) => setCategory(value as DisplayCategory)}
+        onValueChange={(value) => {
+          setCategory(value as DisplayCategory);
+          setSort(null);
+        }}
       >
         <TabsList aria-label="Inventory part categories">
           {categories.map((value) => (
@@ -142,25 +174,20 @@ export function InventoryPage() {
           <table className="w-full min-w-[760px] border-collapse text-left text-sm">
             <thead className="bg-muted/70 text-xs tracking-wide text-muted-foreground uppercase">
               <tr>
-                {[
-                  "Image",
-                  ...(showCategoryColumn ? ["Category"] : []),
-                  ...(showLineColumn ? ["Line"] : []),
-                  "Part",
-                  "Abbrev.",
-                  "Qty",
-                  "Source",
-                ].map((heading) => (
-                  <th key={heading} className="px-4 py-3 font-extrabold">
-                    {heading}
-                  </th>
+                {headers.map((header) => (
+                  <InventoryColumnHeader
+                    key={header.label}
+                    header={header}
+                    sort={sort}
+                    onSort={toggleSort}
+                  />
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filteredParts.map((part, index) => (
+              {displayedParts.map((part) => (
                 <tr
-                  key={`${part.category}-${part.name}-${part.abbrev}-${index}`}
+                  key={`${part.category}-${part.name}-${part.abbrev}-${part.source}`}
                 >
                   <td className="px-4 py-2">
                     <PartThumbnail part={part} />
@@ -191,6 +218,51 @@ export function InventoryPage() {
         />
       )}
     </div>
+  );
+}
+
+interface InventoryTableHeader {
+  label: string;
+  sortKey?: InventoryPartSortKey;
+}
+
+function InventoryColumnHeader({
+  header,
+  onSort,
+  sort,
+}: {
+  header: InventoryTableHeader;
+  onSort: (key: InventoryPartSortKey) => void;
+  sort: InventoryPartSort | null;
+}) {
+  const activeDirection =
+    sort && sort.key === header.sortKey ? sort.direction : undefined;
+
+  return (
+    <th
+      className="px-4 py-3 font-extrabold"
+      aria-sort={header.sortKey ? activeDirection || "none" : undefined}
+    >
+      {header.sortKey ? (
+        <button
+          type="button"
+          className="inline-flex items-center gap-1.5 rounded-sm outline-none hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label={`Sort by ${header.label}`}
+          onClick={() => onSort(header.sortKey!)}
+        >
+          {header.label}
+          {activeDirection === "ascending" ? (
+            <ArrowUp aria-hidden="true" className="size-3.5" />
+          ) : activeDirection === "descending" ? (
+            <ArrowDown aria-hidden="true" className="size-3.5" />
+          ) : (
+            <ArrowUpDown aria-hidden="true" className="size-3.5" />
+          )}
+        </button>
+      ) : (
+        header.label
+      )}
+    </th>
   );
 }
 
