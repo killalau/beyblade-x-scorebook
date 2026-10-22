@@ -10,6 +10,14 @@ const numberLike = z.union([
     ),
 ]);
 const optionalNumberLike = numberLike.optional();
+const nonNegativeNumberLike = numberLike.refine(
+  (value) => Number(value) >= 0,
+  "Expected a non-negative numeric value",
+);
+const positiveNumberLike = numberLike.refine(
+  (value) => Number(value) > 0,
+  "Expected a numeric value greater than zero",
+);
 
 export const beybladeBrandSchema = z.enum(["Hasbro", "Takara Tomy"]);
 
@@ -105,6 +113,7 @@ const giftedItemSchema = z.looseObject({
 });
 
 export const purchaseItemSchema = z.looseObject({
+  acquisitionId: z.string().optional(),
   name: z.string(),
   brand: beybladeBrandSchema.optional(),
   source: z.string().optional(),
@@ -123,22 +132,139 @@ export const purchaseItemSchema = z.looseObject({
   notes: z.string().optional(),
 });
 
-export const collectionSchema = z.looseObject({
-  version: z.literal(1),
-  currency: z.string().optional(),
-  taxRegion: z.string().nullable().optional(),
-  sourcePreferences: z
-    .looseObject({
-      market: z.string().optional(),
-      defaultBrand: z.string().optional(),
-      defaultBrandCondition: z.string().optional(),
-      explicitTakaraTomyProducts: z.array(z.string()).optional(),
-      explicitHasbroProducts: z.array(z.string()).optional(),
-    })
-    .optional(),
-  inventory: inventorySchema,
-  purchases: z.looseObject({ items: z.array(purchaseItemSchema) }),
+const tradeGivenItemSchema = z.looseObject({
+  name: z.string(),
+  quantity: positiveNumberLike.optional(),
+  fromAcquisitionId: z.string(),
+  transferredCostBasis: nonNegativeNumberLike,
 });
+
+const tradeReceivedItemSchema = z.looseObject({
+  acquisitionId: z.string(),
+  name: z.string(),
+  brand: beybladeBrandSchema,
+  quantity: positiveNumberLike.optional(),
+  costBasis: nonNegativeNumberLike,
+  imageUrl: z.string(),
+});
+
+export const tradeRecordSchema = z
+  .looseObject({
+    tradeId: z.string(),
+    tradedAt: z.string(),
+    source: z.string().optional(),
+    gave: z.array(tradeGivenItemSchema).min(1),
+    received: z.array(tradeReceivedItemSchema).min(1),
+    cashPaid: nonNegativeNumberLike.optional(),
+    cashReceived: nonNegativeNumberLike.optional(),
+    notes: z.string().optional(),
+  })
+  .superRefine((trade, context) => {
+    if (
+      Number(trade.cashPaid ?? 0) > 0 &&
+      Number(trade.cashReceived ?? 0) > 0
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["cashReceived"],
+        message: "A trade must use only cashPaid or cashReceived",
+      });
+    }
+  });
+
+export const collectionSchema = z
+  .looseObject({
+    version: z.literal(1),
+    currency: z.string().optional(),
+    taxRegion: z.string().nullable().optional(),
+    sourcePreferences: z
+      .looseObject({
+        market: z.string().optional(),
+        defaultBrand: z.string().optional(),
+        defaultBrandCondition: z.string().optional(),
+        explicitTakaraTomyProducts: z.array(z.string()).optional(),
+        explicitHasbroProducts: z.array(z.string()).optional(),
+      })
+      .optional(),
+    inventory: inventorySchema,
+    purchases: z.looseObject({ items: z.array(purchaseItemSchema) }),
+    trades: z.looseObject({ items: z.array(tradeRecordSchema) }).optional(),
+  })
+  .superRefine((collection, context) => {
+    const acquisitionIds = new Set<string>();
+    for (const [index, purchase] of collection.purchases.items.entries()) {
+      if (!purchase.acquisitionId) continue;
+      if (acquisitionIds.has(purchase.acquisitionId)) {
+        context.addIssue({
+          code: "custom",
+          path: ["purchases", "items", index, "acquisitionId"],
+          message: "Acquisition IDs must be unique",
+        });
+      }
+      acquisitionIds.add(purchase.acquisitionId);
+    }
+    for (const [tradeIndex, trade] of (
+      collection.trades?.items ?? []
+    ).entries()) {
+      for (const [itemIndex, item] of trade.received.entries()) {
+        if (acquisitionIds.has(item.acquisitionId)) {
+          context.addIssue({
+            code: "custom",
+            path: [
+              "trades",
+              "items",
+              tradeIndex,
+              "received",
+              itemIndex,
+              "acquisitionId",
+            ],
+            message: "Acquisition IDs must be unique",
+          });
+        }
+        acquisitionIds.add(item.acquisitionId);
+      }
+    }
+    for (const [tradeIndex, trade] of (
+      collection.trades?.items ?? []
+    ).entries()) {
+      trade.gave.forEach((item, itemIndex) => {
+        if (!acquisitionIds.has(item.fromAcquisitionId)) {
+          context.addIssue({
+            code: "custom",
+            path: [
+              "trades",
+              "items",
+              tradeIndex,
+              "gave",
+              itemIndex,
+              "fromAcquisitionId",
+            ],
+            message: "Trade must reference an existing acquisition",
+          });
+        }
+      });
+      const transferred = trade.gave.reduce(
+        (sum, item) => sum + Number(item.transferredCostBasis),
+        0,
+      );
+      const received = trade.received.reduce(
+        (sum, item) => sum + Number(item.costBasis),
+        0,
+      );
+      const expected =
+        transferred +
+        Number(trade.cashPaid ?? 0) -
+        Number(trade.cashReceived ?? 0);
+      if (Math.abs(received - expected) > 0.01) {
+        context.addIssue({
+          code: "custom",
+          path: ["trades", "items", tradeIndex, "received"],
+          message:
+            "Received cost basis must equal transferred basis plus cash paid minus cash received",
+        });
+      }
+    }
+  });
 
 export const wishlistPartSchema = z.looseObject({
   name: z.string(),

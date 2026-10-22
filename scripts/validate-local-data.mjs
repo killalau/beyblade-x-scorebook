@@ -142,15 +142,32 @@ function validateCollection(data, label) {
   if (data.taxRegion !== undefined && data.taxRegion !== null)
     assertString(data.taxRegion, `${label}.taxRegion`);
   validateInventory(data.inventory, `${label}.inventory`);
-  validatePurchases(data.purchases, `${label}.purchases`);
+  const acquisitionIds = validatePurchases(
+    data.purchases,
+    `${label}.purchases`,
+  );
+  validateTrades(data.trades, `${label}.trades`, acquisitionIds);
 }
 
 function validatePurchases(data, label) {
   assertObject(data, label);
   assertArray(data.items, `${label}.items`);
+  const acquisitionIds = new Set();
   for (const [index, item] of data.items.entries()) {
     assertObject(item, `${label}.items[${index}]`);
     assertBrand(item.brand, `${label}.items[${index}].brand`);
+    if (item.acquisitionId !== undefined) {
+      assertString(
+        item.acquisitionId,
+        `${label}.items[${index}].acquisitionId`,
+      );
+      assert.equal(
+        acquisitionIds.has(item.acquisitionId),
+        false,
+        `${label}.items[${index}].acquisitionId must be unique`,
+      );
+      acquisitionIds.add(item.acquisitionId);
+    }
     if (item.name !== undefined)
       assertString(item.name, `${label}.items[${index}].name`);
     if (item.pretaxPrice !== undefined)
@@ -183,6 +200,81 @@ function validatePurchases(data, label) {
         );
       }
     }
+  }
+  return acquisitionIds;
+}
+
+function validateTrades(data, label, acquisitionIds) {
+  if (data === undefined) return;
+  assertObject(data, label);
+  assertArray(data.items, `${label}.items`);
+  const tradeIds = new Set();
+  for (const [tradeIndex, trade] of data.items.entries()) {
+    const tradeLabel = `${label}.items[${tradeIndex}]`;
+    assertObject(trade, tradeLabel);
+    assertString(trade.tradeId, `${tradeLabel}.tradeId`);
+    assert.equal(
+      tradeIds.has(trade.tradeId),
+      false,
+      `${tradeLabel}.tradeId must be unique`,
+    );
+    tradeIds.add(trade.tradeId);
+    assertString(trade.tradedAt, `${tradeLabel}.tradedAt`);
+    assertArray(trade.gave, `${tradeLabel}.gave`);
+    assert.ok(trade.gave.length > 0, `${tradeLabel}.gave must not be empty`);
+    assertArray(trade.received, `${tradeLabel}.received`);
+    assert.ok(
+      trade.received.length > 0,
+      `${tradeLabel}.received must not be empty`,
+    );
+    let transferredCostBasis = 0;
+    for (const [itemIndex, item] of trade.gave.entries()) {
+      const itemLabel = `${tradeLabel}.gave[${itemIndex}]`;
+      assertObject(item, itemLabel);
+      assertString(item.name, `${itemLabel}.name`);
+      assertString(item.fromAcquisitionId, `${itemLabel}.fromAcquisitionId`);
+      assert.ok(
+        acquisitionIds.has(item.fromAcquisitionId),
+        `${itemLabel}.fromAcquisitionId must reference an existing acquisition`,
+      );
+      assertPositiveQuantity(item.quantity, `${itemLabel}.quantity`);
+      assertNonNegativeNumber(
+        item.transferredCostBasis,
+        `${itemLabel}.transferredCostBasis`,
+      );
+      transferredCostBasis += Number(item.transferredCostBasis);
+    }
+    let receivedCostBasis = 0;
+    for (const [itemIndex, item] of trade.received.entries()) {
+      const itemLabel = `${tradeLabel}.received[${itemIndex}]`;
+      assertObject(item, itemLabel);
+      assertString(item.acquisitionId, `${itemLabel}.acquisitionId`);
+      assert.equal(
+        acquisitionIds.has(item.acquisitionId),
+        false,
+        `${itemLabel}.acquisitionId must be unique`,
+      );
+      acquisitionIds.add(item.acquisitionId);
+      assertString(item.name, `${itemLabel}.name`);
+      assertBrand(item.brand, `${itemLabel}.brand`);
+      assertPositiveQuantity(item.quantity, `${itemLabel}.quantity`);
+      assertNonNegativeNumber(item.costBasis, `${itemLabel}.costBasis`);
+      assertString(item.imageUrl, `${itemLabel}.imageUrl`);
+      receivedCostBasis += Number(item.costBasis);
+    }
+    const cashPaid = Number(trade.cashPaid ?? 0);
+    const cashReceived = Number(trade.cashReceived ?? 0);
+    assertNonNegativeNumber(cashPaid, `${tradeLabel}.cashPaid`);
+    assertNonNegativeNumber(cashReceived, `${tradeLabel}.cashReceived`);
+    assert.ok(
+      !(cashPaid > 0 && cashReceived > 0),
+      `${tradeLabel} must use only cashPaid or cashReceived`,
+    );
+    const expectedCostBasis = transferredCostBasis + cashPaid - cashReceived;
+    assert.ok(
+      Math.abs(receivedCostBasis - expectedCostBasis) <= 0.01,
+      `${tradeLabel} received cost basis must equal transferred basis plus cash paid minus cash received`,
+    );
   }
 }
 
@@ -314,4 +406,15 @@ function assertBrand(value, label) {
 function assertNumberLike(value, label) {
   const numeric = Number(value);
   assert.equal(Number.isFinite(numeric), true, `${label} must be numeric`);
+}
+
+function assertNonNegativeNumber(value, label) {
+  assertNumberLike(value, label);
+  assert.ok(Number(value) >= 0, `${label} must be non-negative`);
+}
+
+function assertPositiveQuantity(value, label) {
+  if (value === undefined) return;
+  assertNumberLike(value, label);
+  assert.ok(Number(value) > 0, `${label} must be greater than zero`);
 }

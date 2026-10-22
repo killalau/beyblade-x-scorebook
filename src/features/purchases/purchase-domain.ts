@@ -1,70 +1,97 @@
-import type { PurchaseItem, RetailerListing } from "@/domain/types";
+import type {
+  PurchaseItem,
+  RetailerListing,
+  TradeRecord,
+} from "@/domain/types";
 import { purchaseUnitPaidAmount } from "@/collection-summary.js";
 import { normalizeInventoryProductName } from "@/inventory-products.js";
 
 export type PurchaseEvent = {
-  kind: "sold" | "returned" | "gifted";
+  kind: "sold" | "returned" | "gifted" | "traded";
   name: string;
   amount?: number;
+  received?: string;
 };
 
-export type OwnedPurchaseSummary = {
+export type OwnedAcquisitionSummary = {
   source?: string;
-  unitPaid: number;
+  unitCost: number;
+  quantity: number;
   imageUrl?: string;
-  preferredPurchase: PurchaseItem;
+  preferredPurchase?: PurchaseItem;
 };
 
-export function summarizeOwnedPurchases(
+export function summarizeOwnedAcquisitions(
   purchases: PurchaseItem[],
   inventoryName: string,
-): OwnedPurchaseSummary | undefined {
-  const normalizedName = normalizeInventoryProductName(inventoryName);
-  const exact = purchases.filter(
-    (purchase) =>
-      normalizeInventoryProductName(purchase.name) === normalizedName,
+  trades: TradeRecord[] = [],
+): OwnedAcquisitionSummary | undefined {
+  const purchaseCandidates = matchingItems(
+    purchases,
+    inventoryName,
+    (purchase) => purchase.name,
   );
-  const candidates = exact.length
-    ? exact
-    : purchases.filter((purchase) => {
-        const normalizedPurchase = normalizeInventoryProductName(purchase.name);
-        return (
-          normalizedPurchase.includes(normalizedName) ||
-          normalizedName.includes(normalizedPurchase)
-        );
-      });
-  const owned = candidates
+  const ownedPurchases = purchaseCandidates
     .map((purchase) => ({
       purchase,
-      quantity: remainingQuantity(purchase),
+      quantity:
+        remainingPurchaseQuantity(purchase) -
+        tradedQuantity(purchase.acquisitionId, trades),
+      unitCost: purchaseUnitPaidAmount(purchase),
+      source: purchase.source,
+      imageUrl: purchase.imageUrl,
     }))
     .filter(({ quantity }) => quantity > 0);
+
+  const receivedItems = trades.flatMap((trade) =>
+    trade.received.map((item) => ({ item, trade })),
+  );
+  const tradeCandidates = matchingItems(
+    receivedItems,
+    inventoryName,
+    ({ item }) => item.name,
+  );
+  const ownedTrades = tradeCandidates
+    .map(({ item, trade }) => {
+      const quantity = positiveQuantity(item.quantity);
+      return {
+        quantity: quantity - tradedQuantity(item.acquisitionId, trades),
+        unitCost: Number(item.costBasis) / quantity,
+        source: trade.source ?? "Private trade",
+        imageUrl: item.imageUrl,
+      };
+    })
+    .filter(({ quantity }) => quantity > 0);
+
+  const owned = [...ownedPurchases, ...ownedTrades];
   if (!owned.length) return undefined;
 
   const quantity = owned.reduce((total, item) => total + item.quantity, 0);
-  const totalPaid = owned.reduce(
-    (total, item) =>
-      total + purchaseUnitPaidAmount(item.purchase) * item.quantity,
+  const totalCostBasis = owned.reduce(
+    (total, item) => total + item.unitCost * item.quantity,
     0,
   );
   const sources = [
     ...new Set(
       owned
-        .map(({ purchase }) => purchase.source)
+        .map(({ source }) => source)
         .filter((source): source is string => Boolean(source)),
     ),
   ];
 
   return {
     source: sources.length ? sources.join("; ") : undefined,
-    unitPaid: Math.round((totalPaid / quantity) * 100) / 100,
-    imageUrl: owned.find(({ purchase }) => purchase.imageUrl)?.purchase
-      .imageUrl,
-    preferredPurchase: owned[0].purchase,
+    unitCost: Math.round((totalCostBasis / quantity) * 100) / 100,
+    quantity,
+    imageUrl: owned.find(({ imageUrl }) => imageUrl)?.imageUrl,
+    preferredPurchase: ownedPurchases[0]?.purchase,
   };
 }
 
-export function purchaseEvents(purchase: PurchaseItem): PurchaseEvent[] {
+export function purchaseEvents(
+  purchase: PurchaseItem,
+  trades: TradeRecord[] = [],
+): PurchaseEvent[] {
   return [
     ...(purchase.soldItems ?? []).map((item) => ({
       kind: "sold" as const,
@@ -80,6 +107,21 @@ export function purchaseEvents(purchase: PurchaseItem): PurchaseEvent[] {
       kind: "gifted" as const,
       name: item.name ?? purchase.name,
     })),
+    ...trades.flatMap((trade) =>
+      trade.gave
+        .filter(
+          (item) =>
+            purchase.acquisitionId &&
+            item.fromAcquisitionId === purchase.acquisitionId,
+        )
+        .map((item) => ({
+          kind: "traded" as const,
+          name: item.name,
+          received: trade.received
+            .map((receivedItem) => receivedItem.name)
+            .join("; "),
+        })),
+    ),
   ];
 }
 
@@ -124,12 +166,8 @@ function finiteNumber(value: unknown): number | undefined {
   return Number.isFinite(number) ? number : undefined;
 }
 
-function remainingQuantity(purchase: PurchaseItem): number {
-  const recordedQuantity = Number(purchase.quantity);
-  const quantity =
-    Number.isFinite(recordedQuantity) && recordedQuantity > 0
-      ? recordedQuantity
-      : 1;
+function remainingPurchaseQuantity(purchase: PurchaseItem): number {
+  const quantity = positiveQuantity(purchase.quantity);
   const disposed = [
     purchase.soldItems,
     purchase.returnedItems,
@@ -139,4 +177,45 @@ function remainingQuantity(purchase: PurchaseItem): number {
     0,
   );
   return Math.max(0, quantity - disposed);
+}
+
+function tradedQuantity(
+  acquisitionId: string | undefined,
+  trades: TradeRecord[],
+): number {
+  if (!acquisitionId) return 0;
+  return trades.reduce(
+    (total, trade) =>
+      total +
+      trade.gave
+        .filter((item) => item.fromAcquisitionId === acquisitionId)
+        .reduce(
+          (tradeTotal, item) => tradeTotal + positiveQuantity(item.quantity),
+          0,
+        ),
+    0,
+  );
+}
+
+function matchingItems<T>(
+  items: T[],
+  inventoryName: string,
+  getName: (item: T) => string,
+): T[] {
+  const normalizedName = normalizeInventoryProductName(inventoryName);
+  const exact = items.filter(
+    (item) => normalizeInventoryProductName(getName(item)) === normalizedName,
+  );
+  if (exact.length) return exact;
+  return items.filter((item) => {
+    const candidate = normalizeInventoryProductName(getName(item));
+    return (
+      candidate.includes(normalizedName) || normalizedName.includes(candidate)
+    );
+  });
+}
+
+function positiveQuantity(value: unknown): number {
+  const quantity = Number(value);
+  return Number.isFinite(quantity) && quantity > 0 ? quantity : 1;
 }

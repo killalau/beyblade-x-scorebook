@@ -61,6 +61,7 @@
   "purchases": {
     "items": [
       {
+        "acquisitionId": "synthetic-fang-walmart",
         "name": "Fang Leon T 4-60U",
         "source": "Walmart",
         "estimatedTotalPaid": 22.36,
@@ -81,6 +82,33 @@
         "soldItems": [{ "name": "Sold Bey", "salePrice": 25 }],
         "returnedItems": [{ "name": "Returned Bey", "refundAmount": 20 }],
         "giftedItems": [{ "name": "Gifted Bey" }]
+      }
+    ]
+  },
+  "trades": {
+    "items": [
+      {
+        "tradeId": "synthetic-fang-trade",
+        "tradedAt": "2026-10-21",
+        "source": "Private trade",
+        "gave": [
+          {
+            "name": "Fang Leon T 4-60U",
+            "fromAcquisitionId": "synthetic-fang-walmart",
+            "transferredCostBasis": 22.36
+          }
+        ],
+        "received": [
+          {
+            "acquisitionId": "synthetic-received-fang",
+            "name": "Fang Leon T 4-60U",
+            "brand": "Hasbro",
+            "costBasis": 22.36,
+            "imageUrl": "https://example.com/fang.jpg"
+          }
+        ],
+        "cashPaid": 0,
+        "cashReceived": 0
       }
     ]
   }

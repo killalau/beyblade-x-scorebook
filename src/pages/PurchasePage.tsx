@@ -6,16 +6,21 @@ import { EmptyState } from "@/components/empty-state";
 import { FileUpload } from "@/components/file-upload";
 import { PageHeader } from "@/components/page-header";
 import { Card, CardContent } from "@/components/ui/card";
-import type { PurchaseItem, RetailerListing } from "@/domain/types";
+import type {
+  PurchaseItem,
+  RetailerListing,
+  TradeRecord,
+} from "@/domain/types";
 import { usePublicCatalogue } from "@/features/catalogue/use-public-catalogue";
 import { usePrivateData } from "@/features/private-data/use-private-data";
 import {
   findCatalogueListingForProduct,
-  summarizeOwnedPurchases,
+  summarizeOwnedAcquisitions,
 } from "@/features/purchases/purchase-domain";
 import {
   OwnedProductCard,
   PurchaseHistoryCard,
+  TradeHistoryCard,
 } from "@/features/purchases/purchase-cards";
 import { formatCurrency } from "@/lib/format";
 
@@ -29,6 +34,10 @@ export function PurchasePage() {
 
   const purchases = useMemo(
     () => (collection?.data.purchases.items ?? []) as unknown as PurchaseItem[],
+    [collection],
+  );
+  const trades = useMemo(
+    () => (collection?.data.trades?.items ?? []) as unknown as TradeRecord[],
     [collection],
   );
 
@@ -52,7 +61,7 @@ export function PurchasePage() {
 
   const currency = collection.data.currency ?? "CAD";
   const ownedBeys = collection.data.inventory.beys;
-  const netSpend = calculateTotalSpend({ items: purchases });
+  const netSpend = calculateTotalSpend({ items: purchases }, { items: trades });
 
   return (
     <div className="grid gap-8">
@@ -101,7 +110,11 @@ export function PurchasePage() {
         {ownedBeys.length ? (
           <div className="grid gap-3 md:grid-cols-2">
             {ownedBeys.map((bey, index) => {
-              const summary = summarizeOwnedPurchases(purchases, bey);
+              const summary = summarizeOwnedAcquisitions(
+                purchases,
+                bey,
+                trades,
+              );
               const listing = findCatalogueListingForProduct(
                 listings,
                 bey,
@@ -112,7 +125,8 @@ export function PurchasePage() {
                   key={`${bey}-${index}`}
                   name={bey}
                   source={summary?.source}
-                  unitPaid={summary?.unitPaid}
+                  unitCost={summary?.unitCost}
+                  quantity={summary?.quantity}
                   imageUrl={summary?.imageUrl ?? listing?.imageUrl}
                   currency={currency}
                 />
@@ -123,6 +137,37 @@ export function PurchasePage() {
           <EmptyState
             title="No currently owned products"
             description="Purchase history remains below even when products were sold, returned, or gifted."
+          />
+        )}
+      </section>
+
+      <section className="grid gap-4" aria-labelledby="trade-history-title">
+        <div>
+          <h2
+            id="trade-history-title"
+            className="text-2xl font-black tracking-tight"
+          >
+            Trade History
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Cost basis moves with traded items; only cash adjustments affect net
+            spend.
+          </p>
+        </div>
+        {trades.length ? (
+          <div className="grid gap-3">
+            {[...trades].reverse().map((trade) => (
+              <TradeHistoryCard
+                key={trade.tradeId}
+                trade={trade}
+                currency={currency}
+              />
+            ))}
+          </div>
+        ) : (
+          <EmptyState
+            title="No trades recorded"
+            description="Trades will appear here without being counted as new purchases."
           />
         )}
       </section>
@@ -153,6 +198,7 @@ export function PurchasePage() {
                   purchase={purchase}
                   imageUrl={purchase.imageUrl ?? listing?.imageUrl}
                   currency={currency}
+                  trades={trades}
                 />
               );
             })}

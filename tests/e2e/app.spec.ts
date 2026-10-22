@@ -103,6 +103,11 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   await expect(page.getByText(/Sold: Sold Bey/)).toBeVisible();
   await expect(page.getByText(/Returned: Returned Bey/)).toBeVisible();
   await expect(page.getByText(/Gifted: Gifted Bey/)).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Trade History" }),
+  ).toBeVisible();
+  await expect(page.getByText("Even trade")).toBeVisible();
+  await expect(page.getByText(/Traded: Fang Leon.*Fang Leon/)).toBeVisible();
   await page.getByRole("button", { name: "Clear data" }).click();
   await expect(page.getByText("collection.synthetic.json")).toHaveCount(0);
   await expect(page.getByText("wishlist.synthetic.json")).toHaveCount(0);

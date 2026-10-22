@@ -24,12 +24,42 @@ JSON is the source of truth for this project. Excel workbooks are legacy exports
   "purchases": {
     "items": [
       {
+        "acquisitionId": "purchase-wand-wizard",
         "name": "Wand Wizard 5-70DB Starter",
         "brand": "Hasbro",
         "source": "Private purchase",
         "pretaxPrice": 20,
         "taxRate": 0,
         "estimatedTotalPaid": 20
+      }
+    ]
+  },
+  "trades": {
+    "items": [
+      {
+        "tradeId": "trade-2026-10-21-example",
+        "tradedAt": "2026-10-21",
+        "source": "Private trade",
+        "gave": [
+          {
+            "name": "Wand Wizard 5-70DB Starter",
+            "quantity": 1,
+            "fromAcquisitionId": "purchase-wand-wizard",
+            "transferredCostBasis": 22.39
+          }
+        ],
+        "received": [
+          {
+            "acquisitionId": "trade-example-b",
+            "name": "Example B",
+            "brand": "Hasbro",
+            "quantity": 1,
+            "costBasis": 27.39,
+            "imageUrl": "https://example.com/example-b.jpg"
+          }
+        ],
+        "cashPaid": 5,
+        "cashReceived": 0
       }
     ]
   }
@@ -52,6 +82,8 @@ Optional fields:
 - `sourcePreferences`: collection-level market and brand-inference rules. For this Canadian collection, default an unspecified product to Hasbro only when the exact product/release exists in Hasbro's catalogue. Use Takara Tomy when the user explicitly identifies it or no Hasbro release exists. Explicit product evidence always wins, and an unknown random-booster colour must remain unknown.
 - `inventory.partsDetail`: detailed rows for the Inventory page.
 - `purchases.items[].imageUrl`: reliable image for an owned product. The Purchase page prefers this image, then falls back to a matching Catalogue listing.
+- `purchases.items[].acquisitionId`: stable identity for a specific purchase lot when another event, such as a trade, needs to reference it.
+- `trades.items`: immutable trade history. `gave[].fromAcquisitionId` identifies the exact lot leaving the collection; `received[].acquisitionId` creates a new owned lot.
 
 Guidance:
 
@@ -72,9 +104,9 @@ Guidance:
 - Launcher names describe the physical launcher type, not merely the presence of a ripcord. Record Hasbro's small starter launcher as `Entry Launcher`; reserve `Winder Launcher`, `Long Winder Launcher`, and `String Launcher` for products whose exact contents verify those types.
 - When adding an inventory product or purchase, verify and store a reliable `purchases.items[].imageUrl` in the same task. Check the resulting Purchase-page card and do not leave a new product with a missing thumbnail unless no trustworthy image can be found; record that exception explicitly.
 
-The collection file deliberately keeps inventory and purchase history as separate sections. Purchase history records provenance; current inventory remains authoritative because gifts, trades, losses, sales, and loose parts cannot always be derived from purchases.
+The collection file deliberately keeps inventory, purchase history, and trade history as separate sections. Purchases and trades record provenance; current inventory remains authoritative because gifts, losses, sales, and loose parts cannot always be derived from acquisition history.
 
-The Inventory page displays only the owned parts table. The Purchase page displays the current owned-product cards plus the complete purchase history. Each history card shows the tax/shipping-inclusive unit price from `perItemTotal`, or calculates it from the total paid divided by `quantity`; it does not show the purchase subtotal as the card price. The page's net spend is the sum of `estimatedTotalPaid` minus `soldItems[].salePrice` and `returnedItems[].refundAmount`. Keep returned purchases in history, record each returned product and refund under `returnedItems`, and remove returned products and parts from current inventory. For legacy rows without `estimatedTotalPaid`, the calculation falls back to `pretaxPrice`, applying `taxRate` when present unless `taxIncluded` is true.
+The Inventory page displays only the owned parts table. The Purchase page displays current owned-product cards, trade history, and complete purchase history. Each purchase-history card shows the tax/shipping-inclusive unit price from `perItemTotal`, or calculates it from the total paid divided by `quantity`; it does not show the purchase subtotal as the card price. An owned-product card averages the cost basis of only its currently held acquisition lots. For a trade, the received cost basis must equal the given item's transferred cost basis plus `cashPaid` minus `cashReceived`; multiple received items require an explicit allocation whose sum follows that formula. The page's net spend is the sum of purchase cash paid plus trade `cashPaid`, minus `soldItems[].salePrice`, `returnedItems[].refundAmount`, and trade `cashReceived`. A transferred cost basis is not new cash spend and must not be counted twice. Keep returned and traded-away purchases in history, but remove disposed products and parts from current inventory. For legacy purchase rows without `estimatedTotalPaid`, the calculation falls back to `pretaxPrice`, applying `taxRate` when present unless `taxIncluded` is true.
 
 Migrate the former two-file format with `npm run migrate:collection`. The command refuses to overwrite an existing collection unless `--force` is explicitly supplied and preserves the legacy input files as recoverable backups.
 

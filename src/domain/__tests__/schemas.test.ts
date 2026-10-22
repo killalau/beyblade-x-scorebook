@@ -103,6 +103,69 @@ describe("runtime data contracts", () => {
     ).toThrow(/Bit type must be/);
   });
 
+  it("validates trade acquisition references and transferred cost basis", () => {
+    const collection = {
+      version: 1 as const,
+      inventory: { parts: [], beys: [] },
+      purchases: {
+        items: [
+          {
+            acquisitionId: "purchase-a",
+            name: "Example A",
+            brand: "Hasbro" as const,
+          },
+        ],
+      },
+      trades: {
+        items: [
+          {
+            tradeId: "trade-a-for-b",
+            tradedAt: "2026-10-21",
+            gave: [
+              {
+                name: "Example A",
+                fromAcquisitionId: "purchase-a",
+                transferredCostBasis: 20,
+              },
+            ],
+            received: [
+              {
+                acquisitionId: "trade-b",
+                name: "Example B",
+                brand: "Hasbro" as const,
+                costBasis: 25,
+                imageUrl: "https://example.com/example-b.jpg",
+              },
+            ],
+            cashPaid: 5,
+          },
+        ],
+      },
+    };
+    expect(collectionSchema.parse(collection).trades?.items).toHaveLength(1);
+    expect(() =>
+      collectionSchema.parse({
+        ...collection,
+        trades: {
+          items: [
+            {
+              ...collection.trades.items[0],
+              received: [
+                {
+                  acquisitionId: "trade-b",
+                  name: "Example B",
+                  brand: "Hasbro" as const,
+                  costBasis: 20,
+                  imageUrl: "https://example.com/example-b.jpg",
+                },
+              ],
+            },
+          ],
+        },
+      }),
+    ).toThrow(/Received cost basis must equal/);
+  });
+
   it("rejects unsupported versions and invalid inventory lines", () => {
     expect(() =>
       collectionSchema.parse({

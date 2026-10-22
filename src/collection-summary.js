@@ -1,18 +1,40 @@
-export function calculateTotalSpend(purchases) {
-  const totalPaid = (purchases?.items || []).reduce((sum, item) => sum + purchasePaidAmount(item), 0);
-  const saleProceeds = (purchases?.items || []).reduce((sum, item) => (
-    sum + (item?.soldItems || []).reduce((itemSum, soldItem) => {
-      const salePrice = Number(soldItem?.salePrice);
-      return itemSum + (Number.isFinite(salePrice) ? salePrice : 0);
-    }, 0)
-  ), 0);
-  const refunds = (purchases?.items || []).reduce((sum, item) => (
-    sum + (item?.returnedItems || []).reduce((itemSum, returnedItem) => {
-      const refundAmount = Number(returnedItem?.refundAmount);
-      return itemSum + (Number.isFinite(refundAmount) ? refundAmount : 0);
-    }, 0)
-  ), 0);
-  return Math.round((totalPaid - saleProceeds - refunds) * 100) / 100;
+export function calculateTotalSpend(purchases, trades) {
+  const totalPaid = (purchases?.items || []).reduce(
+    (sum, item) => sum + purchasePaidAmount(item),
+    0,
+  );
+  const saleProceeds = (purchases?.items || []).reduce(
+    (sum, item) =>
+      sum +
+      (item?.soldItems || []).reduce((itemSum, soldItem) => {
+        const salePrice = Number(soldItem?.salePrice);
+        return itemSum + (Number.isFinite(salePrice) ? salePrice : 0);
+      }, 0),
+    0,
+  );
+  const refunds = (purchases?.items || []).reduce(
+    (sum, item) =>
+      sum +
+      (item?.returnedItems || []).reduce((itemSum, returnedItem) => {
+        const refundAmount = Number(returnedItem?.refundAmount);
+        return itemSum + (Number.isFinite(refundAmount) ? refundAmount : 0);
+      }, 0),
+    0,
+  );
+  const tradeCashPaid = (trades?.items || []).reduce(
+    (sum, trade) => sum + finiteAmount(trade?.cashPaid),
+    0,
+  );
+  const tradeCashReceived = (trades?.items || []).reduce(
+    (sum, trade) => sum + finiteAmount(trade?.cashReceived),
+    0,
+  );
+  return (
+    Math.round(
+      (totalPaid - saleProceeds - refunds + tradeCashPaid - tradeCashReceived) *
+        100,
+    ) / 100
+  );
 }
 
 export function purchasePaidAmount(item) {
@@ -32,6 +54,14 @@ export function purchaseUnitPaidAmount(item) {
   if (Number.isFinite(recordedUnitTotal)) return recordedUnitTotal;
 
   const quantity = Number(item?.quantity);
-  const normalizedQuantity = Number.isFinite(quantity) && quantity > 0 ? quantity : 1;
-  return Math.round((purchasePaidAmount(item) / normalizedQuantity) * 100) / 100;
+  const normalizedQuantity =
+    Number.isFinite(quantity) && quantity > 0 ? quantity : 1;
+  return (
+    Math.round((purchasePaidAmount(item) / normalizedQuantity) * 100) / 100
+  );
+}
+
+function finiteAmount(value) {
+  const amount = Number(value);
+  return Number.isFinite(amount) ? amount : 0;
 }

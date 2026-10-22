@@ -8,32 +8,56 @@ const root = fileURLToPath(new URL("..", import.meta.url));
 const collection = readOptionalJson("data/collection.local.json");
 const inventory = collection?.inventory;
 const purchases = collection?.purchases;
+const trades = collection?.trades;
 const wishlist = readOptionalJson("data/wishlist.local.json");
-const normalized = readOptionalJson("data/normalized/retailer-listings.local.json");
+const normalized = readOptionalJson(
+  "data/normalized/retailer-listings.local.json",
+);
 const rawFiles = listOptionalRawFiles("data/raw");
 
-console.log(JSON.stringify({
-  inventory: inventory ? {
-    parts: inventory.parts?.length ?? 0,
-    beys: inventory.beys?.length ?? 0,
-    partsDetail: inventory.partsDetail?.length ?? 0
-  } : null,
-  purchases: purchases ? {
-    items: purchases.items?.length ?? 0,
-    currency: collection.currency ?? null,
-    taxRegion: collection.taxRegion ?? null
-  } : null,
-  wishlist: wishlist ? {
-    items: wishlist.items?.length ?? 0,
-    currency: wishlist.currency ?? null
-  } : null,
-  normalizedListings: normalized ? {
-    items: normalized.items?.length ?? 0,
-    eligible: normalized.items?.filter(isWishlistEligible).length ?? 0,
-    excluded: normalized.items?.filter((item) => !isWishlistEligible(item)).length ?? 0
-  } : null,
-  rawFiles
-}, null, 2));
+console.log(
+  JSON.stringify(
+    {
+      inventory: inventory
+        ? {
+            parts: inventory.parts?.length ?? 0,
+            beys: inventory.beys?.length ?? 0,
+            partsDetail: inventory.partsDetail?.length ?? 0,
+          }
+        : null,
+      purchases: purchases
+        ? {
+            items: purchases.items?.length ?? 0,
+            currency: collection.currency ?? null,
+            taxRegion: collection.taxRegion ?? null,
+          }
+        : null,
+      trades: trades
+        ? {
+            items: trades.items?.length ?? 0,
+          }
+        : null,
+      wishlist: wishlist
+        ? {
+            items: wishlist.items?.length ?? 0,
+            currency: wishlist.currency ?? null,
+          }
+        : null,
+      normalizedListings: normalized
+        ? {
+            items: normalized.items?.length ?? 0,
+            eligible: normalized.items?.filter(isWishlistEligible).length ?? 0,
+            excluded:
+              normalized.items?.filter((item) => !isWishlistEligible(item))
+                .length ?? 0,
+          }
+        : null,
+      rawFiles,
+    },
+    null,
+    2,
+  ),
+);
 
 function readOptionalJson(relativePath) {
   const path = join(root, relativePath);

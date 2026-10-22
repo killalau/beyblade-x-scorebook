@@ -20,7 +20,7 @@ See [React Architecture](docs/react-architecture.md) for the component, data-flo
 
 - `Scorebook`: product/combo scoring and Cost Index lookup.
 - `Inventory`: owned-parts tabs, grouping, quantities, sources, and line information.
-- `Purchase`: current owned products, purchase history, disposal events, and net spend.
+- `Purchase`: current owned products, trade history with transferred cost basis and cash adjustments, purchase history, disposal events, and net spend.
 - `Wishlist`: private derived wishlist with card/list views, sorting, and part filters.
 - `Catalogue`: public sanitized retailer listings of every availability status.
 - `Rules`: scoring weights, rarity multipliers, and formulas.

@@ -31,7 +31,7 @@ Local-only data lives under `data/` and is ignored by Git:
 - `data/wishlist.local.json`
 - `data/raw/*.json`
 
-Codex should edit the `inventory` and `purchases` sections of collection JSON directly. Retailer refreshes update normalized listings after preserving raw evidence. Wishlist JSON is derived from normalized listings, collection inventory, and public ranking/scoring modules.
+Codex should edit the `inventory`, `purchases`, and optional `trades` sections of collection JSON directly. Retailer refreshes update normalized listings after preserving raw evidence. Wishlist JSON is derived from normalized listings, collection inventory, and public ranking/scoring modules.
 
 ## Retailer Data Pipeline
 
@@ -63,6 +63,7 @@ npm run export:catalogue
 5. Make the requested JSON changes directly.
 6. When ownership or purchase history changes, treat collection and wishlist as one transaction:
    - Add or remove the requested row under `collection.purchases.items`.
+   - Record barter under `collection.trades.items`; do not disguise a trade as a sale, gift, or zero-dollar purchase. Link the given item to its exact acquisition, transfer its cost basis to the received item, and record any `cashPaid` or `cashReceived` separately.
    - Add or remove the complete bey and all parts supplied by it under `collection.inventory`. Preserve quantities or shared parts that are still owned from another source.
    - Record the verified release `brand` (`Hasbro` or `Takara Tomy`) on the purchase and every owned `partsDetail` row; do not rely only on the collection default.
    - Recalculate affected wishlist `usefulParts`, `helpsInventory`, `score`, and `costIndex` against the updated inventory.

@@ -29,6 +29,32 @@ describe("purchase calculations", () => {
     ).toBe(45.59);
   });
 
+  it("adds cash paid and subtracts cash received in trades", () => {
+    expect(
+      calculateTotalSpend(
+        { items: [{ name: "A", estimatedTotalPaid: 20 }] },
+        {
+          items: [
+            {
+              tradeId: "trade-1",
+              tradedAt: "2026-10-21",
+              gave: [],
+              received: [],
+              cashPaid: 5,
+            },
+            {
+              tradeId: "trade-2",
+              tradedAt: "2026-10-22",
+              gave: [],
+              received: [],
+              cashReceived: 3,
+            },
+          ],
+        },
+      ),
+    ).toBe(22);
+  });
+
   it("calculates tax-inclusive paid amounts", () => {
     expect(
       purchasePaidAmount({ pretaxPrice: 19.99, taxRate: 0.12 }),

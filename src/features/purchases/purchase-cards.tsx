@@ -1,4 +1,6 @@
-import type { PurchaseItem } from "@/domain/types";
+import { ArrowRight, Repeat2 } from "lucide-react";
+
+import type { PurchaseItem, TradeRecord } from "@/domain/types";
 import { purchaseUnitPaidAmount } from "@/collection-summary.js";
 import { ProductThumbnail } from "@/components/product-thumbnail";
 import { Badge } from "@/components/ui/badge";
@@ -9,13 +11,15 @@ import { formatCurrency } from "@/lib/format";
 export function OwnedProductCard({
   name,
   source,
-  unitPaid,
+  unitCost,
+  quantity,
   imageUrl,
   currency,
 }: {
   name: string;
   source?: string;
-  unitPaid?: number;
+  unitCost?: number;
+  quantity?: number;
   imageUrl?: string;
   currency: string;
 }) {
@@ -29,9 +33,14 @@ export function OwnedProductCard({
             {source ?? "Owned item"}
           </p>
         </div>
-        <strong className="shrink-0 text-sm">
-          {unitPaid !== undefined ? formatCurrency(unitPaid, currency) : "-"}
-        </strong>
+        <span className="shrink-0 text-right">
+          <span className="block text-xs font-bold tracking-wide text-muted-foreground uppercase">
+            {quantity && quantity > 1 ? "Avg cost" : "Cost"}
+          </span>
+          <strong className="text-sm">
+            {unitCost !== undefined ? formatCurrency(unitCost, currency) : "-"}
+          </strong>
+        </span>
       </CardContent>
     </Card>
   );
@@ -41,12 +50,14 @@ export function PurchaseHistoryCard({
   purchase,
   imageUrl,
   currency,
+  trades = [],
 }: {
   purchase: PurchaseItem;
   imageUrl?: string;
   currency: string;
+  trades?: TradeRecord[];
 }) {
-  const events = purchaseEvents(purchase);
+  const events = purchaseEvents(purchase, trades);
   const quantity = Number(purchase.quantity);
   return (
     <Card>
@@ -78,7 +89,7 @@ export function PurchaseHistoryCard({
                   variant={
                     event.kind === "returned"
                       ? "destructive"
-                      : event.kind === "sold"
+                      : event.kind === "sold" || event.kind === "traded"
                         ? "warning"
                         : "secondary"
                   }
@@ -87,8 +98,11 @@ export function PurchaseHistoryCard({
                     ? "Sold"
                     : event.kind === "returned"
                       ? "Returned"
-                      : "Gifted"}
+                      : event.kind === "gifted"
+                        ? "Gifted"
+                        : "Traded"}
                   : {event.name}
+                  {event.received ? ` → ${event.received}` : ""}
                   {event.amount !== undefined
                     ? ` · ${formatCurrency(event.amount, currency)}`
                     : ""}
@@ -109,5 +123,101 @@ export function PurchaseHistoryCard({
         </div>
       </CardContent>
     </Card>
+  );
+}
+
+export function TradeHistoryCard({
+  trade,
+  currency,
+}: {
+  trade: TradeRecord;
+  currency: string;
+}) {
+  const receivedImage = trade.received.find((item) => item.imageUrl);
+  const cashPaid = Number(trade.cashPaid ?? 0);
+  const cashReceived = Number(trade.cashReceived ?? 0);
+
+  return (
+    <Card>
+      <CardContent className="grid gap-4 p-4 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center">
+        <ProductThumbnail
+          imageUrl={receivedImage?.imageUrl}
+          name={receivedImage?.name ?? "Trade"}
+        />
+        <div className="min-w-0">
+          <div className="flex items-center gap-2">
+            <Repeat2 aria-hidden="true" className="size-4 text-primary" />
+            <h3 className="font-extrabold">
+              {trade.source ?? "Private trade"}
+            </h3>
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">{trade.tradedAt}</p>
+          <div className="mt-3 grid gap-2 text-sm md:grid-cols-[1fr_auto_1fr] md:items-center">
+            <TradeItems
+              label="Gave"
+              items={trade.gave.map((item) => ({
+                name: item.name,
+                quantity: item.quantity,
+                costBasis: item.transferredCostBasis,
+              }))}
+              currency={currency}
+            />
+            <ArrowRight
+              aria-hidden="true"
+              className="hidden size-4 text-muted-foreground md:block"
+            />
+            <TradeItems
+              label="Received"
+              items={trade.received}
+              currency={currency}
+            />
+          </div>
+        </div>
+        <div className="sm:text-right">
+          <span className="block text-xs font-bold tracking-wide text-muted-foreground uppercase">
+            Cash adjustment
+          </span>
+          <strong>
+            {cashPaid > 0
+              ? `Paid ${formatCurrency(cashPaid, currency)}`
+              : cashReceived > 0
+                ? `Received ${formatCurrency(cashReceived, currency)}`
+                : "Even trade"}
+          </strong>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function TradeItems({
+  label,
+  items,
+  currency,
+}: {
+  label: string;
+  items: Array<{
+    name: string;
+    quantity?: number | string;
+    costBasis: number | string;
+  }>;
+  currency: string;
+}) {
+  return (
+    <div>
+      <span className="text-xs font-bold tracking-wide text-muted-foreground uppercase">
+        {label}
+      </span>
+      {items.map((item, index) => {
+        const quantity = Number(item.quantity ?? 1);
+        return (
+          <p key={`${item.name}-${index}`} className="font-semibold">
+            {item.name}
+            {quantity > 1 ? ` ×${quantity}` : ""} · cost basis{" "}
+            {formatCurrency(Number(item.costBasis), currency)}
+          </p>
+        );
+      })}
+    </div>
   );
 }

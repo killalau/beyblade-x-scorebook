@@ -72,6 +72,7 @@ export interface GiftedItem {
 }
 
 export interface PurchaseItem {
+  acquisitionId?: string;
   name: string;
   brand?: BeybladeBrand;
   source?: string;
@@ -96,6 +97,37 @@ export interface Purchases {
   items: PurchaseItem[];
 }
 
+export interface TradeGivenItem {
+  name: string;
+  quantity?: number | string;
+  fromAcquisitionId: string;
+  transferredCostBasis: number | string;
+}
+
+export interface TradeReceivedItem {
+  acquisitionId: string;
+  name: string;
+  brand: BeybladeBrand;
+  quantity?: number | string;
+  costBasis: number | string;
+  imageUrl: string;
+}
+
+export interface TradeRecord {
+  tradeId: string;
+  tradedAt: string;
+  source?: string;
+  gave: TradeGivenItem[];
+  received: TradeReceivedItem[];
+  cashPaid?: number | string;
+  cashReceived?: number | string;
+  notes?: string;
+}
+
+export interface Trades {
+  items: TradeRecord[];
+}
+
 export interface CollectionData {
   version: 1;
   currency?: CurrencyCode;
@@ -109,6 +141,7 @@ export interface CollectionData {
   };
   inventory: Inventory;
   purchases: Purchases;
+  trades?: Trades;
 }
 
 export type AvailabilityStatus =
