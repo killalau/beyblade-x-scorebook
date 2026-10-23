@@ -62,6 +62,12 @@ test("uploads, restores, routes, and clears browser-only data", async ({
     name: "Filter blades by line",
   });
   await expect(lineFilter).toBeVisible();
+  await expect(lineFilter.locator("option")).toHaveText([
+    "All Line",
+    "BX",
+    "UX",
+    "CX",
+  ]);
   await lineFilter.selectOption("BX");
   await expect(page.getByRole("cell", { name: "Dran Sword" })).toBeVisible();
   await expect(page.getByRole("cell", { name: /Fang.*尖牙/ })).toHaveCount(0);
@@ -106,6 +112,13 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   const bitTypeFilter = page.getByRole("combobox", {
     name: "Filter bits by type",
   });
+  await expect(bitTypeFilter.locator("option")).toHaveText([
+    "All Type",
+    "Attack",
+    "Defense",
+    "Stamina",
+    "Balance",
+  ]);
   await bitTypeFilter.selectOption("Attack");
   await expect(page.getByRole("cell", { name: "Flat" })).toBeVisible();
   await expect(page.getByRole("cell", { name: "Left Right" })).toHaveCount(0);

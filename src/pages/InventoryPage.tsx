@@ -43,6 +43,8 @@ const labels: Record<DisplayCategory, string> = {
 };
 const selectClass =
   "h-10 rounded-lg border border-input bg-card px-3 text-sm font-semibold text-foreground";
+const preferredLineOrder = ["BX", "UX", "CX"];
+const preferredBitTypeOrder = ["Attack", "Defense", "Stamina", "Balance"];
 
 export function InventoryPage() {
   const { collection, loadCollection } = usePrivateData();
@@ -71,11 +73,19 @@ export function InventoryPage() {
     [groupedParts, category],
   );
   const lineOptions = useMemo(
-    () => uniqueSortedValues(categoryParts.map((part) => part.line)),
+    () =>
+      orderedUniqueValues(
+        categoryParts.map((part) => part.line),
+        preferredLineOrder,
+      ),
     [categoryParts],
   );
   const bitTypeOptions = useMemo(
-    () => uniqueSortedValues(categoryParts.map((part) => part.type)),
+    () =>
+      orderedUniqueValues(
+        categoryParts.map((part) => part.type),
+        preferredBitTypeOrder,
+      ),
     [categoryParts],
   );
   const filteredParts = useMemo(() => {
@@ -191,7 +201,7 @@ export function InventoryPage() {
               value={lineFilter}
               onChange={(event) => setLineFilter(event.target.value)}
             >
-              <option value="">All lines</option>
+              <option value="">All Line</option>
               {lineOptions.map((value) => (
                 <option key={value}>{value}</option>
               ))}
@@ -206,7 +216,7 @@ export function InventoryPage() {
               value={bitTypeFilter}
               onChange={(event) => setBitTypeFilter(event.target.value)}
             >
-              <option value="">All types</option>
+              <option value="">All Type</option>
               {bitTypeOptions.map((value) => (
                 <option key={value}>{value}</option>
               ))}
@@ -508,8 +518,15 @@ function partMatchesCategory(
   ].includes(part.category);
 }
 
-function uniqueSortedValues(values: Array<string | undefined>): string[] {
-  return [...new Set(values.filter((value): value is string => Boolean(value)))]
-    .filter((value) => value !== "-")
+function orderedUniqueValues(
+  values: Array<string | undefined>,
+  preferredOrder: string[],
+): string[] {
+  const observed = new Set(
+    values.filter((value): value is string => Boolean(value) && value !== "-"),
+  );
+  const additional = [...observed]
+    .filter((value) => !preferredOrder.includes(value))
     .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+  return [...preferredOrder, ...additional];
 }
