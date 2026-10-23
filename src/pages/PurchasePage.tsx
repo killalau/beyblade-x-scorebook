@@ -108,7 +108,7 @@ export function PurchasePage() {
           </p>
         </div>
         {ownedBeys.length ? (
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {ownedBeys.map((bey, index) => {
               const summary = summarizeOwnedAcquisitions(
                 purchases,

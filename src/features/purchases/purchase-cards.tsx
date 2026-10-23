@@ -24,20 +24,20 @@ export function OwnedProductCard({
   currency: string;
 }) {
   return (
-    <Card>
-      <CardContent className="flex items-center gap-4 p-4">
-        <ProductThumbnail imageUrl={imageUrl} name={name} />
-        <div className="min-w-0 flex-1">
+    <Card className="h-full">
+      <CardContent className="grid h-full grid-cols-[auto_minmax(0,1fr)] gap-3 p-4">
+        <ProductThumbnail imageUrl={imageUrl} name={name} className="size-16" />
+        <div className="min-w-0 self-center">
           <h2 className="font-extrabold text-pretty">{name}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">
+          <p className="mt-1 break-words text-sm text-muted-foreground">
             {source ?? "Owned item"}
           </p>
         </div>
-        <span className="shrink-0 text-right">
-          <span className="block text-xs font-bold tracking-wide text-muted-foreground uppercase">
+        <span className="col-span-2 flex items-end justify-between gap-3 border-t border-border pt-3">
+          <span className="text-xs font-bold tracking-wide text-muted-foreground uppercase">
             {quantity && quantity > 1 ? "Avg cost" : "Cost"}
           </span>
-          <strong className="text-sm">
+          <strong className="shrink-0 text-sm">
             {unitCost !== undefined ? formatCurrency(unitCost, currency) : "-"}
           </strong>
         </span>
