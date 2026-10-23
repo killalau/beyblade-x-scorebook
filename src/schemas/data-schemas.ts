@@ -57,6 +57,7 @@ export const inventoryPartDetailSchema = z
     sourceUrl: z.string().optional(),
     notes: z.string().optional(),
     line: z.string().optional(),
+    bladeSystem: z.enum(["standard", "expand"]).optional(),
     type: z.string().optional(),
   })
   .superRefine((part, context) => {
@@ -74,6 +75,17 @@ export const inventoryPartDetailSchema = z
         code: "custom",
         path: ["line"],
         message: "Line is only valid for Blade and Main Blade rows",
+      });
+    }
+    if (
+      part.bladeSystem !== undefined &&
+      part.category !== "Blade" &&
+      part.category !== "Main Blade"
+    ) {
+      context.addIssue({
+        code: "custom",
+        path: ["bladeSystem"],
+        message: "Blade system is only valid for Blade and Main Blade rows",
       });
     }
     if (

@@ -36,6 +36,7 @@ export interface InventoryPartDetail {
   sourceUrl?: string;
   notes?: string;
   line?: string;
+  bladeSystem?: "standard" | "expand";
   type?: string;
   imageRefs?: InventoryPartImageRef[];
 }

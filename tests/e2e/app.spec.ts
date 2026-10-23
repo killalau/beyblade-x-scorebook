@@ -69,7 +69,10 @@ test("uploads, restores, routes, and clears browser-only data", async ({
     "CX",
   ]);
   await lineFilter.selectOption("BX");
-  await expect(page.getByRole("cell", { name: "Dran Sword" })).toBeVisible();
+  await expect(page.getByRole("cell", { name: "Dran Strike" })).toBeVisible();
+  const expandLine = page.getByRole("cell").getByLabel("BX Expand / Infinity");
+  await expect(expandLine).toHaveText("BX∞");
+  await expect(expandLine).toHaveCSS("color", "rgb(20, 121, 167)");
   await expect(page.getByRole("cell", { name: /Fang.*尖牙/ })).toHaveCount(0);
   await lineFilter.selectOption("");
   await page.getByPlaceholder("Search part name or abbreviation").fill("尖牙");
@@ -223,6 +226,10 @@ test("meets accessibility and responsive-navigation checks", async ({
   expect(widths.nav).toBeGreaterThan(widths.navClient);
   await loadCollection(page);
   await open(page, "#/inventory");
+  const inventoryAccessibility = await new AxeBuilder({ page })
+    .withRules(["color-contrast"])
+    .analyze();
+  expect(inventoryAccessibility.violations).toEqual([]);
   await expect(
     page.getByRole("tablist", { name: "Inventory part categories" }),
   ).toBeVisible();

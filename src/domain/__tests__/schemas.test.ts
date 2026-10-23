@@ -187,6 +187,44 @@ describe("runtime data contracts", () => {
     ).toThrow(/Line is only valid/);
   });
 
+  it("accepts blade systems and rejects them on non-blade parts", () => {
+    expect(
+      collectionSchema.parse({
+        version: 1,
+        inventory: {
+          parts: [],
+          beys: [],
+          partsDetail: [
+            {
+              category: "Blade",
+              name: "Dran Strike",
+              line: "BX",
+              bladeSystem: "expand",
+            },
+          ],
+        },
+        purchases: { items: [] },
+      }).inventory.partsDetail?.[0].bladeSystem,
+    ).toBe("expand");
+    expect(() =>
+      collectionSchema.parse({
+        version: 1,
+        inventory: {
+          parts: [],
+          beys: [],
+          partsDetail: [
+            {
+              category: "Bit",
+              name: "Flat",
+              bladeSystem: "expand",
+            },
+          ],
+        },
+        purchases: { items: [] },
+      }),
+    ).toThrow(/Blade system is only valid/);
+  });
+
   it("accepts structured wishlist parts", () => {
     expect(
       wishlistSchema.parse({

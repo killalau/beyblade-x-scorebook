@@ -9,6 +9,7 @@
       {
         "category": "Main Blade",
         "line": "CX",
+        "bladeSystem": "standard",
         "name": "Fang",
         "names": {
           "en-US": "Fang",
@@ -23,7 +24,8 @@
       {
         "category": "Blade",
         "line": "BX",
-        "name": "Dran Sword",
+        "bladeSystem": "expand",
+        "name": "Dran Strike",
         "abbrev": "-",
         "qty": 1,
         "source": "Synthetic Set"

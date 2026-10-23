@@ -261,7 +261,9 @@ export function InventoryPage() {
                     <td className="px-4 py-3">{part.category ?? "-"}</td>
                   )}
                   {showLineColumn && (
-                    <td className="px-4 py-3">{part.line ?? "-"}</td>
+                    <td className="px-4 py-3">
+                      <InventoryLine part={part} />
+                    </td>
                   )}
                   <td className="px-4 py-3">
                     <PartName part={part} />
@@ -371,6 +373,27 @@ function PartName({ part }: { part: InventoryPartDetail }) {
     >
       {displayedName}
     </HoverTooltip>
+  );
+}
+
+const lineTextClasses: Record<string, string> = {
+  BX: "text-[#1479a7]",
+  UX: "text-[#a84b00]",
+  CX: "text-[#b51262]",
+};
+
+function InventoryLine({ part }: { part: InventoryPartDetail }) {
+  if (!part.line || part.line === "-") return "-";
+  const isExpand = part.bladeSystem === "expand";
+  return (
+    <span
+      className={`font-black ${lineTextClasses[part.line] ?? "text-foreground"}`}
+      aria-label={`${part.line}${isExpand ? " Expand / Infinity" : ""}`}
+      title={isExpand ? `${part.line} Expand / Infinity System` : undefined}
+    >
+      {part.line}
+      {isExpand && <span aria-hidden="true">∞</span>}
+    </span>
   );
 }
 
