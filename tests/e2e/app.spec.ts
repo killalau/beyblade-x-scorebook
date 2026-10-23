@@ -58,6 +58,14 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   await expect(
     page.getByRole("columnheader", { name: "Category" }),
   ).toHaveCount(0);
+  const lineFilter = page.getByRole("combobox", {
+    name: "Filter blades by line",
+  });
+  await expect(lineFilter).toBeVisible();
+  await lineFilter.selectOption("BX");
+  await expect(page.getByRole("cell", { name: "Dran Sword" })).toBeVisible();
+  await expect(page.getByRole("cell", { name: /Fang.*尖牙/ })).toHaveCount(0);
+  await lineFilter.selectOption("");
   await page.getByPlaceholder("Search part name or abbreviation").fill("尖牙");
   await expect(page.getByRole("cell", { name: /Fang.*尖牙/ })).toBeVisible();
   await page.getByText("尖牙", { exact: true }).hover();
@@ -85,6 +93,7 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   ).toBeVisible();
   await expect(page.getByRole("columnheader", { name: "Line" })).toHaveCount(0);
   await page.getByRole("tab", { name: "Bit", exact: true }).click();
+  await expect(lineFilter).toHaveCount(0);
   await expect(page.getByRole("columnheader", { name: "Type" })).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Sort by Type" }),
@@ -94,6 +103,12 @@ test("uploads, restores, routes, and clears browser-only data", async ({
     page.getByRole("columnheader", { name: "Type" }),
   ).toHaveAttribute("aria-sort", "ascending");
   await expect(page.getByRole("cell", { name: "Balance" })).toBeVisible();
+  const bitTypeFilter = page.getByRole("combobox", {
+    name: "Filter bits by type",
+  });
+  await bitTypeFilter.selectOption("Attack");
+  await expect(page.getByRole("cell", { name: "Flat" })).toBeVisible();
+  await expect(page.getByRole("cell", { name: "Left Right" })).toHaveCount(0);
   await page.reload();
   await expect(page.getByText("collection.synthetic.json")).toBeVisible();
   await expect(page.getByText("wishlist.synthetic.json")).toBeVisible();

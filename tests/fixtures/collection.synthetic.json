@@ -21,6 +21,14 @@
         "source": "Set One; Set Two; Set Three; Set Four"
       },
       {
+        "category": "Blade",
+        "line": "BX",
+        "name": "Dran Sword",
+        "abbrev": "-",
+        "qty": 1,
+        "source": "Synthetic Set"
+      },
+      {
         "category": "Assist Blade",
         "name": "Turn",
         "abbrev": "T",
@@ -46,6 +54,14 @@
         "name": "Left Right",
         "abbrev": "LR",
         "type": "Balance",
+        "qty": 1,
+        "source": "Synthetic Set"
+      },
+      {
+        "category": "Bit",
+        "name": "Flat",
+        "abbrev": "F",
+        "type": "Attack",
         "qty": 1,
         "source": "Synthetic Set"
       },

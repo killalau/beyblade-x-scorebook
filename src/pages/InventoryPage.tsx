@@ -41,11 +41,15 @@ const labels: Record<DisplayCategory, string> = {
   Bit: "Bit",
   other: "Others",
 };
+const selectClass =
+  "h-10 rounded-lg border border-input bg-card px-3 text-sm font-semibold text-foreground";
 
 export function InventoryPage() {
   const { collection, loadCollection } = usePrivateData();
   const [category, setCategory] = useState<DisplayCategory>("Blade");
   const [query, setQuery] = useState("");
+  const [lineFilter, setLineFilter] = useState("");
+  const [bitTypeFilter, setBitTypeFilter] = useState("");
   const [sort, setSort] = useState<InventoryPartSort | null>(null);
 
   const groupedParts = useMemo(() => {
@@ -62,10 +66,29 @@ export function InventoryPage() {
     );
   }, [collection]);
 
+  const categoryParts = useMemo(
+    () => groupedParts.filter((part) => partMatchesCategory(part, category)),
+    [groupedParts, category],
+  );
+  const lineOptions = useMemo(
+    () => uniqueSortedValues(categoryParts.map((part) => part.line)),
+    [categoryParts],
+  );
+  const bitTypeOptions = useMemo(
+    () => uniqueSortedValues(categoryParts.map((part) => part.type)),
+    [categoryParts],
+  );
   const filteredParts = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
-    return groupedParts
-      .filter((part) => partMatchesCategory(part, category))
+    return categoryParts
+      .filter(
+        (part) =>
+          category !== "Blade" || !lineFilter || part.line === lineFilter,
+      )
+      .filter(
+        (part) =>
+          category !== "Bit" || !bitTypeFilter || part.type === bitTypeFilter,
+      )
       .filter(
         (part) =>
           !normalizedQuery ||
@@ -75,7 +98,7 @@ export function InventoryPage() {
               .includes(normalizedQuery),
           ),
       );
-  }, [groupedParts, category, query]);
+  }, [categoryParts, category, query, lineFilter, bitTypeFilter]);
   const displayedParts = useMemo(
     () => sortInventoryParts(filteredParts, sort),
     [filteredParts, sort],
@@ -160,6 +183,36 @@ export function InventoryPage() {
             placeholder="Search part name or abbreviation"
           />
         </label>
+        {category === "Blade" && (
+          <label>
+            <span className="sr-only">Filter blades by line</span>
+            <select
+              className={selectClass}
+              value={lineFilter}
+              onChange={(event) => setLineFilter(event.target.value)}
+            >
+              <option value="">All lines</option>
+              {lineOptions.map((value) => (
+                <option key={value}>{value}</option>
+              ))}
+            </select>
+          </label>
+        )}
+        {category === "Bit" && (
+          <label>
+            <span className="sr-only">Filter bits by type</span>
+            <select
+              className={selectClass}
+              value={bitTypeFilter}
+              onChange={(event) => setBitTypeFilter(event.target.value)}
+            >
+              <option value="">All types</option>
+              {bitTypeOptions.map((value) => (
+                <option key={value}>{value}</option>
+              ))}
+            </select>
+          </label>
+        )}
         {query && (
           <Button type="button" variant="ghost" onClick={() => setQuery("")}>
             <X aria-hidden="true" />
@@ -453,4 +506,10 @@ function partMatchesCategory(
     "Bit",
     "Complete Combo",
   ].includes(part.category);
+}
+
+function uniqueSortedValues(values: Array<string | undefined>): string[] {
+  return [...new Set(values.filter((value): value is string => Boolean(value)))]
+    .filter((value) => value !== "-")
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
 }
