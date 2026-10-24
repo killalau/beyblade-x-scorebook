@@ -58,6 +58,15 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   await expect(
     page.getByRole("columnheader", { name: "Category" }),
   ).toHaveCount(0);
+  await expect(page.getByRole("columnheader")).toHaveText([
+    "Image",
+    "Line",
+    "Type",
+    "Part",
+    "Abbrev.",
+    "Qty",
+    "Source",
+  ]);
   await expect(page.getByRole("columnheader", { name: "Type" })).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Sort by Type" }),
@@ -141,6 +150,14 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   await page.getByRole("tab", { name: "Bit", exact: true }).click();
   await expect(lineFilter).toHaveCount(0);
   await expect(bladeTypeFilter).toHaveCount(0);
+  await expect(page.getByRole("columnheader")).toHaveText([
+    "Image",
+    "Type",
+    "Part",
+    "Abbrev.",
+    "Qty",
+    "Source",
+  ]);
   await expect(page.getByRole("columnheader", { name: "Type" })).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Sort by Type" }),
