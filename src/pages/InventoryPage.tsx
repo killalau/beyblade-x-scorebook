@@ -405,10 +405,10 @@ function PartName({ part }: { part: InventoryPartDetail }) {
   );
 }
 
-const lineTextClasses: Record<string, string> = {
-  BX: "text-[#1479a7]",
-  UX: "text-[#c2410c]",
-  CX: "text-[#a21caf]",
+const lineBadgeClasses: Record<string, string> = {
+  BX: "bg-[#6db5e2]",
+  UX: "bg-[#ee7801]",
+  CX: "bg-[#e2318a]",
 };
 
 function InventoryLine({ part }: { part: InventoryPartDetail }) {
@@ -416,7 +416,7 @@ function InventoryLine({ part }: { part: InventoryPartDetail }) {
   const isExpand = part.bladeSystem === "expand";
   return (
     <span
-      className={`font-black ${lineTextClasses[part.line] ?? "text-foreground"}`}
+      className={`inline-flex min-w-9 items-center justify-center rounded-md px-2 py-1 font-black text-slate-950 ${lineBadgeClasses[part.line] ?? "bg-muted"}`}
       aria-label={`${part.line}${isExpand ? " Expand / Infinity" : ""}`}
       title={isExpand ? `${part.line} Expand / Infinity System` : undefined}
     >

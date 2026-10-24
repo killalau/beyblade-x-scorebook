@@ -87,16 +87,16 @@ test("uploads, restores, routes, and clears browser-only data", async ({
     "Balance",
   ]);
   await expect(page.getByLabel("BX Expand / Infinity")).toHaveCSS(
-    "color",
-    "rgb(20, 121, 167)",
+    "background-color",
+    "rgb(109, 181, 226)",
   );
   await expect(page.getByLabel("UX", { exact: true })).toHaveCSS(
-    "color",
-    "rgb(194, 65, 12)",
+    "background-color",
+    "rgb(238, 120, 1)",
   );
   await expect(page.getByLabel("CX", { exact: true })).toHaveCSS(
-    "color",
-    "rgb(162, 28, 175)",
+    "background-color",
+    "rgb(226, 49, 138)",
   );
   await lineFilter.selectOption("BX");
   await expect(page.getByRole("cell", { name: "Dran Strike" })).toBeVisible();
