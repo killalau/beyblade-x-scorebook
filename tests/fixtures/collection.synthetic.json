@@ -31,6 +31,15 @@
         "source": "Synthetic Set"
       },
       {
+        "category": "Blade",
+        "line": "UX",
+        "bladeSystem": "standard",
+        "name": "Wizard Rod",
+        "abbrev": "-",
+        "qty": 1,
+        "source": "Synthetic Set"
+      },
+      {
         "category": "Assist Blade",
         "name": "Turn",
         "abbrev": "T",

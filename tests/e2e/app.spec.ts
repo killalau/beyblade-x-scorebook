@@ -68,11 +68,22 @@ test("uploads, restores, routes, and clears browser-only data", async ({
     "UX",
     "CX",
   ]);
+  await expect(page.getByLabel("BX Expand / Infinity")).toHaveCSS(
+    "color",
+    "rgb(20, 121, 167)",
+  );
+  await expect(page.getByLabel("UX", { exact: true })).toHaveCSS(
+    "color",
+    "rgb(194, 65, 12)",
+  );
+  await expect(page.getByLabel("CX", { exact: true })).toHaveCSS(
+    "color",
+    "rgb(162, 28, 175)",
+  );
   await lineFilter.selectOption("BX");
   await expect(page.getByRole("cell", { name: "Dran Strike" })).toBeVisible();
   const expandLine = page.getByRole("cell").getByLabel("BX Expand / Infinity");
   await expect(expandLine).toHaveText("BX∞");
-  await expect(expandLine).toHaveCSS("color", "rgb(20, 121, 167)");
   await expect(page.getByRole("cell", { name: /Fang.*尖牙/ })).toHaveCount(0);
   await lineFilter.selectOption("");
   await page.getByPlaceholder("Search part name or abbreviation").fill("尖牙");

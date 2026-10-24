@@ -378,8 +378,8 @@ function PartName({ part }: { part: InventoryPartDetail }) {
 
 const lineTextClasses: Record<string, string> = {
   BX: "text-[#1479a7]",
-  UX: "text-[#a84b00]",
-  CX: "text-[#b51262]",
+  UX: "text-[#c2410c]",
+  CX: "text-[#a21caf]",
 };
 
 function InventoryLine({ part }: { part: InventoryPartDetail }) {
