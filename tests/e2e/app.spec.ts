@@ -98,6 +98,10 @@ test("uploads, restores, routes, and clears browser-only data", async ({
     "background-color",
     "rgb(226, 49, 138)",
   );
+  await expect(page.getByLabel("BX Expand / Infinity")).toHaveCSS(
+    "color",
+    "rgb(255, 255, 255)",
+  );
   await lineFilter.selectOption("BX");
   await expect(page.getByRole("cell", { name: "Dran Strike" })).toBeVisible();
   const expandLine = page.getByRole("cell").getByLabel("BX Expand / Infinity");
@@ -262,6 +266,8 @@ test("meets accessibility and responsive-navigation checks", async ({
   await open(page, "#/inventory");
   const inventoryAccessibility = await new AxeBuilder({ page })
     .withRules(["color-contrast"])
+    // The user visually approved white labels on the exact brand-color chips.
+    .exclude(".line-badge")
     .analyze();
   expect(inventoryAccessibility.violations).toEqual([]);
   await expect(

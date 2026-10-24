@@ -416,7 +416,7 @@ function InventoryLine({ part }: { part: InventoryPartDetail }) {
   const isExpand = part.bladeSystem === "expand";
   return (
     <span
-      className={`inline-flex min-w-9 items-center justify-center rounded-md px-2 py-1 font-black text-slate-950 ${lineBadgeClasses[part.line] ?? "bg-muted"}`}
+      className={`line-badge inline-flex min-w-9 items-center justify-center rounded-md px-2 py-1 font-black text-white ${lineBadgeClasses[part.line] ?? "bg-muted"}`}
       aria-label={`${part.line}${isExpand ? " Expand / Infinity" : ""}`}
       title={isExpand ? `${part.line} Expand / Infinity System` : undefined}
     >
