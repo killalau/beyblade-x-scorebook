@@ -18,6 +18,7 @@
           "zh-HK": "尖牙"
         },
         "abbrev": "-",
+        "type": "Attack",
         "qty": 4,
         "source": "Set One; Set Two; Set Three; Set Four"
       },
@@ -27,6 +28,7 @@
         "bladeSystem": "expand",
         "name": "Dran Strike",
         "abbrev": "-",
+        "type": "Attack",
         "qty": 1,
         "source": "Synthetic Set"
       },
@@ -36,6 +38,7 @@
         "bladeSystem": "standard",
         "name": "Wizard Rod",
         "abbrev": "-",
+        "type": "Stamina",
         "qty": 1,
         "source": "Synthetic Set"
       },

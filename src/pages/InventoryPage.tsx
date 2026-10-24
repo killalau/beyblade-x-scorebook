@@ -44,13 +44,14 @@ const labels: Record<DisplayCategory, string> = {
 const selectClass =
   "h-10 rounded-lg border border-input bg-card px-3 text-sm font-semibold text-foreground";
 const preferredLineOrder = ["BX", "UX", "CX"];
-const preferredBitTypeOrder = ["Attack", "Defense", "Stamina", "Balance"];
+const preferredTypeOrder = ["Attack", "Defense", "Stamina", "Balance"];
 
 export function InventoryPage() {
   const { collection, loadCollection } = usePrivateData();
   const [category, setCategory] = useState<DisplayCategory>("Blade");
   const [query, setQuery] = useState("");
   const [lineFilter, setLineFilter] = useState("");
+  const [bladeTypeFilter, setBladeTypeFilter] = useState("");
   const [bitTypeFilter, setBitTypeFilter] = useState("");
   const [sort, setSort] = useState<InventoryPartSort | null>(null);
 
@@ -80,11 +81,11 @@ export function InventoryPage() {
       ),
     [categoryParts],
   );
-  const bitTypeOptions = useMemo(
+  const typeOptions = useMemo(
     () =>
       orderedUniqueValues(
         categoryParts.map((part) => part.type),
-        preferredBitTypeOrder,
+        preferredTypeOrder,
       ),
     [categoryParts],
   );
@@ -94,6 +95,12 @@ export function InventoryPage() {
       .filter(
         (part) =>
           category !== "Blade" || !lineFilter || part.line === lineFilter,
+      )
+      .filter(
+        (part) =>
+          category !== "Blade" ||
+          !bladeTypeFilter ||
+          part.type === bladeTypeFilter,
       )
       .filter(
         (part) =>
@@ -108,14 +115,21 @@ export function InventoryPage() {
               .includes(normalizedQuery),
           ),
       );
-  }, [categoryParts, category, query, lineFilter, bitTypeFilter]);
+  }, [
+    categoryParts,
+    category,
+    query,
+    lineFilter,
+    bladeTypeFilter,
+    bitTypeFilter,
+  ]);
   const displayedParts = useMemo(
     () => sortInventoryParts(filteredParts, sort),
     [filteredParts, sort],
   );
   const showLineColumn = category === "Blade";
   const showCategoryColumn = category === "other";
-  const showTypeColumn = category === "Bit";
+  const showTypeColumn = category === "Blade" || category === "Bit";
   const headers: InventoryTableHeader[] = [
     { label: "Image" },
     ...(showCategoryColumn ? [{ label: "Category" }] : []),
@@ -194,19 +208,34 @@ export function InventoryPage() {
           />
         </label>
         {category === "Blade" && (
-          <label>
-            <span className="sr-only">Filter blades by line</span>
-            <select
-              className={selectClass}
-              value={lineFilter}
-              onChange={(event) => setLineFilter(event.target.value)}
-            >
-              <option value="">All Line</option>
-              {lineOptions.map((value) => (
-                <option key={value}>{value}</option>
-              ))}
-            </select>
-          </label>
+          <>
+            <label>
+              <span className="sr-only">Filter blades by line</span>
+              <select
+                className={selectClass}
+                value={lineFilter}
+                onChange={(event) => setLineFilter(event.target.value)}
+              >
+                <option value="">All Line</option>
+                {lineOptions.map((value) => (
+                  <option key={value}>{value}</option>
+                ))}
+              </select>
+            </label>
+            <label>
+              <span className="sr-only">Filter blades by type</span>
+              <select
+                className={selectClass}
+                value={bladeTypeFilter}
+                onChange={(event) => setBladeTypeFilter(event.target.value)}
+              >
+                <option value="">All Type</option>
+                {typeOptions.map((value) => (
+                  <option key={value}>{value}</option>
+                ))}
+              </select>
+            </label>
+          </>
         )}
         {category === "Bit" && (
           <label>
@@ -217,7 +246,7 @@ export function InventoryPage() {
               onChange={(event) => setBitTypeFilter(event.target.value)}
             >
               <option value="">All Type</option>
-              {bitTypeOptions.map((value) => (
+              {typeOptions.map((value) => (
                 <option key={value}>{value}</option>
               ))}
             </select>

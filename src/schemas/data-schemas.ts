@@ -88,15 +88,20 @@ export const inventoryPartDetailSchema = z
         message: "Blade system is only valid for Blade and Main Blade rows",
       });
     }
+    const supportsPartType =
+      part.category === "Blade" ||
+      part.category === "Main Blade" ||
+      part.category === "Bit";
     if (
-      part.category === "Bit" &&
+      supportsPartType &&
       part.type !== undefined &&
       !["Attack", "Defense", "Stamina", "Balance"].includes(part.type)
     ) {
       context.addIssue({
         code: "custom",
         path: ["type"],
-        message: "Bit type must be Attack, Defense, Stamina, or Balance",
+        message:
+          "Blade, Main Blade, and Bit type must be Attack, Defense, Stamina, or Balance",
       });
     }
   });

@@ -87,7 +87,7 @@ describe("runtime data contracts", () => {
     ).toThrow();
   });
 
-  it("rejects unsupported Bit types", () => {
+  it("rejects unsupported Blade and Bit types", () => {
     expect(() =>
       collectionSchema.parse({
         version: 1,
@@ -95,12 +95,17 @@ describe("runtime data contracts", () => {
           parts: [],
           beys: [],
           partsDetail: [
-            { category: "Bit", name: "Example", type: "Endurance" },
+            {
+              category: "Blade",
+              line: "BX",
+              name: "Example",
+              type: "Endurance",
+            },
           ],
         },
         purchases: { items: [] },
       }),
-    ).toThrow(/Bit type must be/);
+    ).toThrow(/Blade, Main Blade, and Bit type must be/);
   });
 
   it("validates trade acquisition references and transferred cost basis", () => {

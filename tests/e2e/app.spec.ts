@@ -58,8 +58,19 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   await expect(
     page.getByRole("columnheader", { name: "Category" }),
   ).toHaveCount(0);
+  await expect(page.getByRole("columnheader", { name: "Type" })).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Sort by Type" }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Sort by Type" }).click();
+  await expect(
+    page.getByRole("columnheader", { name: "Type" }),
+  ).toHaveAttribute("aria-sort", "ascending");
   const lineFilter = page.getByRole("combobox", {
     name: "Filter blades by line",
+  });
+  const bladeTypeFilter = page.getByRole("combobox", {
+    name: "Filter blades by type",
   });
   await expect(lineFilter).toBeVisible();
   await expect(lineFilter.locator("option")).toHaveText([
@@ -67,6 +78,13 @@ test("uploads, restores, routes, and clears browser-only data", async ({
     "BX",
     "UX",
     "CX",
+  ]);
+  await expect(bladeTypeFilter.locator("option")).toHaveText([
+    "All Type",
+    "Attack",
+    "Defense",
+    "Stamina",
+    "Balance",
   ]);
   await expect(page.getByLabel("BX Expand / Infinity")).toHaveCSS(
     "color",
@@ -86,6 +104,10 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   await expect(expandLine).toHaveText("BX∞");
   await expect(page.getByRole("cell", { name: /Fang.*尖牙/ })).toHaveCount(0);
   await lineFilter.selectOption("");
+  await bladeTypeFilter.selectOption("Stamina");
+  await expect(page.getByRole("cell", { name: "Wizard Rod" })).toBeVisible();
+  await expect(page.getByRole("cell", { name: /Fang.*尖牙/ })).toHaveCount(0);
+  await bladeTypeFilter.selectOption("");
   await page.getByPlaceholder("Search part name or abbreviation").fill("尖牙");
   await expect(page.getByRole("cell", { name: /Fang.*尖牙/ })).toBeVisible();
   await page.getByText("尖牙", { exact: true }).hover();
@@ -114,6 +136,7 @@ test("uploads, restores, routes, and clears browser-only data", async ({
   await expect(page.getByRole("columnheader", { name: "Line" })).toHaveCount(0);
   await page.getByRole("tab", { name: "Bit", exact: true }).click();
   await expect(lineFilter).toHaveCount(0);
+  await expect(bladeTypeFilter).toHaveCount(0);
   await expect(page.getByRole("columnheader", { name: "Type" })).toBeVisible();
   await expect(
     page.getByRole("button", { name: "Sort by Type" }),
