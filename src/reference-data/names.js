@@ -1,6 +1,5 @@
-
 export const aliases = {
-  "爆裂": "Blast",
+  爆裂: "Blast",
   "Keel Shark": "Shark Edge",
   SharkEdge: "Shark Edge",
   "Gill Shark": "Gill Shark",
@@ -10,19 +9,31 @@ export const aliases = {
   "Dagger Dran": "Dran Dagger",
   "Buster Dran": "Dran Buster",
   "Soar Phoenix": "Phoenix Wing",
-  "Roar Tyranno": "Tyranno Beat",
+  "Roar Tyranno": "Tyranno Roar",
   "Lance Knight": "Knight Lance",
   "Tusk Mammoth": "Mammoth Tusk",
   "Rock Golem": "Golem Rock",
   "Pearl Tiger": "Pearl Tiger",
   "Flame Cerberus": "Flame Cerberus",
   "Ring Aether": "Ring Aether",
-  "Antler Stag": "Antler Stag"
+  "Antler Stag": "Antler Stag",
 };
 
 export const lockChipNames = [
-  "Ragna", "Dran", "Aegis", "Shinobi", "Bahamut", "Cerberus", "Knight", "Incendio", "Emperor",
-  "Tiga", "Croc", "Croco", "Brachio", "Wolf"
+  "Ragna",
+  "Dran",
+  "Aegis",
+  "Shinobi",
+  "Bahamut",
+  "Cerberus",
+  "Knight",
+  "Incendio",
+  "Emperor",
+  "Tiga",
+  "Croc",
+  "Croco",
+  "Brachio",
+  "Wolf",
 ];
 
 export const assistBladeCodes = {
@@ -40,7 +51,7 @@ export const assistBladeCodes = {
   R: "R",
   T: "Turn",
   V: "Vertical",
-  W: "Wheel"
+  W: "Wheel",
 };
 
 export const overBladeCodes = {
@@ -49,13 +60,13 @@ export const overBladeCodes = {
   G: "Guard",
   O: "Outer",
   T: "Tough",
-  W: "W"
+  W: "W",
 };
 
 // Fused Bits combine the ratchet and Bit into one part.
 export const fusedBitCodes = {
   Op: "Op",
-  Tr: "Tr"
+  Tr: "Tr",
 };
 
 export const bitNames = {
@@ -68,6 +79,7 @@ export const bitNames = {
   HN: "High Needle",
   I: "Ignition",
   K: "Kick",
+  L: "Level",
   LF: "Low Flat",
   LR: "Low Rush",
   Nr: "Narrow",
@@ -80,5 +92,5 @@ export const bitNames = {
   UN: "Under Needle",
   UF: "Under Flat",
   WB: "Wall Ball",
-  Y: "Yield"
+  Y: "Yield",
 };

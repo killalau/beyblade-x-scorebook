@@ -39,6 +39,7 @@ const ttReleaseIds: Record<string, string[]> = {
 };
 
 const ttVariantReleaseIds: Record<string, string> = {
+  "UX-15-02": "982432-02",
   "CX-18-01": "096177-01",
   "CX-18-02": "096177-02",
   "CX-18-03": "096177-03",

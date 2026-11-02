@@ -185,7 +185,7 @@ Required fields:
 
 - `items`: array.
 
-This file is derived. Do not use it as the retailer catalogue. Generate it from normalized listings plus inventory and public ranking/scoring data with `npm run generate:wishlist`.
+This file is derived. Do not use it as the retailer catalogue. Generate it from normalized listings plus inventory and public ranking/scoring data with `npm run generate:wishlist`. Ownership matching must prefer `inventory.partsDetail` and remain type-aware: a shared abbreviation such as `L` cannot make a Blade or launcher token look owned merely because the collection contains the Level (`L`) Bit. Legacy collections without `partsDetail` retain the untyped `inventory.parts` fallback.
 
 Recommended fields:
 

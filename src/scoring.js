@@ -4,12 +4,12 @@ import {
   bitNames,
   fusedBitCodes,
   lockChipNames,
-  overBladeCodes
+  overBladeCodes,
 } from "./reference-data/names.js";
 import {
   partTypeWeights,
   rankScores,
-  rarityMultipliers
+  rarityMultipliers,
 } from "./reference-data/scoringConfig.js";
 import { partsRanking as gamerPostPartsRanking } from "./reference-data/rankings/gamerPost.js";
 import { partsRanking as bbxWeeklyPartsRanking } from "./reference-data/rankings/bbxWeekly.js";
@@ -22,19 +22,30 @@ export function normalizePartName(name) {
 }
 
 export function parseConfig(configText, options = {}) {
-  const text = String(configText || "").replace(/\s+/g, " ").trim();
+  const text = String(configText || "")
+    .replace(/\s+/g, " ")
+    .trim();
   const cxMode = options.cxMode === true;
   const integratedCxMatch = cxMode
     ? text.match(/^(.+?)\s+([^\s]+)\s+([A-Z])\s*([A-Z][a-z])$/)
     : null;
   const fusedBit = canonicalFusedBit(integratedCxMatch?.[4]);
-  if (integratedCxMatch && fusedBit && isValidCxCode(integratedCxMatch[3].toUpperCase())) {
+  if (
+    integratedCxMatch &&
+    fusedBit &&
+    isValidCxCode(integratedCxMatch[3].toUpperCase())
+  ) {
     const [, mainBlade, lockChip, assistBlade] = integratedCxMatch;
     return [
       { name: normalizePartName(mainBlade), type: "blade", raw: mainBlade },
       { name: normalizePartName(lockChip), type: "lockChip", raw: lockChip },
       ...parseCxCode(assistBlade.toUpperCase()),
-      { name: fusedBit, type: "bit", raw: integratedCxMatch[4], displayName: `${fusedBit} (Fused)` }
+      {
+        name: fusedBit,
+        type: "bit",
+        raw: integratedCxMatch[4],
+        displayName: `${fusedBit} (Fused)`,
+      },
     ];
   }
   const ratchetMatch = cxMode
@@ -54,27 +65,48 @@ export function parseConfig(configText, options = {}) {
   const cxCode = tokens.at(-1);
   const cxCodeLooksSeparate = cxMode && isValidCxCode(cxCode);
   const nameTokens = cxCodeLooksSeparate ? tokens.slice(0, -1) : tokens;
-  const leadingLockChip = cxMode && nameTokens.length > 1 && isLikelyLockChip(nameTokens[0]);
+  const leadingLockChip =
+    cxMode && nameTokens.length > 1 && isLikelyLockChip(nameTokens[0]);
   const bladeName = leadingLockChip
     ? nameTokens.slice(1).join(" ")
     : inferBladeName(nameTokens, cxMode);
   if (bladeName) {
-    parts.push({ name: normalizePartName(bladeName), type: "blade", raw: bladeName });
+    parts.push({
+      name: normalizePartName(bladeName),
+      type: "blade",
+      raw: bladeName,
+    });
   }
 
-  if (leadingLockChip || (cxMode && nameTokens.length > 1 && isLikelyLockChip(nameTokens.at(-1)))) {
+  if (
+    leadingLockChip ||
+    (cxMode && nameTokens.length > 1 && isLikelyLockChip(nameTokens.at(-1)))
+  ) {
     const lockChip = leadingLockChip ? nameTokens[0] : nameTokens.at(-1);
-    parts.push({ name: normalizePartName(lockChip), type: "lockChip", raw: lockChip });
+    parts.push({
+      name: normalizePartName(lockChip),
+      type: "lockChip",
+      raw: lockChip,
+    });
   }
 
-  const cxCodeToParse = isValidCxCode(attachedCxCode) ? attachedCxCode : (cxCodeLooksSeparate ? cxCode : "");
+  const cxCodeToParse = isValidCxCode(attachedCxCode)
+    ? attachedCxCode
+    : cxCodeLooksSeparate
+      ? cxCode
+      : "";
   if (cxCodeToParse) {
     const cxParts = parseCxCode(cxCodeToParse);
     parts.push(...cxParts);
   }
 
   parts.push({ name: ratchet, type: "ratchet", raw: ratchet });
-  parts.push({ name: bit, type: "bit", raw: bit, displayName: bitNames[bit] || bit });
+  parts.push({
+    name: bit,
+    type: "bit",
+    raw: bit,
+    displayName: bitNames[bit] || bit,
+  });
   return parts;
 }
 
@@ -95,7 +127,7 @@ export function scorePart(part, options = {}) {
   const rankScore = rankScores[rankClass] || 0;
   const typeWeight = partTypeWeights[part.type] || 1;
   const partScore = rankScore * typeWeight;
-  const owned = isOwned(normalized, options.ownedParts);
+  const owned = isOwned(normalized, part.type, options.ownedParts);
   const rare = isRare(normalized, options.rareParts);
   const rarity = owned ? "owned" : rare ? "rare" : "normal";
   const costContribution = partScore * rarityMultipliers[rarity];
@@ -111,19 +143,25 @@ export function scorePart(part, options = {}) {
     partScore,
     rarity,
     rarityMultiplier: rarityMultipliers[rarity],
-    costContribution
+    costContribution,
   };
 }
 
 export function scoreProduct({ name, configs, price }, options = {}) {
-  const parsedParts = (configs?.length ? configs : [name]).flatMap((config) => parseProduct(config, options));
+  const parsedParts = (configs?.length ? configs : [name]).flatMap((config) =>
+    parseProduct(config, options),
+  );
   const parts = parsedParts.map((part) => scorePart(part, options));
   const score = round(parts.reduce((sum, part) => sum + part.partScore, 0));
-  const denominator = parts.reduce((sum, part) => sum + part.costContribution, 0);
+  const denominator = parts.reduce(
+    (sum, part) => sum + part.costContribution,
+    0,
+  );
   const numericPrice = Number(price);
-  const costIndex = denominator > 0 && Number.isFinite(numericPrice)
-    ? round((numericPrice / denominator) * 5)
-    : null;
+  const costIndex =
+    denominator > 0 && Number.isFinite(numericPrice)
+      ? round((numericPrice / denominator) * 5)
+      : null;
 
   return {
     name,
@@ -131,7 +169,7 @@ export function scoreProduct({ name, configs, price }, options = {}) {
     price: Number.isFinite(numericPrice) ? numericPrice : null,
     score,
     costIndex,
-    parts
+    parts,
   };
 }
 
@@ -143,7 +181,7 @@ export function summarizeBreakdown(scored) {
     score: part.partScore,
     rarity: part.rarity,
     costContribution: part.costContribution,
-    source: part.rankSource
+    source: part.rankSource,
   }));
 }
 
@@ -153,14 +191,14 @@ function buildPartIndex() {
     setBest(index, part.name, part.type, {
       rankClass: part.rankClass,
       source: "BBX Weekly",
-      detail: `#${part.rank}`
+      detail: `#${part.rank}`,
     });
   }
   for (const part of gamerPostPartsRanking) {
     setBest(index, part.name, part.type, {
       rankClass: part.rankClass,
       source: "Gamer Image",
-      detail: part.tier
+      detail: part.tier,
     });
   }
   return index;
@@ -169,7 +207,10 @@ function buildPartIndex() {
 function setBest(index, name, type, rank) {
   const key = makeKey(normalizePartName(name), type);
   const current = index.get(key);
-  if (!current || (rankScores[rank.rankClass] || 0) > (rankScores[current.rankClass] || 0)) {
+  if (
+    !current ||
+    (rankScores[rank.rankClass] || 0) > (rankScores[current.rankClass] || 0)
+  ) {
     index.set(key, rank);
   }
 }
@@ -198,13 +239,19 @@ function isLikelyLockChip(token) {
 
 function parseCxCode(code) {
   if (code.length === 1) {
-    return [{ name: assistBladeCodes[code] || code, type: "assistBlade", raw: code }];
+    return [
+      { name: assistBladeCodes[code] || code, type: "assistBlade", raw: code },
+    ];
   }
   if (code.length === 2) {
     const [over, assist] = code;
     return [
       { name: overBladeCodes[over] || over, type: "overBlade", raw: over },
-      { name: assistBladeCodes[assist] || assist, type: "assistBlade", raw: assist }
+      {
+        name: assistBladeCodes[assist] || assist,
+        type: "assistBlade",
+        raw: assist,
+      },
     ];
   }
   return [{ name: code, type: "assistBlade", raw: code }];
@@ -215,24 +262,38 @@ function isValidCxCode(code) {
   if (code.length === 1) return Object.hasOwn(assistBladeCodes, code);
   if (code.length === 2) {
     const [over, assist] = code;
-    return Object.hasOwn(overBladeCodes, over) && Object.hasOwn(assistBladeCodes, assist);
+    return (
+      Object.hasOwn(overBladeCodes, over) &&
+      Object.hasOwn(assistBladeCodes, assist)
+    );
   }
   return false;
 }
 
 function canonicalFusedBit(code) {
-  const key = Object.keys(fusedBitCodes).find((candidate) => candidate.toLowerCase() === String(code || "").toLowerCase());
+  const key = Object.keys(fusedBitCodes).find(
+    (candidate) => candidate.toLowerCase() === String(code || "").toLowerCase(),
+  );
   return key ? fusedBitCodes[key] : "";
 }
 
-function isOwned(name, ownedParts = []) {
+function isOwned(name, type, ownedParts = []) {
   const normalized = normalizePartName(name).toLowerCase();
-  return new Set(ownedParts.map((part) => normalizePartName(part).toLowerCase())).has(normalized);
+  return ownedParts.some((part) => {
+    if (typeof part === "string") {
+      return normalizePartName(part).toLowerCase() === normalized;
+    }
+    if (!part || typeof part !== "object") return false;
+    const ownedName = normalizePartName(part.name).toLowerCase();
+    return ownedName === normalized && (!part.type || part.type === type);
+  });
 }
 
 function isRare(name, rareParts = []) {
   const normalized = normalizePartName(name).toLowerCase();
-  return new Set(rareParts.map((part) => normalizePartName(part).toLowerCase())).has(normalized);
+  return new Set(
+    rareParts.map((part) => normalizePartName(part).toLowerCase()),
+  ).has(normalized);
 }
 
 function round(value) {

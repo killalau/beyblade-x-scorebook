@@ -1,6 +1,11 @@
 import { scoreProduct } from "../src/scoring.js";
 
-const excludedStatuses = new Set(["out_of_stock", "unavailable", "not_observed", "unknown"]);
+const excludedStatuses = new Set([
+  "out_of_stock",
+  "unavailable",
+  "not_observed",
+  "unknown",
+]);
 
 export function listingIdFor(retailer, url) {
   const decodedUrl = safeDecode(url);
@@ -13,7 +18,8 @@ export function listingIdFor(retailer, url) {
 
 export function normalizeStatus(status) {
   const value = String(status || "").toLowerCase();
-  if (value.includes("available now") || value.includes("already owned")) return "available_now";
+  if (value.includes("available now") || value.includes("already owned"))
+    return "available_now";
   if (value.includes("preorder")) return "preorder";
   if (value.includes("restock") || value.includes("delivery")) return "delayed";
   if (value.includes("backorder")) return "backorder";
@@ -24,11 +30,18 @@ export function normalizeStatus(status) {
 }
 
 export function isWishlistEligible(listing) {
-  return listing.normalizationStatus === "verified" && listing.orderable !== false && !excludedStatuses.has(listing.availabilityStatus);
+  return (
+    listing.normalizationStatus === "verified" &&
+    listing.orderable !== false &&
+    !excludedStatuses.has(listing.availabilityStatus)
+  );
 }
 
 export function configsFromListing(item) {
-  const source = item.includedBeys && item.includedBeys !== "-" ? item.includedBeys : item.configs;
+  const source =
+    item.includedBeys && item.includedBeys !== "-"
+      ? item.includedBeys
+      : item.configs;
   return String(source || item.name || "")
     .split(",")
     .map((value) => value.trim())
@@ -36,25 +49,36 @@ export function configsFromListing(item) {
 }
 
 export function generateWishlist(normalized, inventory) {
-  const ownedParts = inventory.parts || [];
+  const ownedParts = ownedPartsFromInventory(inventory);
   const items = normalized.items.filter(isWishlistEligible).map((listing) => {
-    const scored = scoreProduct({
-      name: listing.name,
-      configs: listing.configs,
-      price: listing.price
-    }, {
-      ownedParts,
-      cxMode: listing.cxMode === true
-    });
-    const useful = unique(scored.parts.filter((part) => part.partScore > 0 && part.rarity !== "owned"));
-    const usefulParts = useful.length ? useful.map(formatRankedPart).join(", ") : "-";
+    const scored = scoreProduct(
+      {
+        name: listing.name,
+        configs: listing.configs,
+        price: listing.price,
+      },
+      {
+        ownedParts,
+        cxMode: listing.cxMode === true,
+      },
+    );
+    const useful = unique(
+      scored.parts.filter(
+        (part) => part.partScore > 0 && part.rarity !== "owned",
+      ),
+    );
+    const usefulParts = useful.length
+      ? useful.map(formatRankedPart).join(", ")
+      : "-";
     const hasRankedParts = scored.parts.some((part) => part.partScore > 0);
     const parts = unique(scored.parts).map((part) => ({
       name: part.name,
       type: part.type,
       owned: part.rarity === "owned",
       rankClass: part.rankClass,
-      ...(part.type === "bit" && ["Tr", "Op"].includes(part.name) ? { fused: true } : {})
+      ...(part.type === "bit" && ["Tr", "Op"].includes(part.name)
+        ? { fused: true }
+        : {}),
     }));
     const helpsInventory = useful.length
       ? `Adds: ${usefulParts}`
@@ -79,30 +103,86 @@ export function generateWishlist(normalized, inventory) {
       notes: listing.notes,
       availabilityText: listing.availabilityText,
       ...(listing.imageUrl ? { imageUrl: listing.imageUrl } : {}),
-      ...(listing.firstSeenAt ? { createdAt: listing.firstSeenAt } : {})
+      ...(listing.firstSeenAt ? { createdAt: listing.firstSeenAt } : {}),
     };
   });
   return { currency: normalized.currency || "CAD", items };
 }
 
+function ownedPartsFromInventory(inventory) {
+  if (!inventory.partsDetail?.length) return inventory.parts || [];
+
+  return inventory.partsDetail.flatMap((part) => {
+    const type = scoringTypeForCategory(part.category);
+    if (!type) return [];
+    return uniqueValues([
+      part.name,
+      part.abbrev,
+      ...Object.values(part.names ?? {}),
+    ])
+      .filter((name) => name && name !== "-")
+      .map((name) => ({ name, type }));
+  });
+}
+
+function scoringTypeForCategory(category) {
+  if (["Blade", "Main Blade", "Metal Blade"].includes(category)) return "blade";
+  if (category === "Lock Chip") return "lockChip";
+  if (category === "Over Blade") return "overBlade";
+  if (category === "Assist Blade") return "assistBlade";
+  if (category === "Ratchet") return "ratchet";
+  if (category === "Bit") return "bit";
+  return undefined;
+}
+
+function uniqueValues(values) {
+  return [...new Set(values)];
+}
+
 export function compareWishlists(before, after) {
-  const previous = new Map(before.items.map((item) => [item.listingId || listingIdFor(item.retailer, item.url), item]));
+  const previous = new Map(
+    before.items.map((item) => [
+      item.listingId || listingIdFor(item.retailer, item.url),
+      item,
+    ]),
+  );
   const next = new Map(after.items.map((item) => [item.listingId, item]));
   const added = [...next.keys()].filter((key) => !previous.has(key));
   const removed = [...previous.keys()].filter((key) => !next.has(key));
   const changed = [...next.entries()].flatMap(([key, item]) => {
     const old = previous.get(key);
     if (!old) return [];
-    const fields = ["score", "costIndex", "parts", "usefulParts", "helpsInventory"]
-      .filter((field) => JSON.stringify(old[field]) !== JSON.stringify(item[field]));
-    return fields.length ? [{ listingId: key, name: item.name, fields, before: pick(old, fields), after: pick(item, fields) }] : [];
+    const fields = [
+      "score",
+      "costIndex",
+      "parts",
+      "usefulParts",
+      "helpsInventory",
+    ].filter(
+      (field) => JSON.stringify(old[field]) !== JSON.stringify(item[field]),
+    );
+    return fields.length
+      ? [
+          {
+            listingId: key,
+            name: item.name,
+            fields,
+            before: pick(old, fields),
+            after: pick(item, fields),
+          },
+        ]
+      : [];
   });
   return { added, removed, changed };
 }
 
 function formatRankedPart(part) {
-  const detail = part.rankDetail && part.rankDetail !== "-" ? ` ${part.rankDetail}` : "";
-  const source = part.rankSource && part.rankSource !== "-" ? ` (${part.rankSource}${detail})` : "";
+  const detail =
+    part.rankDetail && part.rankDetail !== "-" ? ` ${part.rankDetail}` : "";
+  const source =
+    part.rankSource && part.rankSource !== "-"
+      ? ` (${part.rankSource}${detail})`
+      : "";
   return `${part.displayName || part.name}${source}`;
 }
 
@@ -121,7 +201,11 @@ function pick(value, fields) {
 }
 
 function slug(value) {
-  return String(value || "unknown").toLowerCase().replace(/^https?:\/\//, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return String(value || "unknown")
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 function safeDecode(value) {

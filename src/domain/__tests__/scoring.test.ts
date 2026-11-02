@@ -47,6 +47,15 @@ describe("scoring parity", () => {
     ).toEqual(["Blast", "Pegasus", "A", "Tr"]);
   });
 
+  it("uses the current TT name for Roar Tyranno and expands Level", () => {
+    const parts = parseConfig("Roar Tyranno 1-70L");
+
+    expect(parts[0].name).toBe("Tyranno Roar");
+    expect(parts.find((part) => part.type === "bit")?.displayName).toBe(
+      "Level",
+    );
+  });
+
   it("applies owned parts to Cost Index without changing score", () => {
     const result = scoreProduct(
       {
@@ -58,5 +67,23 @@ describe("scoring parity", () => {
     );
     expect(result.score).toBe(6);
     expect(result.costIndex).toBeNull();
+  });
+
+  it("keeps ownership type-aware when abbreviations collide", () => {
+    const ownedParts = [{ name: "L", type: "bit" }];
+    const launcherSuffix = scoreProduct(
+      { name: "L", configs: ["L"], price: 10 },
+      { ownedParts },
+    );
+    const levelBit = scoreProduct(
+      { name: "Example 2-70L", configs: ["Example 2-70L"], price: 10 },
+      { ownedParts },
+    );
+
+    expect(launcherSuffix.parts[0].type).toBe("blade");
+    expect(launcherSuffix.parts[0].rarity).toBe("normal");
+    expect(levelBit.parts.find((part) => part.type === "bit")?.rarity).toBe(
+      "owned",
+    );
   });
 });

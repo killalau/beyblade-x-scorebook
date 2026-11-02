@@ -250,6 +250,6 @@ export interface WishlistData {
 
 export interface ScoringOptions {
   cxMode?: boolean;
-  ownedParts?: string[];
+  ownedParts?: Array<string | { name: string; type?: string }>;
   rareParts?: string[];
 }
