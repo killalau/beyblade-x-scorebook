@@ -80,6 +80,9 @@ const accessoryImages: Record<string, Record<string, string[]>> = {
       `${PHSTUDY}/hasbro/G2951/G2951_05.webp`,
     ],
   },
+  G3797: {
+    Launcher: [`${PHSTUDY}/hasbro/G3797/G3797_00.webp`],
+  },
   G2750: {
     Launcher: [`${PHSTUDY}/hasbro/G2750/G2750_05.webp`],
   },
@@ -119,6 +122,7 @@ const accessorySeriesIds: Record<string, string[]> = {
   G4565: ["HB-G4565"],
   G2752: ["HB-G2752"],
   G2951: ["HB-G2951-01", "HB-G2951-02"],
+  G3797: ["HB-G3797-01", "HB-G3797-02"],
   G2750: ["HB-G2750"],
   G4569: ["HB-G4569"],
   G4561: ["HB-G4561"],
