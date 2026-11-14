@@ -129,6 +129,22 @@ describe("inventory part images", () => {
     );
   });
 
+  it("uses the G3491 product image for its bundled left-spin launcher", () => {
+    expect(
+      inventoryPartImageRefs({
+        category: "Launcher",
+        name: "Deluxe Left-spin String Launcher",
+        code: "G3491",
+      })[0],
+    ).toEqual(
+      expect.objectContaining({
+        detailUrl: "https://beyblade.phstudy.org/p/zh-HK/Series/HB-G3491.html",
+        releaseId: "G3491",
+        url: expect.stringContaining("hasbro/G3491/G3491_00.webp"),
+      }),
+    );
+  });
+
   it.each([
     ["Deluxe Left-spin String Launcher", "G2951_04.webp", "HB-G2951-01.html"],
     ["Deluxe Right-spin String Launcher", "G2951_05.webp", "HB-G2951-02.html"],
